@@ -1,9 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import get_user_model
+from users.models import User
 import re
 from django.utils import timezone
-User = get_user_model()
 
 # class UserRegistrationForm(UserCreationForm):
 #     contact = forms.CharField(
@@ -93,13 +92,13 @@ class UserRegistrationForm(forms.ModelForm):
         required=True,
     )
 
-    state = forms.CharField(
-        label='State',
-        max_length=100,
-        widget=forms.TextInput(attrs={'placeholder': 'State'}),
-        required=True,
+    state = forms.ChoiceField(
+    label='State',
+    choices=[('', 'Select State')] + list(User.STATE_CHOICES),
+    widget=forms.Select(attrs={'class': 'form-control'}),
+    required=True,
     )
-
+    
     postal_code = forms.CharField(
         label='Postal Code',
         max_length=6,

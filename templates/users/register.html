@@ -81,15 +81,15 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="id_state" class="form-label">State</label>
-                                <input type="text" class="form-control {% if form.state.errors %} is-invalid{% endif %}" 
-                                       id="id_state" name="state" value="{{ form.state.value|default_if_none:'' }}" required>
+                                    <!-- Render the state choices -->
+                                    {{ form.state }}
                                 {% for error in form.state.errors %}
                                     <div class="invalid-feedback">
                                         {{ error }}
                                     </div>
                                 {% endfor %}
                             </div>
+                            
 
 
                             <div class="mb-3">
