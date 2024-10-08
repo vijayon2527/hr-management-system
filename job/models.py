@@ -87,19 +87,3 @@ class Job(models.Model):
     def get_all_skills(self):
         return self.skills.all()
     
-class JobApplicant(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="applicant_user")
-    job = models.ManyToManyField(Job)
-    is_applied = models.BooleanField(default=False)
-    notice_period = models.CharField(max_length=20)
-    linkedin_link = models.URLField(max_length=100)
-    qualitative_skills = models.CharField(max_length=100)
-    resume = models.FileField(upload_to="resumes/%Y/%m/%d/")
-    subject = models.CharField(max_length=200)
-    message = models.TextField()
-
-    objects = JobApplicantManager()
-
-    def __str__(self):
-        return f'Applicantt ==> {self.user}'
-

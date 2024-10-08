@@ -58,8 +58,7 @@ class RegisterView(View):
 
 def register_view(request):
     if request.method=="POST":
-        print(request.POST, request.FILES)
-        form = UserRegistrationForm(request.POST, request.FILES)  # Make sure to handle file uploads
+        form = UserRegistrationForm(request.POST, request.FILES) 
         if form.is_valid():
             # Extract data from the form
 
@@ -75,7 +74,6 @@ def register_view(request):
                 'postal_code': form.cleaned_data.get('postal_code'),
                 'resume': form.cleaned_data.get('resume'),
             }
-            print(user_data)
             # Create the user
             user = User.objects.create_user(
                 mobile=user_data['mobile_number'],
@@ -94,7 +92,6 @@ def register_view(request):
             messages.success(request, "Your account has been created successfully.")
             return redirect('redirect_url')
         else:
-            print(form.errors)
             messages.warning(request, "invalid form")
             return render(request, 'users/register.html', {'form': form})
     else:

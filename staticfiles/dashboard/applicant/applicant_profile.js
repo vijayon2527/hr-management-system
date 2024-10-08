@@ -102,20 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!firstInvalidField) firstInvalidField = bioField;
         }
 
-        // Validation for username (mobile number)
-        var usernameField = document.getElementById("id_username");
-        if (!usernameField.value) {
-            isValid = showError(usernameField, validationMessages.username);
-            if (!firstInvalidField) firstInvalidField = usernameField;
-        }
-
-        // Validation for password
-        var passwordField = document.getElementById("id_password");
-        if (!passwordField.value) {
-            isValid = showError(passwordField, validationMessages.password);
-            if (!firstInvalidField) firstInvalidField = passwordField;
-        }
-
         // If the form is valid, submit the form
         if (isValid) {
             form.submit();

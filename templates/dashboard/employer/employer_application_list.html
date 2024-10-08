@@ -1,0 +1,153 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load hitcount_tags humanize %}
+{% block dashboard_extra_css %}
+<style>
+    .fabutton {
+        background: none;
+        padding: 0px;
+        border: none;
+    }
+    </style>
+{% endblock dashboard_extra_css %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Applicant List</h4>
+    </div>
+    <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <form action=".">
+          <div class="d-flex flex-row justify-content align-items-center">
+              <div class="search_from"><input type="text" name="name" class="form-control py-2"required></div>
+              <button type="submit" class="btn btn-primary"><span>Search</span></button></div>
+          </div>
+        </form>
+      </div>
+    {% comment %} <a href="{% url 'dashboard:export_applicant_list' %}" class="btn btn-primary btn-sm w-100 mt-1 float-end"><span>Export Applicants</span></a> {% endcomment %}
+    </div>
+  <table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">
+          <div class="d-flex justify-content-between">
+              <div>
+                  <form action="">
+                      <input type='hidden' name='sorting_value' value='user__first_name'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-up-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+              <div>
+                  Name
+              </div>
+              <div>
+                  <form action=".">
+                      <input type='hidden' name='sorting_value' value='-user__first_name'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-down-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+          </div>
+        </th>
+        <th scope="col">
+         <div class="d-flex justify-content-between">
+            <div>
+                <form action="">
+                    <input type='hidden' name='sorting_value' value='user__mobile'>
+                    <button type="submit" class="fabutton">
+                        <i class="fa-sharp fa-solid fa-up-long"></i>
+                    </button>
+                  
+                </form>
+            </div>
+            <div>
+                Mobile
+            </div>
+            <div>
+                <form action=".">
+                    <input type='hidden' name='sorting_value' value='-user__mobile'>
+                    <button type="submit" class="fabutton">
+                        <i class="fa-sharp fa-solid fa-down-long"></i>
+                    </button>
+                  
+                </form>
+            </div>
+         </div>
+        </th>
+        <th scope="col">
+          <div class="d-flex justify-content-between">
+              <div>
+                  <form action="">
+                      <input type='hidden' name='sorting_value' value='job__job_title'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-up-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+              <div>
+                  Job
+              </div>
+              <div>
+                  <form action=".">
+                      <input type='hidden' name='sorting_value' value='-job__job_title'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-down-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+          </div>
+        </th>
+        <th scope="col">
+          <div class="d-flex justify-content-between">
+              <div>
+                  <form action="">
+                      <input type='hidden' name='sorting_value' value='notice_period'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-up-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+              <div>
+                  Notice period
+              </div>
+              <div>
+                  <form action=".">
+                      <input type='hidden' name='sorting_value' value='-notice_period'>
+                      <button type="submit" class="fabutton">
+                          <i class="fa-sharp fa-solid fa-down-long"></i>
+                      </button>
+                    
+                  </form>
+              </div>
+          </div>
+      </th>
+        <th scope="col" class="text-center">LinkedIn link</th>
+        <th scope="col" class="text-center">Resume</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for application in application_list %}
+        <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{application.get_full_name}}</td>
+        <td>{{application.get_mobile}}</td>
+        <td>{{application.get_job_title}}</td>
+        <td>{{application.get_notice_period}}</td>
+        <td>{% if application.get_linkrdin_profile %}<a href="{{application.get_linkrdin_profile}}" target="_blank">{{application.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
+        <td><a href="{{application.get_resume.url}}">resume</a></td>
+    </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div> 
+</div>
+{% endblock dashboard_content %}

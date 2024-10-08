@@ -1,15 +1,18 @@
+import logging
+import xlwt
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
-import xlwt
 from django.db import transaction
+
 from agphr.utils.decorators import allow_access_to
-from job.models import Job, JobApplicant
+from job.models import Job
 from job.forms import CreateJobForm
-import logging
+from applicant.models import Applicant, Application
 from users.models import User
 
 @allow_access_to([User.EMPLOYER])
@@ -24,15 +27,17 @@ def employer_profile_view(request):
 class EmployerJobListView(ListView):
     template_name = 'dashboard/employer/employer_job_list.html'
     context_object_name = 'jobs'
-    # paginate_by = 10
     
     def get_queryset(self):
         query = self.request.GET.get('name')
         sorting_value = self.request.GET.get('sorting_value')
-        job = Job.objects.all_job_lists(query, sorting_value)
+        user = self.request.user
+        job = Job.objects.all_job_lists(query=query, sorting_value=sorting_value, user=user)
+        
         if query is not None:
             job_length = len(job)
-            messages.success(self.request, f"{job_length if job_length >=1  else 'No'} job found for {query}.")
+            messages.success(self.request, f"{job_length if job_length >= 1 else 'No'} job found for {query}.")
+        
         return job
 employer_job_list_view=EmployerJobListView.as_view()
 
@@ -140,20 +145,35 @@ def employer_job_unpublish_view(request, slug):
 
 @method_decorator(allow_access_to([User.EMPLOYER]), name="dispatch")
 class EmployerApplicantListView(ListView):
-    model= JobApplicant
+    model= Applicant
     template_name= 'dashboard/employer/employer_applicant_list.html'
     context_object_name = 'applicant_list'
-    paginate_by = 10
+    # paginate_by = 10
     def get_queryset(self, *args, **kwargs):
         query = self.request.GET.get('name')
         sorting_value = self.request.GET.get('sorting_value')
-        applicant_list = JobApplicant.objects.all_applicant_lists(query, sorting_value)
+        applicant_list = Applicant.objects.all_applicant_lists(query, sorting_value)
         if query is not None:
             applicant_length = len(applicant_list)
             messages.success(self.request, f"{applicant_length if applicant_length >=1  else 'No'} applicant found.")
         return applicant_list
-
 employer_applicant_list_view = EmployerApplicantListView.as_view()
+
+@method_decorator(allow_access_to([User.EMPLOYER]), name="dispatch")
+class EmployerApplicationListView(ListView):
+    model= Application
+    template_name= 'dashboard/employer/employer_application_list.html'
+    context_object_name = 'application_list'
+    # paginate_by = 10
+    def get_queryset(self, *args, **kwargs):
+        query = self.request.GET.get('name')
+        sorting_value = self.request.GET.get('sorting_value')
+        application_list = Application.objects.all_application_lists(query, sorting_value, employer=self.request.user)
+        if query is not None:
+            application_length = len(application_list)
+            messages.success(self.request, f"{application_length if application_length >=1  else 'No'} application found.")
+        return application_list
+employer_application_list_view = EmployerApplicationListView.as_view()
 
 @allow_access_to([User.EMPLOYER])
 def employer_export_applicant_list_view(request):
@@ -176,7 +196,7 @@ def employer_export_applicant_list_view(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     font_style = xlwt.XFStyle()
-    rows = JobApplicant.objects.values_list('user__name', 
+    rows = Applicant.objects.values_list('user__name', 
                                             'user__mobile', 
                                             'user__email', 
                                             'notice_period', 
@@ -194,6 +214,6 @@ def employer_export_applicant_list_view(request):
 
 @allow_access_to([User.EMPLOYER])
 def employer_toggle_recommended_jobs_view(request, slug):
-    Job.objects.toggle_recommended_jobs(slug)
+    Job.objects.toggle_recommended_jobs(slug, user=request.user)
     messages.success(request, "action completed successfully")
     return redirect(request.META.get('HTTP_REFERER'))

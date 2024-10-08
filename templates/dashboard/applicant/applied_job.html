@@ -2,10 +2,33 @@
 {% block dashboard_content %}
 <div class="card mx-auto">
     <div class="card-header card-header-primary">
-        <h4 class="card-title" style="font-size: 20px;">My jobs</h4>
+        <h4 class="card-title" style="font-size: 20px;">Applied jobs</h4>
       </div>
     <div class="card-body">
-    All Applied Jobs goes here
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Company Name</th>
+            <th scope="col">Job Title</th>
+            <th scope="col">Job Role</th>
+            <th scope="col">Applied On</th>
+            <th scope="col">Application Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for application  in applications %}
+          <tr>
+            <th scope="row">1</th>
+            <td>{{application.get_company_name}}</td>
+            <td>{{application.get_job_title}}</td>
+            <td>{{application.get_role}}</td>
+            <td>{{application.applied_on}}</td>
+            <td>{{application.status}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
   </div>
 </div>
 {% endblock dashboard_content %}

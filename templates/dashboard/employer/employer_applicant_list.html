@@ -34,7 +34,7 @@
           <div class="d-flex justify-content-between">
               <div>
                   <form action="">
-                      <input type='hidden' name='sorting_value' value='user__name'>
+                      <input type='hidden' name='sorting_value' value='user__first_name'>
                       <button type="submit" class="fabutton">
                           <i class="fa-sharp fa-solid fa-up-long"></i>
                       </button>
@@ -46,7 +46,7 @@
               </div>
               <div>
                   <form action=".">
-                      <input type='hidden' name='sorting_value' value='-user__name'>
+                      <input type='hidden' name='sorting_value' value='-user__first_name'>
                       <button type="submit" class="fabutton">
                           <i class="fa-sharp fa-solid fa-down-long"></i>
                       </button>
@@ -138,11 +138,11 @@
         {% for applicant in applicant_list %}
         <tr>
         <th scope="row">{{ page_obj.start_index|add:forloop.counter0 }}</th>
-        <td>{{applicant.user.name}}</td>
+        <td>{{applicant.get_full_name}}</td>
         <td>{{applicant.user.mobile}}</td>
         <td>{{applicant.user.email}}</td>
-        <td>{{applicant.notice_period}}</td>
-        <td><a href="{{applicant.linkedin_link}}" target="_blank">{{applicant.linkedin_link}}</a></td>
+        <td>{{applicant.get_notice_period}}</td>
+        <td>{% if applicant.linkedin_profile %}<a href="{{applicant.linkedin_profile}}" target="_blank">{{applicant.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
         <td><a href="{{applicant.resume.url}}">resume</a></td>
     </tr>
       {% endfor %}

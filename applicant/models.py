@@ -3,6 +3,9 @@ from job.models import Skill
 from users.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
+from job.models import Job
+from employer.models import Employer
+from applicant.managers import ApplicantManager, ApplicationManager
 import os
 
 def validate_file_size(file):
@@ -136,11 +139,24 @@ class Applicant(models.Model):
         help_text="Expected salary (e.g., $60,000 per year).",
         verbose_name="Desired Salary"
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    notice_period = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        help_text="Duration of notice before leaving (e.g., '2 weeks').",
+        verbose_name="Notice Period"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     def __str__(self):
-        return f'{self.user.username} - Applicant'
+        return f'{self.user} - Applicant'
+    
+    objects = ApplicantManager()
 
     class Meta:
         verbose_name = 'Applicant Profile'
@@ -193,7 +209,15 @@ class Applicant(models.Model):
     @property
     def get_postal_code(self):
         return self.user.postal_code
-
+    
+    @property
+    def get_linkedin_profile(self):
+        return self.linkedin_profile if self.linkedin_profile else "Not available"
+   
+    @property
+    def get_notice_period(self):
+        return self.notice_period if self.notice_period else "Not available"
+    
     def get_skills(self):
         return ', '.join(skill.name for skill in self.skills.all())
 
@@ -204,3 +228,129 @@ class Applicant(models.Model):
             ext = os.path.splitext(self.resume.name)[1]
             if ext.lower() not in valid_extensions:
                 raise ValidationError("Only PDF and Word documents are allowed for the resume.")
+
+class Application(models.Model):
+    APPLICATION_STATUS_PENDING = 'Pending'
+    APPLICATION_STATUS_ACCEPTED = 'Accepted'
+    APPLICATION_STATUS_REJECTED = 'Rejected'
+    APPLICATION_STATUS_INTERVIEW = 'Interview'
+    APPLICATION_STATUS_ON_HOLD = 'On Hold'
+
+    APPLICATION_STATUS_CHOICES = (
+        (APPLICATION_STATUS_PENDING, 'Pending'),
+        (APPLICATION_STATUS_ACCEPTED, 'Accepted'),
+        (APPLICATION_STATUS_REJECTED, 'Rejected'),
+        (APPLICATION_STATUS_INTERVIEW, 'Interview'),
+        (APPLICATION_STATUS_ON_HOLD, 'On Hold'),
+    )
+    applicant = models.ForeignKey(
+        Applicant, 
+        on_delete=models.CASCADE, 
+        related_name='applications',
+        verbose_name='Applicant',
+    )
+    job = models.ForeignKey(
+        Job, 
+        on_delete=models.CASCADE, 
+        related_name='applications',
+        verbose_name='Job',
+    )
+    applied_on = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name='Applied On',
+    )
+    status = models.CharField(
+        max_length=20, 
+        choices=APPLICATION_STATUS_CHOICES, 
+        default=APPLICATION_STATUS_PENDING,
+        verbose_name='Status',
+    )
+    cover_letter = models.TextField(
+        blank=True, 
+        null=True,
+        verbose_name='Cover Letter',
+        help_text='An optional letter to express your interest in the job and highlight your qualifications.'
+    )
+    notes = models.TextField(
+        blank=True, 
+        null=True,
+        verbose_name='Recruiter Notes',
+    )
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['applicant', 'job'], name='unique_job_application'),
+        ]
+        ordering = ['-applied_on']
+        verbose_name = 'Application'
+        verbose_name_plural = 'Applications'
+
+    objects = ApplicationManager()
+
+    def __str__(self):
+        return f'{self.applicant.user.username} applied for {self.job.title}'
+
+    @property
+    def is_pending(self):
+        return self.status == self.APPLICATION_STATUS_PENDING
+
+    @property
+    def get_status(self):
+        return self.status
+    
+    @property
+    def get_job(self):
+        return self.job
+    
+    @property
+    def get_job_title(self):
+        return self.get_job.job_title
+    
+    @property
+    def get_role(self):
+        return self.get_job.role
+    
+    @property
+    def get_company_name(self):
+        return self.get_job.get_company_name
+    
+    @property
+    def get_applicant(self):
+        return self.applicant
+    
+    @property
+    def get_user(self):
+        return self.get_applicant.user
+    
+    @property
+    def get_first_name(self):
+        return self.get_user.first_name
+    
+    @property
+    def get_last_name(self):
+        return self.get_user.last_name
+    
+    @property
+    def get_full_name(self):
+        return f'{self.get_first_name} {self.get_last_name}'
+    
+    @property
+    def get_mobile(self):
+        return self.get_user.mobile
+    
+    @property
+    def get_email(self):
+        return self.get_user.email
+    
+    @property
+    def get_notice_period(self):
+        return self.get_applicant.notice_period
+    
+    @property
+    def get_linkedin_profile(self):
+        return self.get_applicant.linkedin_profile
+    
+    @property
+    def get_resume(self):
+        return self.get_applicant.resume
+    

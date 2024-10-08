@@ -15,6 +15,7 @@ urlpatterns=[
     path("employer-unpublish-job/<slug>/", views.employer_job_unpublish_view, name='employer_unpublish_job'),
 
     path("employer-applicant-list/", views.employer_applicant_list_view, name='employer_applicant_list'),
+    path("employer-application-list/", views.employer_application_list_view, name='employer_application_list'),
     path("employer-export-applicant-list/", views.employer_export_applicant_list_view, name='employer_export_applicant_list'),
     path("employer-toggle-recommended-jobs/<slug>/", views.employer_toggle_recommended_jobs_view, name='employer_toggle_recommended_jobs'),
 ]

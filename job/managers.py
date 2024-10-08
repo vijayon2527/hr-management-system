@@ -35,7 +35,7 @@ class SkillManager(models.Manager):
     
 
 class JobQuerySet(models.QuerySet):
-
+    
     def search(self, query, queryset):
         if isinstance(query, list):
             query = (Q(reduce(operator.or_, (Q(place=option) for option in query)))) | \
@@ -50,31 +50,25 @@ class JobQuerySet(models.QuerySet):
                                     Q(place__icontains=query)
                                     )
         return queryset
+
+    def all_job_lists(self, query, sorting_value, user=None):
+        queryset = self.filter(user=user).order_by("-id") if user else self.all().order_by("-id")
+        if sorting_value:
+            queryset = queryset.order_by(sorting_value)
+        return self.search(query, queryset) if query else queryset
     
-    def all_job_lists(self, query, sorting_value):
-        queryset = self.all().order_by("-id")
-        if sorting_value is not None:
-            queryset=queryset.order_by(sorting_value)
-        if query is None:
-            return queryset
-        else:
-            return self.search(query, queryset)
-        
-    def published_job_lists(self, query=None):
-        queryset = self.filter(publish=True).order_by("-id")
-        if query is None:
-            return queryset
-        else:
-            return self.search(query, queryset)
+    def published_job_lists(self, query=None, user=None):
+        queryset = self.filter(publish=True, user=user).order_by("-id") if user else self.filter(publish=True).order_by("-id")
+        return self.search(query, queryset) if query else queryset
 
-    def unpublished_job_lists(self):
-        return self.filter(publish=False)
+    def unpublished_job_lists(self, user=None):
+        return self.filter(publish=False, user=user).order_by("-id") if user else self.filter(publish=False).order_by("-id")
 
-    def job_detail(self, slug):
-        return self.get(slug=slug)
+    def job_detail(self, slug, user=None):
+        return self.get(slug=slug, user=user) if user else self.get(slug=slug)
 
-    
-    def get_filtered_data(self, salary, freshness, experience, country):
+    def get_filtered_data(self, salary, freshness, experience, country, user=None):
+        queryset = self.filter(user=user) if user else self.published_job_lists()
         today =  date.today()
         filter_day = None
         if freshness == 'Last one day':
@@ -115,44 +109,47 @@ class JobQuerySet(models.QuerySet):
             jobs = self.published_job_lists()[:8]
         return jobs
     
-    def toggle_recommended_jobs(self, slug):
-        job = self.get(slug=slug)
+    def toggle_recommended_jobs(self, slug, user=None):
+        job = self.get(slug=slug, user=user)
         if job.recommended_job == True:
             job.recommended_job = False
         else:
             job.recommended_job = True
         job.save()
         return
+    
 
 class JobManager(models.Manager):
+    
     def get_queryset(self):
         return JobQuerySet(self.model, using=self._db)
+
+    def all_job_lists(self, query=None, sorting_value=None, user=None):
+        return self.get_queryset().all_job_lists(query, sorting_value, user)
+
+    def published_job_lists(self, query=None, user=None):
+        return self.get_queryset().published_job_lists(query, user)
+
+    def unpublished_job_lists(self, user=None):
+        return self.get_queryset().unpublished_job_lists(user)
+
+    def job_detail(self, slug, user=None):
+        return self.get_queryset().job_detail(slug, user)
+
+    def get_filtered_data(self, salary=None, freshness=None, experience=None, country=[], user=None):
+        return self.get_queryset().get_filtered_data(salary, freshness, experience, country, user)
     
-    def all_job_lists(self, query, sorting_value):
-        return self.get_queryset().all_job_lists(query, sorting_value)
-    
-    def published_job_lists(self, query=None):
-        return self.get_queryset().published_job_lists(query)
-        
-    def unpublished_job_lists(self):
-        return self.get_queryset().unpublished_job_lists()
+    def recommended_jobs(self, user=None):
+        return self.get_queryset().recommended_jobs(user)
 
-    def job_detail(self, slug):
-        return self.get_queryset().job_detail(slug)
+    def toggle_recommended_jobs(self, slug, user=None):
+        return self.get_queryset().toggle_recommended_jobs(slug=slug, user=user)
 
-    def get_filtered_data(self, salary=None, freshness=None, experience=None, country=[]):
-        return self.get_queryset().get_filtered_data(salary, freshness, experience, country)
-
-    def recommended_jobs(self):
-        return self.get_queryset().recommended_jobs()
-
-    def toggle_recommended_jobs(self, slug):
-        return self.get_queryset().toggle_recommended_jobs(slug=slug)
 
 class JobApplicantQuerySet(models.QuerySet):
 
     def search(self, query, queryset):
-        queryset = queryset.filter(Q(user__name__icontains=query)|
+        queryset = queryset.filter(Q(user__first_name__icontains=query)|
                                     Q(user__mobile__icontains=query) |
                                     Q(user__email__icontains=query) |
                                     Q(notice_period__icontains=query)
@@ -167,6 +164,7 @@ class JobApplicantQuerySet(models.QuerySet):
             return queryset
         else:
             return self.search(query, queryset)
+    
     
 class JobApplicantManager(models.Manager):
     def get_queryset(self):

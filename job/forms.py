@@ -1,6 +1,6 @@
 from tinymce.widgets import TinyMCE
 from django import forms
-from job.models import Job, JobApplicant, User
+from job.models import Job, User
 from job.models import Skill
 
 class AddSkill(forms.ModelForm):
@@ -46,27 +46,3 @@ class JobApplicantUserForm(forms.ModelForm):
             'name',
             'mobile',
         )
-
-class JobApplicantForm(forms.ModelForm):
-    notice_period = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    linkedin_link = forms.CharField(widget=forms.URLInput(attrs={'class': 'form-control'}))
-    qualitative_skills = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    subject = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows':3}))
-    resume = forms.FileField(widget=forms.widgets.ClearableFileInput(attrs={'class': 'form-control', 'accept':'application/pdf'}))
-
-    class Meta:
-        model=JobApplicant
-        fields = (
-            'notice_period',
-            'linkedin_link',
-            'qualitative_skills',
-            'subject',
-            'message',
-            'resume',
-        )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['resume'].widget.initial_text = "previously uploaded resume"
-        self.fields['resume'].widget.input_text = "update your resume(pdf format)"

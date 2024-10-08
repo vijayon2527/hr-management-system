@@ -1,0 +1,65 @@
+{% block extra_css %}
+<style>
+#id_search{
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+  #id_location{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+#id_submit{
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+  }
+.ui-autocomplete {
+    max-height: 400px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+}
+.error{
+    color:red;
+}
+@media (max-width: 767.98px) {
+  input[type=text], input[type=submit]{
+    border-top-left-radius: 25px!important;
+    border-top-right-radius: 25px!important;
+    border-bottom-right-radius: 25px!important;
+    border-bottom-left-radius: 25px!important;
+    margin-bottom: 2px;
+  }
+}
+@media (min-width: 767.98px){
+  .class_skill{
+      padding-right:0;
+  }
+  .class_location{
+      padding-right:0;
+      padding-left:0;
+  }
+  .class_submit{
+      padding-left:0;
+  }
+}
+</style>
+{% endblock %}
+<form action="" id="id_search_form">
+  <div class="row mb-3">
+    <div class="col-md-4 class_skill">
+      <input type="text" class="form-control" name="skills" id="id_search" placeholder="Type your skills, job title"autocomplete="off" required>
+    </div>
+    <div class="col-md-4 class_location">
+      <input type="text" class="form-control" name="locations" id="id_location" placeholder="Type location, locality"autocomplete="off" required>
+    </div>
+    <div class="col-md-4 class_submit">
+      <input type="submit" class="btn w-100 submit_button btn-light"id="id_submit">
+    </div>
+  </div>
+</form>

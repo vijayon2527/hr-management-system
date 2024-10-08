@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static humanize %}
+{% block extra_css %}
+
+{% endblock extra_css %}
+{% block content %}
+    {{ user_form|crispy }}
+    {{ application_form|crispy }}
+    {{ application_profile_form|crispy }}
+{% endblock content %}
+{% block extra_js %}
+
+{% endblock extra_js %}

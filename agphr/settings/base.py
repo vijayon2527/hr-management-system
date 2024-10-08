@@ -151,3 +151,4 @@ AUTHENTICATION_BACKENDS = [
     'users.backend.EmailOrMobileBackend'
 ]
 LOGIN_REDIRECT_URL = "redirect_url"
+LOGIN_URL = 'users:login'

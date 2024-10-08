@@ -1,0 +1,139 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load humanize %}
+{% block dashboard_css %}
+<style>
+.job_descroption *, strong, .col-sm-3{
+    color: var(--cretech-text, #8B8178);
+    font-family: var(--cretech-font, "DM Sans", sans-serif);
+    text-align: justify;
+    font-size: 14px!important;
+    font-weight: 100;
+    line-height: 1.4;
+}
+.job_descroption > *, .specification {
+  color: var(--cretech-text, #8B8178);
+  font-family: var(--cretech-font, "DM Sans", sans-serif);
+  padding-top: 0;
+  text-align: justify;
+  font-size: 14px!important;
+  font-weight: 100;
+  line-height: 1.4;
+
+}
+.job_detail_title{
+    color: var(--cretech-black, #12062c);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock dashboard_css %}
+{% block dashboard_content %}
+<div class="card col mx-auto">
+  <div class="card-header card-header-primary">
+      <h4 class="card-title" style="font-size: 20px;">Job Details</h4>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title job_detail_title">{{job.job_title}}<a href="{% url 'super_admin:super_admin_job_update' slug=job.slug %}"><i class="fa-solid fa-pen mx-2 text-dark" data-toggle="tooltip" title="Click to edit this job"></i></a></h4>
+    <div class="job_descroption"><strong>{{job.job_description|safe}}{{job.media}}</strong></div>
+    <div class="specification">
+      <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-9">
+        : <strong>{{job.role}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Place
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.place}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Country
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.country}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Employement type
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.employement_type}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Salary
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.salary}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Required skills
+        </div>
+        <div class="col-sm-9">
+          : {% for skill in job.skill_set.all %}<div class="badge bg-primary rounded-pill me-2">{{skill.name}}</div>{% endfor %}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Experience required
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.experience}}</strong>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-sm-3">
+          Industry
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.industry}}</strong> 
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Functional area
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.functional_area}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          Published at
+        </div>
+        <div class="col-sm-9">
+          : <strong>{{job.published_at|naturaltime}}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock dashboard_content %}
+{% block dashboard_inline_javascript %}
+<script>
+$('p')
+    .filter(function() {
+        return $.trim($(this).text()) === '' && $(this).children().length == 0
+    })
+    .remove()
+</script>
+{% endblock dashboard_inline_javascript %}

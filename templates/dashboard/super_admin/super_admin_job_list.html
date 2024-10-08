@@ -1,4 +1,4 @@
-{% extends "dashboard/dashboard_base.html" %}
+{% extends 'dashboard/dashboard_base.html' %}
 {% load hitcount_tags humanize %}
 {% block dashboard_extra_css %}
 <style>
@@ -14,16 +14,15 @@
 </style>
 {% endblock dashboard_extra_css %}
 {% block dashboard_content %}
-<h2 class="text-center bg-secondary mt-2 p-2">Job List</h2>
-
-<h4 style="font-size: 20px;">Job Lists</h4>
-<div>
+<div class="card col mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Job Lists</h4>
+    </div>
+  <div class="card-body">
     <form action=".">
         <div class="d-flex flex-row justify-content align-items-center">
-            <div class="search_from">
-                <input type="text" name="name" class="form-control py-2"required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm w-100 mt-1"><span>Search</span></button></div>
+            <div class="search_from"><input type="text" name="name" class="form-control py-2"required></div>
+            <button type="submit" class="btn btn-primary"><span>Search</span></button></div>
         </div>
     </form>
 
@@ -237,9 +236,9 @@
             <td>
                 <div class="form-check form-switch">
                     {% if job.publish %}
-                    <a href=""><i class="fa-solid fa-toggle-on"data-toggle="tooltip" title="Unpublish"></i></a>
+                    <a href="{% url 'super_admin:super_admin_job_unpublish' job.slug %}"onclick="return confirm('Are you sure, you want to unpublish?')"><i class="fa-solid fa-toggle-on"data-toggle="tooltip" title="Unpublish"></i></a>
                     {% else %}
-                    <a href=""><i class="fa-solid fa-toggle-off text-secondary"data-toggle="tooltip" title="Publish"></i></a>
+                    <a href="{% url 'super_admin:super_admin_job_publish' job.slug %}"onclick="return confirm('Are you sure, you want to publish?')"><i class="fa-solid fa-toggle-off text-secondary"data-toggle="tooltip" title="Publish"></i></a>
                     {% endif %}
                 </div>
             </td>
@@ -248,17 +247,17 @@
             <td>
                 <table >
                     <tr>
-                        <td><a href=""><i class="fa-brands fa-readme mx-2"data-toggle="tooltip" title="Click to see job detail"></i></a></td>
-                        <td><a href=""><i class="fa-solid fa-pen mx-2 text-info"data-toggle="tooltip" title="Click to update job"></i></a></td>
-                        <td><a href=""><i class="fa-solid fa-trash mx-2 text-danger"data-toggle="tooltip" title="Click to delete"></i></a></td>
+                        <td><a href="{% url 'super_admin:super_admin_job_detail' job.slug %}"><i class="fa-brands fa-readme mx-2"data-toggle="tooltip" title="Click to see job detail"></i></a></td>
+                        <td><a href="{% url 'super_admin:super_admin_job_update' job.slug %}"><i class="fa-solid fa-pen mx-2 text-info"data-toggle="tooltip" title="Click to update job"></i></a></td>
+                        <td><a href="{% url 'super_admin:super_admin_job_delete' job.slug %}"onclick="return confirm('Are you sure you want to delete?')"><i class="fa-solid fa-trash mx-2 text-danger"data-toggle="tooltip" title="Click to delete"></i></a></td>
                     </tr>
                 </table>
             </td>
             <td>
                 {% if job.recommended_job == 0 %}
-                <a href=""class="btn btn-outline-secondary btn-sm add"data-toggle="tooltip" title="Click to add as recommended job">add</a>
+                <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-outline-secondary btn-sm add"data-toggle="tooltip" title="Click to add as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">add</a>
                 {% else %}
-                <a href=""class="btn btn-primary btn-sm add"data-toggle="tooltip" title="Click to remove as recommended job">remove</a>
+                <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-primary btn-sm add"data-toggle="tooltip" title="Click to remove as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">remove</a>
                 {% endif %}
             </td>
         </tr>
@@ -266,4 +265,5 @@
         </tbody>
     </table>
   </div>
+</div>
 {% endblock dashboard_content %}

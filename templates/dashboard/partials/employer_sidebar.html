@@ -47,4 +47,15 @@
         Applicant Lists
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'employer_application_list' %}" 
+        aria-current="page" 
+        href="{% url 'employer:employer_application_list' %}"
+        >
+        Application Lists
+        </a>
+    </li>
 </ul>

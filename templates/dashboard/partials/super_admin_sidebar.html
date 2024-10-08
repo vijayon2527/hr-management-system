@@ -15,9 +15,11 @@
     <li class="nav-item">
         <a class="nav-link 
         d-flex 
-        align-items-center gap-2 " 
+        align-items-center 
+        gap-2 
+        {% is_active 'super_admin_job_list' 'super_admin_job_update' %}" 
         aria-current="page"
-        href="{% url 'super_admin:super_admin_analytics' %}"
+        href="{% url 'super_admin:super_admin_job_list' %}"
         >
         Job Lists
         </a>
@@ -72,7 +74,7 @@
         d-flex 
         align-items-center 
         gap-2 
-        {% is_active 'super_admin_skill_list' %}" 
+        {% is_active 'super_admin_skill_list' 'super_admin_skill_detail' 'super_admin_update_skill' %}" 
         aria-current="page" 
         href="{% url 'super_admin:super_admin_skill_list' %}"
         >
