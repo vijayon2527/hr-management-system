@@ -1,11 +1,20 @@
+{% load humanize %}
 {% for job in jobs %}
 <div class="card mb-3">
     <div class="card-header">
-        <a href="?job_title={{ job.slug }}">{{ job.job_title }}</a>
+        <a href="?job_title={{ job.slug }}" class="h4">{{ job.role }}</a>
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{ job.place }}</h5>
-        <p class="card-text">{{ job.job_description|safe|truncatechars:200 }}</p>
+        <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
+        <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.place }}</p>
+        <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.salary }}</p>
+        <p class="card-text">
+            <i class="fa-solid fa-book"></i>
+            {% for skill in job.get_all_skills %}
+            <small>{{ skill }}, </small>
+            {% endfor %}
+        </p>
+        <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
         <a href="?job_title={{ job.slug }}" class="btn btn-light btn-sm w-100">Details</a>
     </div>
 </div>
