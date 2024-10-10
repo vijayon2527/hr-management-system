@@ -81,7 +81,7 @@ class JobList(ListView):
                 job = Job.objects.get(slug=job_title)
                 context['job'] = job
             except Job.DoesNotExist:
-                messages.error(self.request, "The requested job was not found.")
+                messages.warning(self.request, "The requested job was not found.")
                 context['job'] = None
         else:
             job_list = context.get('jobs')

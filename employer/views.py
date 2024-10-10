@@ -13,15 +13,46 @@ from agphr.utils.decorators import allow_access_to
 from job.models import Job
 from job.forms import CreateJobForm
 from applicant.models import Applicant, Application
+from employer.models import Employer
 from users.models import User
 
 @allow_access_to([User.EMPLOYER])
 def employer_analytics_view(request,):
   return render(request, 'dashboard/employer/employer_analytics.html')
 
+from .forms import EmployerProfileForm, EmployerUserProfileForm
+@allow_access_to([User.EMPLOYER])
 def employer_profile_view(request):
-    jobs = Job.objects.all()
-    return render(request, 'dashboard/employer/employer_profile.html', {'jobs': jobs})
+    user = request.user
+    applicant, created = Employer.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        employer_user_form = EmployerUserProfileForm(request.POST, request.FILES, instance=user)
+        employer_profile_form = EmployerProfileForm(request.POST, request.FILES, instance=applicant)
+
+        if employer_user_form.is_valid() and employer_profile_form.is_valid():
+            employer_user_form.save()
+            
+            employer_profile_form.save()
+
+            messages.success(request, "Profile updated successfully")
+            return redirect("employer:employer_profile")
+        else:
+            context = {
+                'employer_user_form': employer_user_form,
+                'employer_profile_form': employer_profile_form
+            }
+            return render(request, 'dashboard/employer/employer_profile.html', context)
+
+    else:
+        employer_user_form = EmployerUserProfileForm(instance=user)
+        employer_profile_form = EmployerProfileForm(instance=applicant)
+
+        context = {
+            'employer_user_form': employer_user_form,
+            'employer_profile_form': employer_profile_form
+        }
+        return render(request, 'dashboard/employer/employer_profile.html', context)
 
 @method_decorator(allow_access_to([User.EMPLOYER]), name="dispatch")
 class EmployerJobListView(ListView):
