@@ -57,10 +57,14 @@ class JobQuerySet(models.QuerySet):
             queryset = queryset.order_by(sorting_value)
         return self.search(query, queryset) if query else queryset
     
-    def published_job_lists(self, query=None, user=None):
-        queryset = self.filter(publish=True, user=user).order_by("-id") if user else self.filter(publish=True).order_by("-id")
-        return self.search(query, queryset) if query else queryset
+    # def published_job_lists(self, query=None, user=None):
+    #     queryset = self.filter(publish=True, user=user).order_by("-id") if user else self.filter(publish=True).order_by("-id")
+    #     return self.search(query, queryset) if query else queryset
 
+    def published_job_lists(self, query=None, user=None):
+        queryset = self.filter(publish=True).order_by("-id")
+        return self.search(query, queryset) if query else queryset
+        
     def unpublished_job_lists(self, user=None):
         return self.filter(publish=False, user=user).order_by("-id") if user else self.filter(publish=False).order_by("-id")
 

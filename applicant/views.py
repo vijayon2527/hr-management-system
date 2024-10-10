@@ -28,28 +28,34 @@ def applied_job_view(request,):
 @allow_access_to([User.APPLICANT_USER])   
 def applicant_profile_view(request):
     user = request.user
-    applicant = Applicant.objects.filter(user=user).first()
-    if request.method=="POST":
+    applicant, created = Applicant.objects.get_or_create(user=user)
+
+    if request.method == "POST":
         applicant_user_form = ApplicantUserProfileForm(request.POST, request.FILES, instance=user)
         applicant_profile_form = ApplicantProfileForm(request.POST, request.FILES, instance=applicant)
+
         if applicant_user_form.is_valid() and applicant_profile_form.is_valid():
             applicant_user_form.save()
-            applicant_profile_form = applicant_profile_form.save(commit=False)
-            applicant_profile_form.user = request.user
+            
             applicant_profile_form.save()
+
             messages.success(request, "Profile updated successfully")
             return redirect("applicant:applicant_profile")
         else:
-             context = {
-                 'applicant_user_form': applicant_user_form,
-                 'applicant_profile_form': applicant_profile_form 
-                 }
-             return render(request, 'dashboard/applicant/applicant_profile.html', context)
+            context = {
+                'applicant_user_form': applicant_user_form,
+                'applicant_profile_form': applicant_profile_form
+            }
+            return render(request, 'dashboard/applicant/applicant_profile.html', context)
+
     else:
+        applicant_user_form = ApplicantUserProfileForm(instance=user)
+        applicant_profile_form = ApplicantProfileForm(instance=applicant)
+
         context = {
-                 'applicant_user_form': ApplicantUserProfileForm(instance=user),
-                 'applicant_profile_form': ApplicantProfileForm(instance=applicant) 
-                 }
+            'applicant_user_form': applicant_user_form,
+            'applicant_profile_form': applicant_profile_form
+        }
         return render(request, 'dashboard/applicant/applicant_profile.html', context)
 
 @login_required 

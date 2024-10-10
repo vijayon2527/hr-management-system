@@ -14,11 +14,11 @@
             <div id="job-list">
                 {% include 'job/listing/partials/job_list_card.html' %}
             </div>
-            <div id="load-more-container"class="text-center mb-3">
+            <div id="load-more-container" class="text-center mb-3">
                 {% if page_obj.has_next %}
                     <button id="load-more-btn" class="btn btn-light btn-sm w-100" data-page="2">Load More</button>
                 {% endif %}
-              </div>
+            </div>
         </div>
         <div class="col-md-8">
             <div class="row">
@@ -28,13 +28,11 @@
                         <div class="card-body">
                           <h5 class="card-title">{{ job.place }}</h5>
                           <p class="card-text">{{ job.job_description|safe }}</p>
-                          <p class="card-text">{{ job.job_description|safe }}</p>
-                          <!-- <a href="#" class="btn btn-light w-100">Apply</a> -->
                           <form action="{% url 'applicant:apply_job' slug=job.slug %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-light w-100">Apply</button>
-                        </form>
-                          <spand class=" float-end">{{job.uploaded_at|timesince}}</span>
+                          </form>
+                          <span class="float-end">{{job.uploaded_at|timesince}}</span>
                         </div>
                     </div>
                 </div>
@@ -50,39 +48,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" 
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{% static 'js/job/listing/partials/job_search.js' %}"></script><script>
-    // Loading      
-  document.addEventListener('DOMContentLoaded', function () {
-    const loadMoreBtn = document.getElementById('load-more-btn');
-    loadMoreBtn.addEventListener('click', function () {
-        const page = this.getAttribute('data-page');
-        loadMoreJobs(page);
-    });
+<script src="{% static 'js/job/listing/partials/job_search.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        loadMoreBtn.addEventListener('click', function () {
+            const page = this.getAttribute('data-page');
+            loadMoreJobs(page);
+        });
 
-    function loadMoreJobs(page) {
-        const url = `?page=${page}`;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'  // Make sure to send AJAX request
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Append new jobs to the list
-            const jobList = document.getElementById('job-list');
-            jobList.innerHTML += data.jobs_html;
-            
-            // Update "Load More" button
-            if (data.has_next) {
-                const newPage = parseInt(page) + 1;
-                loadMoreBtn.setAttribute('data-page', newPage);
-            } else {
-                loadMoreBtn.remove();
-            }
-        })
-        .catch(error => console.error('Error loading more jobs:', error));
-    }
-});
+        function loadMoreJobs(page) {
+            const url = `?page=${page}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  // AJAX request
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append new jobs to the list
+                const jobList = document.getElementById('job-list');
+                jobList.innerHTML += data.jobs_html;
+                
+                // Update "Load More" button
+                if (data.has_next) {
+                    const newPage = parseInt(page) + 1;
+                    loadMoreBtn.setAttribute('data-page', newPage);
+                } else {
+                    loadMoreBtn.remove();
+                }
+            })
+            .catch(error => console.error('Error loading more jobs:', error));
+        }
+    });
 </script>
 {% endblock extra_js %}

@@ -131,6 +131,7 @@
           </div>
       </th>
         <th scope="col" class="text-center">LinkedIn link</th>
+        <th scope="col" class="text-center">Applied on</th>
         <th scope="col" class="text-center">Resume</th>
     </tr>
     </thead>
@@ -143,6 +144,7 @@
         <td>{{application.get_job_title}}</td>
         <td>{{application.get_notice_period}}</td>
         <td>{% if application.get_linkrdin_profile %}<a href="{{application.get_linkrdin_profile}}" target="_blank">{{application.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
+        <td>{{application.applied_on}}</td>
         <td><a href="{{application.get_resume.url}}">resume</a></td>
     </tr>
       {% endfor %}

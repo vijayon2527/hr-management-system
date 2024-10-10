@@ -1,14 +1,14 @@
 {% for job in jobs %}
 <div class="card mb-3">
     <div class="card-header">
-      <a href="?job_title={{job.slug}}">
-        {{ job.job_title }}
-      </a>
+        <a href="?job_title={{ job.slug }}">{{ job.job_title }}</a>
     </div>
     <div class="card-body">
-      <h5 class="card-title">{{ job.place }}</h5>
-      <p class="card-text">{{ job.job_description|safe|truncatechars:200 }}</p>
-      <a href="?job_title={{job.slug}}" class="btn btn-light btn-sm w-100">Details</a>
+        <h5 class="card-title">{{ job.place }}</h5>
+        <p class="card-text">{{ job.job_description|safe|truncatechars:200 }}</p>
+        <a href="?job_title={{ job.slug }}" class="btn btn-light btn-sm w-100">Details</a>
     </div>
 </div>
+{% empty %}
+<p>No jobs found.</p>
 {% endfor %}

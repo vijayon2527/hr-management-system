@@ -8,6 +8,7 @@ from job.forms import  AddSkill
 from job.models import Skill, Job
 from job.forms import CreateJobForm
 from applicant.models import Applicant
+from employer.models import Employer
 from django.utils import timezone
 from django.db import transaction
 import logging
@@ -191,3 +192,27 @@ def super_admin_delete_skill_view(request, pk):
     skill.delete()
     messages.success(request, "Skill deleted successfully")
     return redirect('super_admin:super_admin_skill_list')
+
+# @allow_access_to([User.SUPER_ADMIN])
+def super_admin_employer_list_view(request):
+    employers = Employer.objects.all()
+    context = {
+        'employers': employers,
+    }
+    return render(request, 'dashboard/super_admin/super_admin_employer_list.html', context=context)
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_employer_detail_view(request, pk):
+    employer = get_object_or_404(Employer, pk=pk)
+    context = {
+        'employer': employer,
+    }
+    return render(request, 'dashboard/super_admin/super_admin_employer_detail.html', context)
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_user_list_view(request):
+    users = User.objects.all()
+    context = {
+        'users': users,
+    }
+    return render(request, 'dashboard/super_admin/super_admin_user_list.html', context)

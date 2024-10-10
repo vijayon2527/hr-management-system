@@ -1,18 +1,21 @@
+import logging
+
 from django.contrib import messages
-from hitcount.views import HitCountDetailView
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.db import transaction
-from django.http import JsonResponse
 from django.views.generic import ListView
+
+from hitcount.views import HitCountDetailView
+
 from job.models import Job, Skill
-import logging
-User = get_user_model()
+from users.models import User
+
 
 @csrf_exempt
 def search(request):
@@ -40,7 +43,6 @@ class HomeView(ListView):
     def get_queryset(self, *args, **kwargs):
         return Job.objects.recommended_jobs()
 
-from django.template.loader import render_to_string
 class JobList(ListView):
     model = Job
     template_name = 'job/job_list.html'
@@ -64,12 +66,12 @@ class JobList(ListView):
             search_skills = location_lists + skill_lists
             object_list = Job.objects.published_job_lists(search_skills)        
             job_length = len(object_list)
-            if job_length < 1 :
+            if job_length < 1:
                 object_list = Job.objects.published_job_lists()
                 messages.warning(self.request, "No job found.")
             else:
                 messages.success(self.request, f"{job_length} Job found.")
-        return object_list[:31]
+        return object_list
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -82,7 +84,6 @@ class JobList(ListView):
                 messages.error(self.request, "The requested job was not found.")
                 context['job'] = None
         else:
-            # If no specific job is requested, default to the first job in the object_list
             job_list = context.get('jobs')
             if job_list:
                 context['job'] = job_list[0]  # Set the first job as default
@@ -93,7 +94,7 @@ class JobList(ListView):
     
     def render_to_response(self, context, **response_kwargs):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            jobs_html = render_to_string('job/listing/partials/job_list_card.html', context)
+            jobs_html = render_to_string('job/listing/partials/job_list_card.html', {'jobs': context['jobs']})
             return JsonResponse({
                 'jobs_html': jobs_html,
                 'has_next': context['page_obj'].has_next(),
