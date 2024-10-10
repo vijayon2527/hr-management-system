@@ -27,7 +27,11 @@ document.addEventListener('DOMContentLoaded', function () {
             usernameField.classList.add("is-invalid");
             usernameField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your mobile number</div>');
             isValid = false;
-        } 
+        } else if (!/^\d{10}$/.test(usernameField.value)) {
+            usernameField.classList.add("is-invalid");
+            usernameField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Mobile number must be exactly 10 digits</div>');
+            isValid = false;
+        }
 
         // Validation logic for Password
         if (!passwordField.value) {

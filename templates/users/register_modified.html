@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center">Register</h2>
+                        <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label for="id_mobile" class="form-label">Mobile Number</label>
+                                <input type="text" class="form-control {% if form.mobile.errors %} is-invalid{% endif %}" 
+                                       id="id_mobile" name="mobile" value="{{ form.mobile.value|default_if_none:'' }}" required>
+                                {% for error in form.mobile.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                                <small class="text-muted">{{ form.mobile.help_text }}</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control {% if form.first_name.errors %} is-invalid{% endif %}" 
+                                       id="id_first_name" name="first_name" value="{{ form.first_name.value|default_if_none:'' }}" required>
+                                {% for error in form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control {% if form.last_name.errors %} is-invalid{% endif %}" 
+                                       id="id_last_name" name="last_name" value="{{ form.last_name.value|default_if_none:'' }}" required>
+                                {% for error in form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control {% if form.date_of_birth.errors %} is-invalid{% endif %}" 
+                                       id="id_date_of_birth" name="date_of_birth" value="{{ form.date_of_birth.value|default_if_none:'' }}" required>
+                                {% for error in form.date_of_birth.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_address_line_1" class="form-label">Address</label>
+                                <input type="text" class="form-control {% if form.address_line_1.errors %} is-invalid{% endif %}" 
+                                       id="id_address_line_1" name="address_line_1" value="{{ form.address_line_1.value|default_if_none:'' }}">
+                                {% for error in form.address_line_1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_city" class="form-label">City</label>
+                                <input type="text" class="form-control {% if form.city.errors %} is-invalid{% endif %}" 
+                                       id="id_city" name="city" value="{{ form.city.value|default_if_none:'' }}" required>
+                                {% for error in form.city.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                    <!-- Render the state choices -->
+                                    {{ form.state }}
+                                {% for error in form.state.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+
+
+                            <div class="mb-3">
+                                <label for="id_postal_code" class="form-label">Postal Code</label>
+                                <input type="text" class="form-control {% if form.postal_code.errors %} is-invalid{% endif %}" 
+                                       id="id_postal_code" name="postal_code" value="{{ form.postal_code.value|default_if_none:'' }}" required>
+                                {% for error in form.postal_code.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_resume" class="form-label">Resume</label>
+                                <input type="file" class="form-control {% if form.resume.errors %} is-invalid{% endif %}" 
+                                       id="id_resume" name="resume" required>
+                                {% for error in form.resume.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">Password</label>
+                                <input type="password" class="form-control {% if form.password1.errors %} is-invalid{% endif %}" 
+                                       id="id_password1" name="password1" required>
+                                {% for error in form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                                <small class="text-muted">{{ form.password1.help_text }}</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control {% if form.password2.errors %} is-invalid{% endif %}" 
+                                       id="id_password2" name="password2" required>
+                                {% for error in form.password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+                            
+                            <p class="text-center mt-1">
+                                Already have an account? <a href="{% url 'users:login' %}">Log in</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'validate_register.js' %}"></script>
+{% endblock %}

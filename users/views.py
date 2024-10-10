@@ -55,7 +55,7 @@ class RegisterView(View):
             # ==================================================================================
         else:
             return render(request, self.template_name, {'form': form})
-
+# This is currently not using
 def register_view(request):
     if request.method=="POST":
         form = UserRegistrationForm(request.POST, request.FILES) 
@@ -166,9 +166,9 @@ def login_view(request):
                 messages.success(request, f"Welcome, {user.get_username() if user.get_username() else user.mobile}!")
                 return redirect('redirect_url')
             else:
-                messages.error(request, "Invalid mobile number or password")
+                messages.warning(request, "Invalid mobile number or password")
         else:
-            messages.error(request, "Invalid login details")
+            messages.warning(request, "Invalid login details")
             return render(request, 'users/login.html', {'form': form})
     else:
         form = LoginForm()

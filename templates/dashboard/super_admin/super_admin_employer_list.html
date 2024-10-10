@@ -158,7 +158,7 @@
             <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <td>{{employer.company_name|truncatechars:20}}</td>
-            <td><a href="http://infosys.com">{{employer.company_website|truncatechars:20}}</a></td>
+            <td><a href="{{employer.company_website}}">{{employer.company_website|truncatechars:20}}</a></td>
             <td>{{employer.contact_person_name|truncatechars:20}}</td>
             <td>{{employer.city|naturaltime|truncatechars:20}}</td>
             <td>{{employer.state|naturaltime|truncatechars:20}}</td>

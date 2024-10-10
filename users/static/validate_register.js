@@ -6,17 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         // Get the input fields
-        var contactField = document.getElementById("id_mobile");
+        var userTypeField = document.getElementById("id_user_type");
+        var contactField = document.getElementById("id_contact");
         var password1Field = document.getElementById("id_password1");
         var password2Field = document.getElementById("id_password2");
-        var firstNameField = document.getElementById("id_first_name");
-        var lastNameField = document.getElementById("id_last_name");
-        var dobField = document.getElementById("id_date_of_birth");
-        var address1Field = document.getElementById("id_address_line_1");
-        var cityField = document.getElementById("id_city");
-        var stateField = document.getElementById("id_state");
-        var postalCodeField = document.getElementById("id_postal_code");
-        var resumeField = document.getElementById("id_resume");
 
         // Clear previous error messages
         var errorMessages = document.querySelectorAll(".invalid-feedback");
@@ -31,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Initialize a flag to track if the form is valid
         var isValid = true;
 
+        // Validation logic
+        if (!userTypeField.value) {
+            userTypeField.classList.add("is-invalid");
+            userTypeField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please select a user type</div>');
+            isValid = false;
+        }
+
         if (!contactField.value) {
             contactField.classList.add("is-invalid");
             contactField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your mobile number</div>');
@@ -41,61 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
             isValid = false;
         }
 
-        if (!firstNameField.value) {
-            firstNameField.classList.add("is-invalid");
-            firstNameField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your first name</div>');
-            isValid = false;
-        }
-
-        if (!lastNameField.value) {
-            lastNameField.classList.add("is-invalid");
-            lastNameField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your last name</div>');
-            isValid = false;
-        }
-
-        if (!dobField.value) {
-            dobField.classList.add("is-invalid");
-            dobField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your date of birth</div>');
-            isValid = false;
-        }
-
-        if (!address1Field.value) {
-            address1Field.classList.add("is-invalid");
-            address1Field.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your address line 2</div>');
-            isValid = false;
-        }
-
-        if (!cityField.value) {
-            cityField.classList.add("is-invalid");
-            cityField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your city</div>');
-            isValid = false;
-        }
-
-        if (!stateField.value) {
-            stateField.classList.add("is-invalid");
-            stateField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your state</div>');
-            isValid = false;
-        }
-
-        if (!postalCodeField.value) {
-            postalCodeField.classList.add("is-invalid");
-            postalCodeField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please enter your postal code</div>');
-            isValid = false;
-        } else if (postalCodeField.value.length !== 6) {
-            postalCodeField.classList.add("is-invalid");
-            postalCodeField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Postal code must be exactly 6 digits</div>');
-            isValid = false;
-        }
-
-        if (!resumeField.value) {
-            resumeField.classList.add("is-invalid");
-            resumeField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please upload your resume</div>');
-            isValid = false;
-        }
-
         if (!password1Field.value) {
             password1Field.classList.add("is-invalid");
             password1Field.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Please provide a password</div>');
+            isValid = false;
+        } else if (password1Field.value.length < 8) {
+            password1Field.classList.add("is-invalid");
+            password1Field.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Password must be at least 8 characters long</div>');
             isValid = false;
         }
 
