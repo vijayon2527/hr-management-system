@@ -7,7 +7,7 @@
     <div class="card-body">
         <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
         <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.place }}</p>
-        <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.salary }}</p>
+        <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
         <p class="card-text">
             <i class="fa-solid fa-book"></i>
             {% for skill in job.get_all_skills %}

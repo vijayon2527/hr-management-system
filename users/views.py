@@ -50,7 +50,7 @@ class RegisterView(View):
             user.set_password(password)
             user.save()
             login(request, user, backend='users.backend.EmailOrMobileBackend')
-            messages.success(request, "You account is created and loggrd in successfully.")
+            messages.success(request, "Your account is created and logged in successfully.")
             return redirect('redirect_url')
             # ==================================================================================
         else:

@@ -87,3 +87,7 @@ class Job(models.Model):
     def get_all_skills(self):
         return self.skills.all()
     
+    @property
+    def get_salary(self):
+        return f"{self.salary} INR per Month"
+    

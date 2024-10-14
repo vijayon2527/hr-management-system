@@ -132,6 +132,7 @@
       </th>
         <th scope="col" class="text-center">LinkedIn link</th>
         <th scope="col" class="text-center">Resume</th>
+        <th scope="col" class="text-center">Application Status</th>
     </tr>
     </thead>
     <tbody>
@@ -143,7 +144,8 @@
         <td>{{applicant.user.email}}</td>
         <td>{{applicant.get_notice_period}}</td>
         <td>{% if applicant.linkedin_profile %}<a href="{{applicant.linkedin_profile}}" target="_blank">{{applicant.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
-        <td><a href="{{applicant.resume.url}}">resume</a></td>
+        <td><a href="{% if applicant.resume %}{{applicant.resume.url}}{% else %}#{% endif %}">resume</a></td>
+        <td>Working on this.....</td>
     </tr>
       {% endfor %}
     </tbody>

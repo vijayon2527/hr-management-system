@@ -13,9 +13,9 @@ class RootView(RedirectView):
             if user_type == User.SUPER_ADMIN:
                 next_url = 'super_admin:super_admin_analytics'
             elif user_type == User.EMPLOYER:
-                next_url = 'employer:employer_analytics'
+                next_url = 'employer:employer_dashboard'
             elif user_type == User.APPLICANT_USER:
-                next_url = 'applicant:applicant_profile'
+                next_url = 'applicant:applicant_dashboard'
         else:
             next_url = 'job:job_list'
 

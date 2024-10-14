@@ -15,12 +15,14 @@ from job.forms import CreateJobForm
 from applicant.models import Applicant, Application
 from employer.models import Employer
 from users.models import User
+from .forms import EmployerProfileForm, EmployerUserProfileForm
+from common.forms import UserPasswordChangeForm
+from common.utils import change_user_password
 
 @allow_access_to([User.EMPLOYER])
-def employer_analytics_view(request,):
-  return render(request, 'dashboard/employer/employer_analytics.html')
+def employer_dashboard_view(request):
+  return render(request, 'dashboard/employer/employer_dashboard.html')
 
-from .forms import EmployerProfileForm, EmployerUserProfileForm
 @allow_access_to([User.EMPLOYER])
 def employer_profile_view(request):
     user = request.user
@@ -174,6 +176,12 @@ def employer_job_unpublish_view(request, slug):
     messages.success(request, "Unpublished successfully")
     return redirect(request.META.get('HTTP_REFERER'))
 
+@allow_access_to([User.EMPLOYER])
+def employer_toggle_recommended_jobs_view(request, slug):
+    Job.objects.toggle_recommended_jobs(slug, user=request.user)
+    messages.success(request, "action completed successfully")
+    return redirect(request.META.get('HTTP_REFERER'))
+
 @method_decorator(allow_access_to([User.EMPLOYER]), name="dispatch")
 class EmployerApplicantListView(ListView):
     model= Applicant
@@ -204,7 +212,47 @@ class EmployerApplicationListView(ListView):
             application_length = len(application_list)
             messages.success(self.request, f"{application_length if application_length >=1  else 'No'} application found.")
         return application_list
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = Application.APPLICATION_STATUS_CHOICES
+        return context
+
 employer_application_list_view = EmployerApplicationListView.as_view()
+
+@allow_access_to([User.EMPLOYER])
+def employer_shortlisted_application_view(request):
+    query = request.GET.get('name')
+    sorting_value = request.GET.get('sorting_value')
+    application_list = Application.objects.all_application_lists(query, sorting_value, employer=request.user, status=Application.APPLICATION_STATUS_ACCEPTED)
+    status_choices = Application.APPLICATION_STATUS_CHOICES
+    context = {
+        'application_list': application_list,
+        'status_choices': status_choices
+    }
+    return render(request, 'dashboard/employer/employer_shortlisted_application.html', context)
+
+@allow_access_to([User.EMPLOYER])
+def employer_change_password_view(request):
+    if request.method == 'POST':
+        form = UserPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password1']
+            if change_user_password(request, request.user, old_password, new_password):
+                return redirect('employer:employer_change_password')
+        else:
+            return render(request, 'dashboard/employer/employer_change_password.html',{'form': form})
+    else:
+        form = UserPasswordChangeForm(request.user)
+    return render(request, 'dashboard/employer/employer_change_password.html',{'form': form})
+
+@allow_access_to([User.EMPLOYER])
+def employer_delete_account_view(request):
+    user = User.objects.get(id=request.user.id)
+    user.delete()
+    messages.success(request, 'Your account has been deleted successfully')
+    return redirect('job:job_list')
 
 @allow_access_to([User.EMPLOYER])
 def employer_export_applicant_list_view(request):
@@ -244,7 +292,13 @@ def employer_export_applicant_list_view(request):
     return response
 
 @allow_access_to([User.EMPLOYER])
-def employer_toggle_recommended_jobs_view(request, slug):
-    Job.objects.toggle_recommended_jobs(slug, user=request.user)
-    messages.success(request, "action completed successfully")
-    return redirect(request.META.get('HTTP_REFERER'))
+def employer_update_application_status_view(request, pk):
+    if request.method == "POST":
+        application = get_object_or_404(Application, id=pk)
+        status=request.POST.get("status")
+        application.status=status
+        application.save()
+        messages.success(request, f'The status has been updated successfully as {status}')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    

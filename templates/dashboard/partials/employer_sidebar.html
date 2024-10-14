@@ -5,11 +5,11 @@
         d-flex 
         align-items-center 
         gap-2 
-        {% is_active 'employer_analytics' %}" 
+        {% is_active 'employer_dashboard' %}" 
         aria-current="page" 
-        href="{% url 'employer:employer_analytics' %}"
+        href="{% url 'employer:employer_dashboard' %}"
         >
-        Analytics
+        Employer Dashboard
         </a>
     </li>
     <li class="nav-item">
@@ -33,7 +33,7 @@
         aria-current="page" 
         href="{% url 'employer:employer_create_job' %}"
         >
-        Create Job
+        Post a Job
         </a>
     </li> 
     <li class="nav-item">
@@ -45,10 +45,10 @@
         aria-current="page" 
         href="{% url 'employer:employer_job_list' %}"
         >
-        My Job Lists
+        My Jobs
         </a>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link d-flex 
         align-items-center 
         gap-2 
@@ -58,7 +58,7 @@
         >
         Applicant Lists
         </a>
-    </li>
+    </li> -->
     <li class="nav-item">
         <a class="nav-link d-flex 
         align-items-center 
@@ -68,6 +68,52 @@
         href="{% url 'employer:employer_application_list' %}"
         >
         Application Lists
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'employer_shortlisted_application' %}" 
+        aria-current="page" 
+        href="{% url 'employer:employer_shortlisted_application' %}"
+        >
+        Shortlisted Applicants
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'employer_change_password' %}" 
+        aria-current="page" 
+        href="{% url 'employer:employer_change_password' %}"
+        >
+        Change Password
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'employer_delete_account' %}" 
+        aria-current="page" 
+        href="{% url 'employer:employer_delete_account' %}"
+        onclick="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone, and you will lose access to all your data.')";
+        >
+        Delete Account
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex 
+        align-items-center 
+        gap-2 " 
+        aria-current="page" 
+        href="{% url 'users:logout' %}"
+        onclick="return confirm('Are you sure you want logged out?')"
+        >
+        Logout
         </a>
     </li>
 </ul>

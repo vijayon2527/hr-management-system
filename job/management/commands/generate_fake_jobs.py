@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         fake = Faker()
-        users = User.objects.all()  # You can customize this to select specific users if needed
+        users = User.objects.filter(user_type=User.EMPLOYER)  # You can customize this to select specific users if needed
         employement_types = [Job.EMPLOYEMENT_TYPE_FULL_TIME, Job.EMPLOYEMENT_TYPE_PART_TIME, Job.EMPLOYEMENT_TYPE_FREELANCING, Job.EMPLOYEMENT_TYPE_CONTRACT]
         countries = [Job.INDIA]
         count = 1000

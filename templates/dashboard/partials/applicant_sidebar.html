@@ -5,12 +5,32 @@
         d-flex 
         align-items-center 
         gap-2 
+        {% is_active 'applicant_dashboard' %}" 
+        aria-current="page" 
+        href="{% url 'applicant:applicant_dashboard' %}"
+        >
+        Applicant Dashboard
+        </a>
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
         {% is_active 'applicant_profile' %}" 
         aria-current="page" 
         href="{% url 'applicant:applicant_profile' %}"
         >
-        My Profile
+        Profile
         </a>
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'applicant_resume' %}" 
+        aria-current="page" 
+        href="{% url 'applicant:applicant_resume' %}"
+        >
+            My Resume
+        </a> 
         <a class="nav-link 
         d-flex 
         align-items-center 
@@ -19,7 +39,38 @@
         aria-current="page" 
         href="{% url 'applicant:applied_job' %}"
         >
-            Applied Jobs
+            My Applied Jobs
         </a> 
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'applicant_change_password' %}" 
+        aria-current="page" 
+        href="{% url 'applicant:applicant_change_password' %}"
+        >
+            Change Password
+        </a> 
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'applicant_delete_account' %}" 
+        aria-current="page" 
+        href="{% url 'applicant:applicant_delete_account' %}"
+        onclick="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone, and you will lose access to all your data.')";
+        >
+            Delete Account
+        </a> 
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2" 
+        aria-current="page" 
+        href="{% url 'users:logout' %}"
+        onclick="return confirm('Are you sure you want logged out?')"
+        >
+            Logout
+        </a>
     </li>
 </ul>

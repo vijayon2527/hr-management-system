@@ -8,22 +8,17 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from applicant.models import Applicant, Application
 from applicant.forms import (ApplicantProfileForm, 
-                             ApplicantUserProfileForm
+                             ApplicantUserProfileForm,
+                             ApplicantResumeForm
 							)
+from common.forms import UserPasswordChangeForm
+from common.utils import change_user_password
 from job.models import Job
 import logging
 
 @allow_access_to([User.APPLICANT_USER])
-def applicant_analytics_view(request,):
-  return render(request, 'dashboard/applicant/applicant_analytics.html')
-
-@allow_access_to([User.APPLICANT_USER])
-def applied_job_view(request,):
-  applications = Application.objects.filter(applicant__user=request.user)
-  context = {
-      'applications': applications
-      }
-  return render(request, 'dashboard/applicant/applied_job.html', context)
+def applicant_dashboard_view(request,):
+  return render(request, 'dashboard/applicant/applicant_dashboard.html')
 
 @allow_access_to([User.APPLICANT_USER])   
 def applicant_profile_view(request):
@@ -58,6 +53,52 @@ def applicant_profile_view(request):
         }
         return render(request, 'dashboard/applicant/applicant_profile.html', context)
 
+@allow_access_to([User.APPLICANT_USER])
+def applicant_resume_view(request,):
+    user = request.user
+    applicant = get_object_or_404(Applicant, user=user)
+    if request.method=="POST":
+        form = ApplicantResumeForm(request.POST, request.FILES, instance=applicant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your resume has been updated successfully!')
+            return redirect('applicant:applicant_resume')
+        else:
+            return render(request, 'dashboard/applicant/applicant_resume.html', {'form': form})
+    else:   
+        form = ApplicantResumeForm(instance=applicant)
+    return render(request, 'dashboard/applicant/applicant_resume.html', {'form': form})
+
+@allow_access_to([User.APPLICANT_USER])
+def applied_job_view(request,):
+  applications = Application.objects.filter(applicant__user=request.user)
+  context = {
+      'applications': applications
+      }
+  return render(request, 'dashboard/applicant/applied_job.html', context)
+
+@allow_access_to([User.APPLICANT_USER])
+def applicant_change_password_view(request,):
+    if request.method == 'POST':
+        form = UserPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password1']
+            if change_user_password(request, request.user, old_password, new_password):
+                return redirect('applicant:applicant_change_password')
+        else:
+            return render(request, 'dashboard/applicant/applicant_change_password.html',{'form': form})
+    else:
+        form = UserPasswordChangeForm(request.user)
+    return render(request, 'dashboard/applicant/applicant_change_password.html',{'form': form})
+
+@allow_access_to([User.APPLICANT_USER])
+def applicant_delete_account_view(request):
+    user = User.objects.get(id=request.user.id)
+    user.delete()
+    messages.success(request, 'Your account has been deleted successfully')
+    return redirect('job:job_list')
+
 @login_required 
 def apply_job_view(request, slug):
     if request.method == "POST":
@@ -67,7 +108,7 @@ def apply_job_view(request, slug):
         try:
             applicant = Applicant.objects.get(user=user)
         except Applicant.DoesNotExist:
-            messages.warning(request, "You need to register as an applicant before applying for jobs.")
+            messages.warning(request, "You need to register as an applicant before applying for jobs, or ipdate your applicant profile")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
         if Application.objects.filter(job=job, applicant=applicant).exists():

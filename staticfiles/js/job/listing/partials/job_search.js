@@ -1,5 +1,6 @@
 $("#id_search").autocomplete({
     source: function (request, response) {
+        console.log(response);
         $.getJSON("/search/", {
             term: extractLast(request.term)
         }, response);

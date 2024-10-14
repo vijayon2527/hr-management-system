@@ -31,7 +31,8 @@ class Employer(models.Model):
     )
     company_name = models.CharField(
         max_length=200, 
-        unique=True
+        blank=True,
+        null=True,
     )
     company_website = models.URLField(
         max_length=200

@@ -133,6 +133,7 @@
         <th scope="col" class="text-center">LinkedIn link</th>
         <th scope="col" class="text-center">Applied on</th>
         <th scope="col" class="text-center">Resume</th>
+        <th scope="col" class="text-center">Application Status</th>
     </tr>
     </thead>
     <tbody>
@@ -146,6 +147,19 @@
         <td>{% if application.get_linkrdin_profile %}<a href="{{application.get_linkrdin_profile}}" target="_blank">{{application.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
         <td>{{application.applied_on}}</td>
         <td><a href="{{application.get_resume.url}}">resume</a></td>
+        <td>
+            <form method="post" action="{% url 'employer:employer_update_application_status' application.id %}">
+                {% csrf_token %}
+                <select name="status" id="statusSelect" class="form-select" aria-label="Default select example"
+                        onchange="if(confirm('Are you sure you want to change the status?')) { this.form.submit(); } else { this.value = '{{ application.status }}'; }"
+                        style="{% if application.status == 'Rejected' %}background-color:red{% elif application.status == 'Accepted' %}background-color:#007bff{% endif %}">
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if value == application.status %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            
+        </td>
     </tr>
       {% endfor %}
     </tbody>

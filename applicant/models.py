@@ -288,7 +288,7 @@ class Application(models.Model):
     objects = ApplicationManager()
 
     def __str__(self):
-        return f'{self.applicant.user.username} applied for {self.job.title}'
+        return f'{self.applicant.user.mobile} applied for {self.job.job_title}'
 
     @property
     def is_pending(self):

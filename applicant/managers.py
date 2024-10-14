@@ -38,10 +38,12 @@ class ApplicationQuerySet(models.QuerySet):
                                     )
         return queryset
     
-    def all_application_lists(self, query, sorting_value, employer=None):
+    def all_application_lists(self, query, sorting_value, employer=None, status=None):
         queryset = self.all()
         if employer:
             queryset = self.filter(job__user=employer)
+        if status:
+            queryset = queryset.filter(status=status)
         if sorting_value is not None:
             queryset=queryset.order_by(sorting_value)
         if query is None:
@@ -53,5 +55,5 @@ class ApplicationManager(models.Manager):
     def get_queryset(self):
         return ApplicationQuerySet(self.model, using=self._db)
     
-    def all_application_lists(self, query=None, sorting_value=None, employer=None):
-        return self.get_queryset().all_application_lists(query, sorting_value, employer)
+    def all_application_lists(self, query=None, sorting_value=None, employer=None, status=None):
+        return self.get_queryset().all_application_lists(query, sorting_value, employer, status)

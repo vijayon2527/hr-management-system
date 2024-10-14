@@ -6,7 +6,5 @@ register = template.Library()
 def is_active(context, *urls):
     request = context['request']
     if request.resolver_match and request.resolver_match.url_name in urls:
-        print(request.resolver_match.url_name)
-
         return 'active'
     return ''

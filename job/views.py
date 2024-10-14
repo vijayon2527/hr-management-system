@@ -22,16 +22,16 @@ def search(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == "GET":
         if 'term' in request.GET:
             term = request.GET.get("term")
-            skill_queryset = Skill.objects.filter(Q(name__icontains=term))
-            job_queryset = Job.objects.filter(Q(job_title__icontains=term))
+            skill_queryset = Skill.objects.filter(Q(name__istartswith=term))
+            job_queryset = Job.objects.filter(Q(job_title__istartswith=term))
     
             skill_query = [query.name for query in skill_queryset]
             job_query =[query.job_title for query in job_queryset]
             list_queryset = skill_query + job_query
         if 'location' in request.GET:
             location = request.GET.get("location")
-            queryset = Job.objects.filter(Q(place__icontains=location))
-            list_queryset = [query.place for query in queryset] 
+            queryset = Job.objects.filter(Q(place__istartswith=location))
+            list_queryset = [f'{query.place}, Karnataka' for query in queryset] 
 
         unique_list_queryset = list(dict.fromkeys(list_queryset))
         return JsonResponse(unique_list_queryset, safe=False)   

@@ -9,7 +9,8 @@ class ApplicantProfileForm(forms.ModelForm):
             'user',
             'skills',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'resume'
         ]
 
 class ApplicantUserProfileForm(forms.ModelForm):
@@ -32,3 +33,10 @@ class ApplicantUserProfileForm(forms.ModelForm):
                   'postal_code',
                   
         ]
+
+
+class ApplicantResumeForm(forms.ModelForm):
+    class Meta:
+        model = Applicant
+        fields = ['resume']
+
