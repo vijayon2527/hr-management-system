@@ -2,7 +2,7 @@
 {% for job in jobs %}
 <div class="card mb-3">
     <div class="card-header">
-        <a href="?job_title={{ job.slug }}" class="h4">{{ job.role }}</a>
+        <h4>{{ job.role }}</h4>
     </div>
     <div class="card-body">
         <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
@@ -15,7 +15,8 @@
             {% endfor %}
         </p>
         <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
-        <a href="?job_title={{ job.slug }}" class="btn btn-light btn-sm w-100">Details</a>
+        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100" data-slug="{{ job.slug }}" onclick="loadJobDetails('{{ job.slug }}')">Details</a>
+
     </div>
 </div>
 {% empty %}

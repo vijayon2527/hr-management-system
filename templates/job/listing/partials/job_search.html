@@ -1,65 +1,94 @@
-{% block extra_css %}
-<style>
-#id_search{
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+  {% block extra_css %}
+  <style>
+  #id_search{
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border-right: none;
+    }
+    #id_location{
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border-left: none!important;
+    }
+  #id_submit{
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
+  .ui-autocomplete {
+      max-height: 400px;
+      overflow-y: auto;
+      /* prevent horizontal scrollbar */
+      overflow-x: hidden;
+      /* add padding to account for vertical scrollbar */
+      padding-right: 20px;
   }
-  #id_location{
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+  .error{
+      color:red;
   }
-#id_submit{
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
+  @media (max-width: 767.98px) {
+    input[type=text], input[type=submit]{
+      border-top-left-radius: 25px!important;
+      border-top-right-radius: 25px!important;
+      border-bottom-right-radius: 25px!important;
+      border-bottom-left-radius: 25px!important;
+      margin-bottom: 2px;
+    }
   }
-.ui-autocomplete {
-    max-height: 400px;
-    overflow-y: auto;
-    /* prevent horizontal scrollbar */
-    overflow-x: hidden;
-    /* add padding to account for vertical scrollbar */
-    padding-right: 20px;
-}
-.error{
-    color:red;
-}
-@media (max-width: 767.98px) {
-  input[type=text], input[type=submit]{
-    border-top-left-radius: 25px!important;
-    border-top-right-radius: 25px!important;
-    border-bottom-right-radius: 25px!important;
-    border-bottom-left-radius: 25px!important;
-    margin-bottom: 2px;
+  @media (min-width: 767.98px){
+    .class_skill{
+        padding-right:0;
+    }
+    .class_location{
+        padding-right:0;
+        padding-left:0;
+    }
+    .class_submit{
+        padding-left:0;
+    }
   }
-}
-@media (min-width: 767.98px){
-  .class_skill{
-      padding-right:0;
+  #id_search, #id_location, #id_submit{
+    padding: 10px;
+    font-size: 1.1rem;
+
   }
-  .class_location{
-      padding-right:0;
-      padding-left:0;
+  .filter{
+    display: flex;
+    margin-bottom: 20px;
   }
-  .class_submit{
-      padding-left:0;
+  body{
+    background-color: rgb(236, 231, 225);
   }
-}
-</style>
-{% endblock %}
-<form action="" id="id_search_form">
-  <div class="row mb-3">
-    <div class="col-md-4 class_skill">
-      <input type="text" class="form-control" name="skills" id="id_search" placeholder="Type your skills, job title"autocomplete="off" required>
-    </div>
-    <div class="col-md-4 class_location">
-      <input type="text" class="form-control" name="locations" id="id_location" placeholder="Type location, locality"autocomplete="off" required>
-    </div>
-    <div class="col-md-4 class_submit">
-      <input type="submit" class="btn w-100 submit_button btn-light"id="id_submit">
+
+  @media (max-width: 767px){
+    .filter{
+      overflow-x: scroll;  
+    }
+    .form-select{
+      width:130px;
+    }
+  }
+  </style>
+  {% endblock %}
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <form action="{% url 'job:job_list' %}" id="id_search_form"novalidate>
+          <div class="row mb-3">
+            <div class="col-md-4 class_skill">
+              <input type="text" class="form-control" name="skills" id="id_search" placeholder="Type your skills, job title"autocomplete="off"required>
+            </div>
+            <div class="col-md-4 class_location">
+              <input type="text" class="form-control" name="locations" id="id_location" placeholder="Type location, locality"autocomplete="off" value="Bangalore, Karnataka" disabled required>
+            </div>
+            <div class="col-md-4 class_submit">
+              <input type="submit" class="btn w-100 submit_button btn-light"id="id_submit" value="Search">
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</form>

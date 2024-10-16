@@ -23,35 +23,64 @@ from common.utils import change_user_password
 def employer_dashboard_view(request):
   return render(request, 'dashboard/employer/employer_dashboard.html')
 
+# @allow_access_to([User.EMPLOYER])
+# def employer_profile_view(request):
+#     user = request.user
+#     employer, created = Employer.objects.get_or_create(user=user)
+
+#     if request.method == "POST":
+#         employer_user_form = EmployerUserProfileForm(request.POST, request.FILES, instance=user)
+#         employer_profile_form = EmployerProfileForm(request.POST, request.FILES, instance=employer)
+
+#         if employer_user_form.is_valid() and employer_profile_form.is_valid():
+#             employer_user_form.save()
+            
+#             employer_profile_form.save()
+
+#             messages.success(request, "Profile updated successfully")
+#             return redirect("employer:employer_profile")
+#         else:
+#             context = {
+#                 'employer_user_form': employer_user_form,
+#                 'employer_profile_form': employer_profile_form
+#             }
+#             return render(request, 'dashboard/employer/employer_profile.html', context)
+
+#     else:
+#         employer_user_form = EmployerUserProfileForm(instance=user)
+#         employer_profile_form = EmployerProfileForm(instance=employer)
+
+#         context = {
+#             'employer_user_form': employer_user_form,
+#             'employer_profile_form': employer_profile_form
+#         }
+#         return render(request, 'dashboard/employer/employer_profile.html', context)
+
 @allow_access_to([User.EMPLOYER])
 def employer_profile_view(request):
+    
     user = request.user
-    applicant, created = Employer.objects.get_or_create(user=user)
-
+    employer, created = Employer.objects.get_or_create(user=user)
     if request.method == "POST":
-        employer_user_form = EmployerUserProfileForm(request.POST, request.FILES, instance=user)
-        employer_profile_form = EmployerProfileForm(request.POST, request.FILES, instance=applicant)
+        print(user, employer.user.mobile, created)
+        employer_profile_form = EmployerProfileForm(request.POST, request.FILES, instance=employer)
 
-        if employer_user_form.is_valid() and employer_profile_form.is_valid():
-            employer_user_form.save()
-            
+        print("Valid")
+        if employer_profile_form.is_valid():
+            print("Valid")
             employer_profile_form.save()
-
             messages.success(request, "Profile updated successfully")
             return redirect("employer:employer_profile")
         else:
             context = {
-                'employer_user_form': employer_user_form,
                 'employer_profile_form': employer_profile_form
             }
             return render(request, 'dashboard/employer/employer_profile.html', context)
 
     else:
-        employer_user_form = EmployerUserProfileForm(instance=user)
-        employer_profile_form = EmployerProfileForm(instance=applicant)
+        employer_profile_form = EmployerProfileForm(instance=employer)
 
         context = {
-            'employer_user_form': employer_user_form,
             'employer_profile_form': employer_profile_form
         }
         return render(request, 'dashboard/employer/employer_profile.html', context)

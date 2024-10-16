@@ -1,0 +1,97 @@
+{% block extra_css %}
+<style>
+.filter{
+  display: flex;
+  margin-bottom: 20px;
+}
+body{
+  background-color: rgb(236, 231, 225);
+}
+@media (max-width: 767px){
+  .filter{
+    overflow-x: scroll;  
+  }
+  .form-select{
+    width:auto;
+  }
+}
+</style>
+{% endblock %}
+<div class="filter">
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Date posted</option>
+        <option value="1">Last 24 hours</option>
+        <option value="2">Last 3 days</option>
+        <option value="3">Last 7 days</option>
+        <option value="3">Last 14 days</option>
+        <option value="3">Last 30 days</option>
+      </select>
+    </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Remote</option>
+        <option value="1">Work from office</option>
+        <option value="2">Work from home</option>
+        <option value="3">Hybrid</option>
+      </select>
+    </div>
+    <div class="item">
+        <select class="form-select" aria-label="Default select example">
+          <option selected>Within 25 kilometres</option>
+          <option value="1">Within 5 kilometres</option>
+          <option value="2">Within 10 kilometres</option>
+          <option value="3">Within 15 kilometres</option>
+          <option value="3">Within 20 kilometres</option>
+          <option value="3">Within 25 kilometres</option>
+          <option value="3">Within 30 kilometres</option>
+          <option value="3">Within 35 kilometres</option>
+          <option value="3">Within 40 kilometres</option>
+          <option value="3">Within 45 kilometres</option>
+          <option value="3">Within 50 kilometres</option>
+          <option value="3">Within 100 kilometres</option>
+        </select>
+      </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Pay</option>
+        <option value="1">15,00+/month</option>
+        <option value="2">20,00+/month</option>
+        <option value="3">30,00+/month</option>
+        <option value="3">40,00+/month</option>
+        <option value="3">50,00+/month</option>
+        <option value="3">60,00+/month</option>
+        <option value="3">70,00+/month</option>
+        <option value="3">80,00+/month</option>
+        <option value="3">90,00+/month</option>
+      </select>
+    </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Job type</option>
+        <option value="1">Full time</option>
+        <option value="2">Part time</option>
+        <option value="3">Freelancing</option>
+        <option value="3">Internship</option>
+        <option value="3">Contract</option>
+      </select>
+    </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Educational level</option>
+        <option value="1">Bachelor's degree</option>
+      </select>
+    </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Industry</option>
+        <option value="1">Information Technology</option>
+      </select>
+    </div>
+    <div class="item">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Job language</option>
+        <option value="1">English</option>
+      </select>
+    </div>
+</div>

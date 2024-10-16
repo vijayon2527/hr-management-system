@@ -70,21 +70,3 @@ function split(val) {
 function extractLast(location) {
   return split(location).pop();
 }
-
-$("#id_search_form").validate({
-	rules:{
-		skills:{
-			required:true,
-		},
-        locations:{
-			required:true,
-		},
-	},messages:{
-		skills:{
-			required:"Please enter skill or job title",
-			},
-        locations:{
-        required:"Please enter place, locality",
-        },
-	},
-})

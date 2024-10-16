@@ -46,6 +46,20 @@ class Employer(models.Model):
     contact_person_name = models.CharField(
         max_length=100
     )
+    contact_number = models.CharField(
+        'Mobile number', 
+        max_length=10,  
+        null=True, 
+        blank=True, 
+        help_text="Enter your 10-digit mobile number without country code or spaces. Example: 8088870574."
+    )
+    additional_contact_number = models.CharField(
+        'Additional mobile number', 
+        max_length=10, 
+        null=True, 
+        blank=True, 
+        help_text="Enter your 10-digit mobile number without country code or spaces. Example: 8088870574."
+    )
     company_address = models.TextField(
         blank=True, 
         null=True
@@ -56,6 +70,7 @@ class Employer(models.Model):
         null=True
     )
     state = models.CharField(
+        choices=User.STATE_CHOICES,
         max_length=100, 
         blank=True, 
         null=True

@@ -1,0 +1,23 @@
+{% if job %}
+<div class="card">
+    <h5 class="card-header">{{ job.role }}</h5>
+    <div class="card-body job-detail-body">
+        <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
+        <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.place }}</p>
+        <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
+        <p class="card-text">
+            <i class="fa-solid fa-book"></i>
+            {% for skill in job.get_all_skills %}
+            <small>{{ skill }}, </small>
+            {% endfor %}
+        </p>
+        <div class="card-text">{{ job.job_description|safe }}</div>
+        <h5 class="card-title">{{ job.place }}</h5>
+        <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
+        <form action="{% url 'applicant:apply_job' slug=job.slug %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-light w-100">Apply</button>
+        </form>
+    </div>
+</div>
+{% endif %}

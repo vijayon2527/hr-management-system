@@ -2,54 +2,63 @@
 {% load static humanize %}
 {% block extra_css %}
 <style>
-    
+    .job-container {
+        display: flex;
+    }
+
+    /* Job List on the left */
+    .job-list {
+        flex: 1;
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    /* Job Detail Section on the right */
+    .job-detail {
+        width: 65%;
+        padding: 20px;
+        background-color: #fff;
+        position: relative;
+    }
+
+    /* Sticky Effect for Job Detail */
+    .sticky-detail {
+        position: sticky;
+        top: 20px; /* It will stick 20px from the top */
+        background-color: #fff;
+    }
+
+    .job-detail-body{
+        height: 500px;
+        overflow-y: auto;
+    }
+    @media (max-width: 768px) {
+        .job-container {
+            flex-direction: column-reverse; /* Row layout for larger screens */
+        }
+        .job-detail {
+            width: 100%;
+        }
+    }
 </style>
 {% endblock extra_css %}
 {% block content %}
-<h3 class="text-center mt-5">Welcome to AGPHR Job Portal</h3>
 {% include "job/listing/partials/job_search.html" %}
-<div class="container-well">
-    <div class="row">
-        <div class="col-md-4">
-            <div id="job-list">
-                {% include 'job/listing/partials/job_list_card.html' %}
-            </div>
-            <div id="load-more-container" class="text-center mb-3">
-                {% if page_obj.has_next %}
-                    <button id="load-more-btn" class="btn btn-light btn-sm w-100" data-page="2">Load More</button>
-                {% endif %}
-            </div>
+{% include "job/listing/partials/job_filter_header.html" %}
+<div class="job-container">
+    <div class="job-list">
+        <div id="job-list">
+            {% include 'job/listing/partials/job_list_card.html' %}
         </div>
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col">
-                    {% if job %}
-                    <div class="card ">
-                        <h5 class="card-header">{{ job.role }}</h5>
-                        <div class="card-body">
-                            <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
-                            <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.place }}</p>
-                            <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
-                            <p class="card-text">
-                                <i class="fa-solid fa-book"></i>
-                                {% for skill in job.get_all_skills %}
-                                <small>{{ skill }}, </small>
-                                {% endfor %}
-                            </p>
-                          <div class="card-text">{{ job.job_description|safe }}</div>
-
-                            <h5 class="card-title">{{ job.place }}</h5>
-                            <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
-                          
-                          <form action="{% url 'applicant:apply_job' slug=job.slug %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-light w-100">Apply</button>
-                          </form>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+        <div id="load-more-container" class="text-center mb-3">
+            {% if page_obj.has_next %}
+                <button id="load-more-btn" class="btn btn-light btn-sm w-100" data-page="2">Load More</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="job-detail">
+        <div class="sticky-detail">
+            {% include "job/listing/partials/job_detail_card.html" %}
         </div>
     </div>
 </div>
@@ -58,11 +67,9 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" 
-        integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" 
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'js/job/listing/partials/job_search.js' %}"></script>
 <script>
+    // Loading job list 
     document.addEventListener('DOMContentLoaded', function () {
         const loadMoreBtn = document.getElementById('load-more-btn');
         loadMoreBtn.addEventListener('click', function () {
@@ -95,5 +102,25 @@
             .catch(error => console.error('Error loading more jobs:', error));
         }
     });
+
+    // loading job detail
+    function loadJobDetails(slug) {
+        const url = `?job_title=${slug}`;
+        
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'  // AJAX request
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the job details section with the new content
+            const jobDetailContainer = document.querySelector('.job-detail .sticky-detail');
+            jobDetailContainer.innerHTML = data.job_detail_html;
+        })
+        .catch(error => console.error('Error loading job details:', error));
+    }
+    
 </script>
 {% endblock extra_js %}

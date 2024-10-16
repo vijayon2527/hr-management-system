@@ -94,12 +94,20 @@ class JobList(ListView):
     
     def render_to_response(self, context, **response_kwargs):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            jobs_html = render_to_string('job/listing/partials/job_list_card.html', {'jobs': context['jobs']})
-            return JsonResponse({
-                'jobs_html': jobs_html,
-                'has_next': context['page_obj'].has_next(),
-            })
+            if 'job_title' in self.request.GET:  # If it's a request for job details
+                job_detail_html = render_to_string('job/listing/partials/job_detail_card.html', {'job': context['job']})
+                return JsonResponse({
+                    'job_detail_html': job_detail_html
+                })
+            else:  # Otherwise, it's a request to load more jobs
+                jobs_html = render_to_string('job/listing/partials/job_list_card.html', {'jobs': context['jobs']})
+                return JsonResponse({
+                    'jobs_html': jobs_html,
+                    'has_next': context['page_obj'].has_next(),
+                })
+        
         return super().render_to_response(context, **response_kwargs)
+
 job_list = JobList.as_view()
 
 @csrf_exempt

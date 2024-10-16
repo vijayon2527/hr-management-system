@@ -9,11 +9,12 @@
         <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
         <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
             {% csrf_token %}
-            {{ employer_user_form|crispy }}
             {{ employer_profile_form|crispy }}
             <input type="submit" class="btn btn-primary btn-sm w-100">
         </form>
     </div>
 </div>
 {% endblock dashboard_content %}
-
+{% block dashboard_extra_js %}
+<script src="{% static 'dashboard/employer/employer_profile.js' %}"></script>
+{% endblock dashboard_extra_js %}
