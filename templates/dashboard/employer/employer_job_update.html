@@ -1,5 +1,5 @@
 {% extends "dashboard/dashboard_base.html" %}
-{% load hitcount_tags humanize static %}
+{% load hitcount_tags humanize static crispy_forms_tags %}
 {% block dashboard_extra_css %}
 <style>
     .fabutton {
@@ -19,82 +19,25 @@
       <h4 class="card-title" style="font-size: 20px;">Update Job</h4>
     </div>
     <div class="card-body">
-      <form method="post" id="job_form">
+      <form method="post" novalidate>
         {% csrf_token %}
+        {{form|crispy}}
+        {{form.media}}
+
         <div class="mb-3">
-          <label for="id_job_title" class="form-label">Job title:</label>
-          {{form.job_title}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_role" class="form-label">Role:</label>
-          {{form.role}}
-        </div>
-  
-        <div class="mb-3">{{job_description|safe}}
-          <label for="id_job_description" class="form-label">Job description:</label>
-          {{form.job_description|safe}}{{form.media}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_experience" class="form-label">Experience required:</label>
-          {{form.experience}}
-        </div>
-  
-        <div class="text_format">
-          <div class="mb-3">
-            <label for="id_salary" class="form-label">Salary:</label>
-            {{form.salary}}
-          </div>
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_no_of_openings" class="form-label">No of openings:</label>
-          {{form.no_of_openings}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_industry" class="form-label">Industry:</label>
-          {{form.industry}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_functional_area" class="form-label">Functional area:</label>
-          {{form.functional_area}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_country" class="form-label">Country:</label>
-          {{form.country}}
-        </div>
-  
-        <div class="mb-3">
-          <label for="id_place" class="form-label">Place:</label>
-          {{form.place}}
-        </div>
-  
-  
-        <div class="mb-3">
-          <label for="id_skills1" class="form-label">Skill required:</label>
-          <ul class="list-group list-group-horizontal mb-1 d-flex flex-wrap field_wrapper1">
-          {% for skill in job.skills.all %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-          <input type="hidden" id="{{skill.name}}" name="skills" value="{{skill.id}}"><h6><span class="badge bg-success mx-1">{{skill.name}}</span></h6><a href="javascript:void(0);" class="remove_button"><i class="fa fa-trash text-danger"></i></a>
-           </li>
-          {% endfor %}
+            <label for="id_skills1" class="form-label">Skill required:</label>
+            <ul class="list-group list-group-horizontal mb-1 d-flex flex-wrap field_wrapper1">
+            {% for skill in job.skills.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <input type="hidden" id="{{skill.name}}" name="skills" value="{{skill.id}}"><h6><span class="badge bg-success mx-1">{{skill.name}}</span></h6><a href="javascript:void(0);" class="remove_button"><i class="fa fa-trash text-danger"></i></a>
+            </li>
+            {% endfor %}
            </ul>   
-  
-         <input type="search" class="form-control" id="id_skills1" name="id_skills1" placeholder="Enter Skill">
+            <input type="search" class="form-control" id="id_skills1" name="id_skills1" placeholder="Enter Skill">
         </div>
-        <div class="mb-3">
-          Add to recommended jobs: {{form.recommended_job}}
-        </div>
-        <div class="mb-3">
-          Publish: {{form.publish}}
-        </div>
-         <button type="button" id="btnjobPreview" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#jobPrevModal"><span>Preview</span></button>
-         <button type="submit" class="btn btn-primary btn-sm w-100 mt-1"><span>Submit</span></button>
-    </form>
+
+        <input type="submit" class="btn btn-light w-100">
+      </form>
     </div>
   </div>
   <!-- Modal -->

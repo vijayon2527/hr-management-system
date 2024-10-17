@@ -1,5 +1,5 @@
 {% extends 'dashboard/dashboard_base.html' %}
-{% load static %}
+{% load static crispy_forms_tags %}
 {% block dashboard_extra_css %}
 <style>
 .error{
@@ -24,158 +24,18 @@
     <h4 class="card-title" style="font-size: 20px;">Post Job</h4>
   </div>
   <div class="card-body">
-    <form method="post" id="job_form">
-        {% csrf_token %}
-        <!-- {{form.as_p|safe}}{{form.media}} -->
-
+    
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{form|crispy}}
+      {{form.media}}
         <div class="mb-3">
-          <label for="id_job_title" class="form-label">Job title:</label>
-          <!-- <input type="text" class="form-control" id="id_job_title" placeholder="Job title"> -->
-          {{form.job_title}}
-        </div>
-
-        <div class="mb-3">
-          <label for="id_role" class="form-label">Role:</label>
-          <!-- <input type="text" class="form-control" id="id_role" placeholder="Role"> -->
-          {{form.role}}
-        </div>
-
-        <div class="mb-3">{{job_description|safe}}
-          <label for="id_job_description" class="form-label">Job description:</label>
-          <!-- <input type="text" class="form-control" id="id_job_description" placeholder="Job description"> -->
-          {{form.job_description|safe}}{{form.media}}
-        </div>
-
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Experience required:</label>
-          <div class="d-flex">
-            <div>
-              <input type="number" class="form-control" id="id_minimum_experience_years"name="minimum_experience_years" placeholder="Enter minimum number" required>
-            </div>
-            <div class="m-2">
-              To
-            </div>
-            <div>
-              <input type="number" class="form-control" id="id_maximum_experience_years"name="maximum_experience_years" placeholder="Enter maximum number" required>
-            </div>
-            <div class="m-2">
-              Years
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Salary:</label>
-          <div class="d-flex">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="id_text" checked>
-              <label class="form-check-label" for="id_text">
-                Text format
-              </label>
-            </div>
-            <div class="form-check ms-2">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="id_predefined">
-              <label class="form-check-label" for="id_predefined">
-                Predefined format
-              </label>
-            </div>
-          </div>
-
-          <div class="predefined_format">
-            <div class="d-flex mt-3">
-              <div>
-                <input type="number" class="form-control" id="id_minimum_salary"name="minimum_salary" placeholder="Minimum salary" required/>
-              </div>
-              <div class="m-2">
-                To
-              </div>
-              <div>
-                <input type="number" class="form-control" id="id_maximum_salary"name="maximum_salary" placeholder="Maximum salary" required/>
-              </div>
-              <div class="w-25">
-                <select class="form-select" aria-label="Default select example"id="id_salary_measurement"name="salary_measurement" required>
-                  <option value="" disabled selected>Select</option>
-                  <option value="Thousand">Thousand</option>
-                  <option value="Lakh">Lakh</option>
-                </select>
-              </div>
-              <div class="w-25">
-                <select class="form-select" aria-label="Default select example"id="id_salary_currency"name="salary_currency" required>
-                  <option value="" disabled selected>Select</option>
-                  <option value="INR">INR</option>
-                  <option value="USD">USD</option>
-                </select>
-              </div>
-              <div class="w-25">
-                <select class="form-select" aria-label="Default select example"id="id_duration"name="duration" required>
-                  <option value="" disabled selected>Select</option>
-                  <option value="Per month">Per month</option>
-                  <option value="Per annum">Per annum</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="text_format">
-          <div class="mb-3">
-            <!-- <label for="id_salary" class="form-label">Salary:</label> -->
-            <!-- <input type="text" class="form-control" id="id_salary" placeholder="Enter salary">-->
-            {{form.salary}}
-          </div>
-        </div>
-
-        <!-- <div class="mb-3">
-          <label for="id_experience" class="form-label">Experience:</label>
-          <input type="text" class="form-control" id="id_experience" placeholder="Enter salary">
-          {{form.experience}}
-        </div> -->
-
-        <div class="mb-3">
-          <label for="id_no_of_openings" class="form-label">No of openings:</label>
-          <!-- <input type="number" class="form-control" id="id_no_of_openings" placeholder="No of openings"> -->
-          {{form.no_of_openings}}
-        </div>
-
-        <div class="mb-3">
-          <label for="id_industry" class="form-label">Industry:</label>
-          <!-- <input type="text" class="form-control" id="id_industry" placeholder="Industry"> -->
-          {{form.industry}}
-        </div>
-
-        <div class="mb-3">
-          <label for="id_functional_area" class="form-label">Functional area:</label>
-          <!-- <input type="text" class="form-control" id="id_functional_area" placeholder="Functional area"> -->
-          {{form.functional_area}}
-        </div>
-
-        <div class="mb-3">
-          <label for="id_country" class="form-label">Country:</label>
-          <!-- <input type="text" class="form-control" id="id_country" placeholder="Country"> -->
-          {{form.country}}
-        </div>
-
-        <div class="mb-3">
-          <label for="id_place" class="form-label">Place:</label>
-          <!-- <input type="text" class="form-control" id="id_place" placeholder="Place"> -->
-          {{form.place}}
-        </div>
-        
-        <div class="mb-3">
-        <label for="id_skills1" class="form-label">Skill required: </label>
-        <ul class="list-group my-1 list-group-horizontal d-flex flex-wrap field_wrapper1">                 
-        </ul>
+          <label for="id_skills1" class="form-label">Skill required: </label>
+          <ul class="list-group my-1 list-group-horizontal d-flex flex-wrap field_wrapper1">                 
+          </ul>
           <input type="search" class="form-control" id="id_skills1" name="id_skills1" placeholder="Enter Skill">
         </div>
-        <div class="mb-3">
-          Add to recommended jobs: {{form.recommended_job}}
-        </div>
-        <div class="mb-3">
-          Publish: {{form.publish}}
-        </div>
-        <button type="button" id="btnjobPreview" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#jobPrevModal"><span>Preview</span></button>
-        <button type="submit" class="btn btn-primary w-100 mt-1"><span>Submit</span></button>
-
+      <input type="submit" class="btn btn-light w-100">
     </form>
   </div>
 </div>
@@ -195,7 +55,6 @@
               </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -206,24 +65,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'js/dashboard/state_city.js' %}"></script>
 <script src="{% static 'js/dashboard/validation.js' %}"></script>
-<script src="{% static 'js/dashboard/job_preview.js' %}"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="{% static 'js/dashboard/skills_add.js' %}"></script>
-<script>
-  $("#id_text").click(function(){
-  $(".predefined_format").css("display", "none");
-  $("#id_minimum_salary").val('');
-  $("#id_maximum_salary").val('');
-  $("#id_salary_measurement").val('');
-  $("#id_salary_currency").val('');
-  $("#id_duration").val('');
-  $(".text_format").css("display", "block");
-});
-  $("#id_predefined").click(function(){
-  $(".predefined_format").css("display", "block");
-  $(".text_format").css("display", "none");
-  $("#id_salary").val('');
-});
-</script>
 {% endblock dashboard_extra_js %}

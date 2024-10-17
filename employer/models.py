@@ -17,12 +17,12 @@ class Employer(models.Model):
     COMPANY_SIZE_1000_PLUS = '1000+'
 
     COMPANY_SIZE_CHOICES = (
-        (COMPANY_SIZE_1_10, '1-10 employees'),
-        (COMPANY_SIZE_11_50, '11-50 employees'),
-        (COMPANY_SIZE_51_200, '51-200 employees'),
-        (COMPANY_SIZE_201_500, '201-500 employees'),
-        (COMPANY_SIZE_501_1000, '501-1000 employees'),
-        (COMPANY_SIZE_1000_PLUS, '1000+ employees'),
+        (COMPANY_SIZE_1_10, COMPANY_SIZE_1_10),
+        (COMPANY_SIZE_11_50, COMPANY_SIZE_11_50),
+        (COMPANY_SIZE_51_200, COMPANY_SIZE_51_200),
+        (COMPANY_SIZE_201_500, COMPANY_SIZE_201_500),
+        (COMPANY_SIZE_501_1000, COMPANY_SIZE_501_1000),
+        (COMPANY_SIZE_1000_PLUS, COMPANY_SIZE_1000_PLUS),
     )
     user = models.OneToOneField(
         User, 

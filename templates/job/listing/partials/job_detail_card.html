@@ -3,7 +3,7 @@
     <div class="card">
         <h5 class="card-header">{{ job.role }}</h5>
         <div class="card-body job-detail-body">
-            <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.experience }}</p>
+            <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.get_experience }}</p>
             <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.place }}</p>
             <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
             <p class="card-text">
@@ -13,7 +13,6 @@
                 {% endfor %}
             </p>
             <div class="card-text">{{ job.job_description|safe }}</div>
-            <h5 class="card-title">{{ job.place }}</h5>
             <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
             <form action="{% url 'applicant:apply_job' slug=job.slug %}" method="POST">
                 {% csrf_token %}

@@ -152,3 +152,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_REDIRECT_URL = "redirect_url"
 LOGIN_URL = 'users:login'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': '300px',
+    'width': '100%',
+}
