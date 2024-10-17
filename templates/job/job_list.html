@@ -65,7 +65,6 @@
 {% endblock content %}
 {% block extra_js %}
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="{% static 'js/job/listing/partials/job_search.js' %}"></script>
 <script>
@@ -122,5 +121,60 @@
         .catch(error => console.error('Error loading job details:', error));
     }
     
+   // Function to display job details in a Bootbox modal
+   function showJobDetails(slug) {
+    const url = `?job_title=${slug}`; 
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        const jobDetailHtml = data.job_detail_html; // Get the job detail HTML
+
+        // Check if the response contains the job detail HTML
+        if (!jobDetailHtml) {
+            console.error('Job detail HTML is missing');
+            bootbox.alert("Error: Job detail is not available.");
+            return;
+        }
+
+        // Show the job detail in a Bootbox modal
+        bootbox.dialog({
+            title: "Job Details",
+            message: jobDetailHtml, // Inject the HTML response into Bootbox
+            buttons: {
+                confirm: {
+                    label: 'Apply Now',
+                    className: 'btn-success',
+                    callback: function() {
+                        // Handle application logic here, if needed
+                        console.log("You have applied for the job.");
+                    }
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-danger',
+                    callback: function() {
+                        console.log("You cancelled the application.");
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error loading job details:', error);
+        bootbox.alert("Error loading job details.");
+    });
+}
+
 </script>
 {% endblock extra_js %}

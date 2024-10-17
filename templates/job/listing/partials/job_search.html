@@ -29,7 +29,7 @@
   .error{
       color:red;
   }
-  @media (max-width: 767.98px) {
+  @media (max-width: 768px) {
     input[type=text], input[type=submit]{
       border-top-left-radius: 25px!important;
       border-top-right-radius: 25px!important;
@@ -38,7 +38,7 @@
       margin-bottom: 2px;
     }
   }
-  @media (min-width: 767.98px){
+  @media (min-width: 768px){
     .class_skill{
         padding-right:0;
     }
@@ -55,25 +55,13 @@
     font-size: 1.1rem;
 
   }
-  .filter{
-    display: flex;
-    margin-bottom: 20px;
-  }
+
   body{
     background-color: rgb(236, 231, 225);
   }
-
-  @media (max-width: 767px){
-    .filter{
-      overflow-x: scroll;  
-    }
-    .form-select{
-      width:130px;
-    }
-  }
   </style>
   {% endblock %}
-  <div class="container mt-2">
+  <div class="mt-2">
     <div class="row">
       <div class="col-md-8 offset-md-2">
         <form action="{% url 'job:job_list' %}" id="id_search_form"novalidate>

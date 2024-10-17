@@ -1,4 +1,37 @@
 {% load humanize %}
+{% block extra_css %}
+<style>
+    @media (max-width: 768px) {
+        .job-container {
+            flex-direction: column-reverse; /* Row layout for larger screens */
+        }
+        .job-detail {
+            width: 100%;
+        }
+        .jobLargerScreenButton{
+            display:none
+        }
+        .jobMobileScreenButton{
+            display:block
+        }
+        .applyButton{
+            display:none;
+        }
+    }
+    @media (min-width: 768px) {
+        .jobLargerScreenButton{
+            display:block
+        }
+        .jobMobileScreenButton{
+            display:none
+        }
+        .jobDetail{
+            display:none;
+        }
+    }
+   
+</style>
+{% endblock extra_css %}
 {% for job in jobs %}
 <div class="card mb-3">
     <div class="card-header">
@@ -15,7 +48,8 @@
             {% endfor %}
         </p>
         <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
-        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100" data-slug="{{ job.slug }}" onclick="loadJobDetails('{{ job.slug }}')">Details</a>
+        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100 jobLargerScreenButton" data-slug="{{ job.slug }}" onclick="loadJobDetails('{{ job.slug }}')">Details</a>
+        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100 jobMobileScreenButton" data-slug="{{ job.slug }}" onclick="showJobDetails('{{ job.slug }}')">Details</a>
 
     </div>
 </div>
