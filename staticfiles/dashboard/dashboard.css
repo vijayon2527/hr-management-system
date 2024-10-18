@@ -1,13 +1,4 @@
-.sidebar{
-    min-height: 750px;
-}
-@media (min-width: 768px) {
-  .sidebar .offcanvas-lg {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 48px;
-  }
-}
+
 .sidebar .nav-link {
   font-size: .875rem;
   font-weight: 500;
