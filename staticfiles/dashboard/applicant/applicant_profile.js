@@ -131,25 +131,25 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!firstInvalidField) firstInvalidField = postalCodeField;
         }
 
-        // Validation for bio
-        var bioField = document.getElementById("id_bio");
-        if (bioField.value.length > 500) {
-            isValid = showError(bioField, validationMessages.bio);
-            if (!firstInvalidField) firstInvalidField = bioField;
-        }
+        // // Validation for bio
+        // var bioField = document.getElementById("id_bio");
+        // if (bioField.value.length > 500) {
+        //     isValid = showError(bioField, validationMessages.bio);
+        //     if (!firstInvalidField) firstInvalidField = bioField;
+        // }
 
-        // Validation for salary
-        var salaryField = document.getElementById("id_desired_salary");
+        // // Validation for salary
+        // var salaryField = document.getElementById("id_desired_salary");
 
-        // Check if the salary field has been entered
-        if (salaryField.value) {
-            // If a salary is entered, check if it's a valid number and greater than 0
-            if (isNaN(salaryField.value) || Number(salaryField.value) <= 0) {
-                // Show error if the salary is not a valid number or less than or equal to 0
-                isValid = showError(salaryField, validationMessages.salary);
-                if (!firstInvalidField) firstInvalidField = salaryField;
-            }
-        }
+        // // Check if the salary field has been entered
+        // if (salaryField.value) {
+        //     // If a salary is entered, check if it's a valid number and greater than 0
+        //     if (isNaN(salaryField.value) || Number(salaryField.value) <= 0) {
+        //         // Show error if the salary is not a valid number or less than or equal to 0
+        //         isValid = showError(salaryField, validationMessages.salary);
+        //         if (!firstInvalidField) firstInvalidField = salaryField;
+        //     }
+        // }
 
 
         // If the form is valid, submit the form

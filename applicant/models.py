@@ -3,8 +3,8 @@ from job.models import Skill
 from users.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
+from tinymce.models import HTMLField
 from job.models import Job
-from employer.models import Employer
 from applicant.managers import ApplicantManager, ApplicationManager
 import os
 
@@ -58,7 +58,7 @@ class Applicant(models.Model):
         null=False,
         blank=False
     )
-    bio = models.TextField(
+    bio = HTMLField(
         blank=True,
         null=True,
         validators=[MaxLengthValidator(500)],
@@ -132,11 +132,12 @@ class Applicant(models.Model):
         help_text="Are you willing to relocate for a job?",
         verbose_name="Willing to Relocate"
     )
-    desired_salary = models.CharField(
-        max_length=50,
-        blank=True,
+    desired_salary = models.DecimalField(
+        max_digits=10,        
+        decimal_places=2, 
         null=True,
-        help_text="Expected salary (e.g., $60,000 per year).",
+        blank=True,
+        help_text="Enter your salary (up to 10 digits, with 2 decimal places allowed).",
         verbose_name="Desired Salary"
     )
     notice_period = models.CharField(

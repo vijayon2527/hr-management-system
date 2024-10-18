@@ -15,9 +15,9 @@
         d-flex 
         align-items-center 
         gap-2 
-        {% is_active 'applicant_profile' %}" 
+        {% is_active 'applicant_profile_personal' 'applicant_profile_professional' %}" 
         aria-current="page" 
-        href="{% url 'applicant:applicant_profile' %}"
+        href="{% url 'applicant:applicant_profile_personal' %}"
         >
         Profile
         </a>

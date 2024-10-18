@@ -24,34 +24,43 @@ def applicant_dashboard_view(request,):
 def applicant_profile_view(request):
     user = request.user
     applicant, created = Applicant.objects.get_or_create(user=user)
-
-    if request.method == "POST":
-        applicant_user_form = ApplicantUserProfileForm(request.POST, request.FILES, instance=user)
-        applicant_profile_form = ApplicantProfileForm(request.POST, request.FILES, instance=applicant)
-
-        if applicant_user_form.is_valid() and applicant_profile_form.is_valid():
-            applicant_user_form.save()
-            
-            applicant_profile_form.save()
-
-            messages.success(request, "Profile updated successfully")
-            return redirect("applicant:applicant_profile")
+    applicant_user_form = None
+    applicant_profile_form = None
+    
+    # Handle Aersonal Info
+    if "/personal-info/" in request.path:
+        if request.method=="POST":
+            applicant_user_form = ApplicantUserProfileForm(request.POST, instance=user)
+            if applicant_user_form.is_valid():
+                applicant_user_form.save()
+                messages.success(request, "Profile updated successfully")
+                return redirect("applicant:applicant_profile_personal")
+            else:
+                return render(request, 'dashboard/applicant/applicant_profile.html', {'applicant_user_form': applicant_user_form})
         else:
+            applicant_user_form = ApplicantUserProfileForm(instance=user)
             context = {
                 'applicant_user_form': applicant_user_form,
-                'applicant_profile_form': applicant_profile_form
             }
             return render(request, 'dashboard/applicant/applicant_profile.html', context)
 
-    else:
-        applicant_user_form = ApplicantUserProfileForm(instance=user)
-        applicant_profile_form = ApplicantProfileForm(instance=applicant)
+    # Handle Professional Info
+    elif "/professional-info/" in request.path:
+        if request.method=="POST":
+            applicant_profile_form = ApplicantProfileForm(request.POST, instance=applicant)
+            if applicant_profile_form.is_valid():
+                applicant_profile_form.save()
+                messages.success(request, "Profile updated successfully")
+                return redirect("applicant:applicant_profile_professional")
+            else:
+                context = {
+                    'applicant_profile_form': applicant_profile_form,
+                }
+                return render(request, 'dashboard/applicant/applicant_profile.html', context)
+        else:
+            applicant_profile_form = ApplicantProfileForm(instance=applicant)
+        return render(request, 'dashboard/applicant/applicant_profile.html', {'applicant_profile_form': applicant_profile_form})
 
-        context = {
-            'applicant_user_form': applicant_user_form,
-            'applicant_profile_form': applicant_profile_form
-        }
-        return render(request, 'dashboard/applicant/applicant_profile.html', context)
 
 @allow_access_to([User.APPLICANT_USER])
 def applicant_resume_view(request,):

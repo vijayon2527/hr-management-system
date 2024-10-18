@@ -6,11 +6,15 @@
         <h4 class="card-title" style="font-size: 20px;">My Profile</h4>
     </div>
     <div class="card-body">
+        <a class="btn btn-outline-secondary {% if '/personal-info/' in request.path %}active{% endif %}" href="{% url 'applicant:applicant_profile_personal' %}">Personal Info</a>
+        <a class="btn btn-outline-secondary {% if '/professional-info/' in request.path %}active{% endif %}" href="{% url 'applicant:applicant_profile_professional' %}">Professional Info</a>
+        <hr>
         <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
         <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
             {% csrf_token %}
             {{ applicant_user_form|crispy }}
             {{ applicant_profile_form|crispy }}
+            {{ applicant_profile_form.media }}
             <input type="submit" class="btn btn-primary btn-sm w-100">
         </form>
     </div>
@@ -18,5 +22,5 @@
 {% endblock dashboard_content %}
 
 {% block dashboard_extra_js %}
-<script src="{% static 'dashboard/applicant/applicant_profile.js' %}"></script>
+{% comment %} <script src="{% static 'dashboard/applicant/applicant_profile.js' %}"></script> {% endcomment %}
 {% endblock dashboard_extra_js %}
