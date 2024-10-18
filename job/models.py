@@ -220,11 +220,15 @@ class Job(models.Model):
         max_length=50,
         help_text="City where the job is located."
     )
-    place = models.CharField(
+    address = models.CharField(
         max_length=50,
         blank=True,
         null=True,
-        help_text="Specific office location, e.g., 'Building 3, Floor 5'."
+        help_text="Enter the specific address or office location, e.g., 'Building 3, Floor 5'."
+    )
+    zipcode = models.CharField(
+        max_length=6,
+        help_text="6-digit PIN code for the specific location."
     )
     remote_possible = models.BooleanField(
         default=False,

@@ -50,21 +50,11 @@ class JobList(ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        locations = self.request.GET.get('locations')
         skills = self.request.GET.get('skills')
         object_list = Job.objects.published_job_lists()
-
-        location_lists = []
-        skill_lists = []
-
-        if locations:
-            location_lists = [location.strip() for location in locations.split(",") if location.strip()]
-
         if skills:
             skill_lists = [skill.strip() for skill in skills.split(",") if skill.strip()]
-
-            search_skills = location_lists + skill_lists
-            object_list = Job.objects.published_job_lists(search_skills)        
+            object_list = Job.objects.published_job_lists(skill_lists)        
             job_length = len(object_list)
             if job_length < 1:
                 object_list = Job.objects.published_job_lists()

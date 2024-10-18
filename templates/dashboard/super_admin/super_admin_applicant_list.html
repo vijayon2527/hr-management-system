@@ -30,7 +30,7 @@
                       <td>{{ applicant.user.mobile }}</td>
                       <td>{{ applicant.user.email }}</td>
                       <td>{{ applicant.user.city }}</td>
-                      <td><a href="{{ applicant.resume.url }}">View Resume</a></td>
+                      <td>{% if applicant.resume %}<a href="{{ applicant.resume.url }}">View Resume</a>{% else %}Not uploaded{% endif %}</td>
                       <td>{{ applicant.created_at|timesince }}</td>
                   </tr>
                   {% endfor %}

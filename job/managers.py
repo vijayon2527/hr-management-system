@@ -38,7 +38,7 @@ class JobQuerySet(models.QuerySet):
     
     def search(self, query, queryset):
         if isinstance(query, list):
-            query = (Q(reduce(operator.or_, (Q(place=option) for option in query)))) | \
+            query = (Q(reduce(operator.or_, (Q(city=option) for option in query)))) | \
                     (Q(reduce(operator.or_, (Q(job_title=option) for option in query)))) | \
                     (Q(reduce(operator.or_, (Q(skills__name=option) for option in query))))
             queryset = queryset.filter(query).order_by("-id")
@@ -47,7 +47,7 @@ class JobQuerySet(models.QuerySet):
         queryset = queryset.filter(Q(job_title__icontains=query)|
                                     Q(role__icontains=query)|
                                     Q(country__icontains=query)|
-                                    Q(place__icontains=query)
+                                    Q(city__icontains=query)
                                     )
         return queryset
 

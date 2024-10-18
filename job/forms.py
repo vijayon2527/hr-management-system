@@ -11,12 +11,12 @@ class AddSkill(forms.ModelForm):
         fields = ("name",)
 
 class CreateJobForm(forms.ModelForm):
-    application_deadline = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-        }),
-        input_formats=['%Y-%m-%d'],
-    )
+    # application_deadline = forms.DateField(
+    #     widget=forms.DateInput(attrs={
+    #         'type': 'date',
+    #     }),
+    #     input_formats=['%Y-%m-%d'],
+    # )
     class Meta:
         model = Job
         fields = [
@@ -31,20 +31,21 @@ class CreateJobForm(forms.ModelForm):
             'salary_period',
             'qualification',
             'no_of_openings',
-            'industry',
-            'functional_area',
+            # 'industry',
+            # 'functional_area',
             'employment_type',
-            'country',
-            'state',
+            # 'country',
+            'address',
             'city',
-            'place',
-            'benefits',
-            'perks',
-            'application_deadline',
-            'remote_possible',
-            'is_flexible',
-            'visa_sponsorship',
-            'relocation_support',
+            'state',
+            'zipcode',
+            # 'benefits',
+            # 'perks',
+            # 'application_deadline',
+            # 'remote_possible',
+            # 'is_flexible',
+            # 'visa_sponsorship',
+            # 'relocation_support',
         ]
 
     def clean(self):
