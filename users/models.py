@@ -52,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     COUNTRY_CHOICES = (
         (INDIA, INDIA),
     )
+
     ANDHRA_PRASESH = 'Andhra Pradesh'
     ARUNACHAL_PRADESH = 'Arunachal Pradesh'
     ASSAM = 'Assam'
@@ -90,42 +91,42 @@ class User(AbstractBaseUser, PermissionsMixin):
     PUDUCHERRY = 'Puducherry'
     
     STATE_CHOICES = (
-        (ANDHRA_PRASESH, 'Andhra Pradesh'),
-        (ARUNACHAL_PRADESH, 'Arunachal Pradesh'),
-        (ASSAM, 'Assam'),
-        (BIHAR, 'Bihar'),
-        (CHHATTISGARH, 'Chhattisgarh'),
-        (GOA, 'Goa'),
-        (GUJARAT, 'Gujarat'),
-        (HARYANA, 'Haryana'),
-        (HIMACHAL_PRADESH, 'Himachal Pradesh'),
-        (JAMMU_AND_KASMIR, 'Jammu and Kashmir'),
-        (JHARKHAND, 'Jharkhand'),
-        (KARNATAKA, 'Karnataka'),
-        (KERALA, 'Kerala'),
-        (MADHYA_PRADESH, 'Madhya Pradesh'),
-        (MAHARASHTRA, 'Maharashtra'),
-        (MANIPUR, 'Manipur'),
-        (MEGHALAYA, 'Meghalaya'),
-        (MIZORAM, 'Mizoram'),
-        (NAGALAND, 'Nagaland'),
-        (ODISHA, 'Odisha'),
-        (PUNJAB, 'Punjab'),
-        (RAJASTHAN, 'Rajasthan'),
-        (SIKKIM, 'Sikkim'),
-        (TAMIL_NADU, 'Tamil Nadu'),
-        (TELANGANA, 'Telangana'),
-        (TRIPURA, 'Tripura'),
-        (UTTAR_PRADESH, 'Uttar Pradesh'),
-        (UTTARAKAND, 'Uttarakhand'),
-        (WEST_BENGAL, 'West Bengal'),
-        (ANDAMAN_AND_NICOBAR_ISLANDS, 'Andaman and Nicobar Islands'),
-        (CHANDIGARH, 'Chandigarh'),
-        (DADRA_AND_NAGAR_HAVELI, 'Dadra and Nagar Haveli'),
-        (DAMAN_AND_DIU, 'Daman and Diu'),
-        (LAKSHADWEEP, 'Lakshadweep'),
-        (NATIONAL_CAPITAL_TERRITORY_OF_DELHI, 'National Capital Territory of Delhi'),
-        (PUDUCHERRY, 'Puducherry')
+        (ANDHRA_PRASESH, ANDHRA_PRASESH),
+        (ARUNACHAL_PRADESH, ARUNACHAL_PRADESH),
+        (ASSAM, ASSAM),
+        (BIHAR, BIHAR),
+        (CHHATTISGARH, CHHATTISGARH),
+        (GOA, GOA),
+        (GUJARAT, GUJARAT),
+        (HARYANA, HARYANA),
+        (HIMACHAL_PRADESH, HIMACHAL_PRADESH),
+        (JAMMU_AND_KASMIR, JAMMU_AND_KASMIR),
+        (JHARKHAND, JHARKHAND),
+        (KARNATAKA, KARNATAKA),
+        (KERALA, KERALA),
+        (MADHYA_PRADESH, MADHYA_PRADESH),
+        (MAHARASHTRA, MAHARASHTRA),
+        (MANIPUR, MANIPUR),
+        (MEGHALAYA, MEGHALAYA),
+        (MIZORAM, MIZORAM),
+        (NAGALAND, NAGALAND),
+        (ODISHA, ODISHA),
+        (PUNJAB, PUNJAB),
+        (RAJASTHAN, RAJASTHAN),
+        (SIKKIM, SIKKIM),
+        (TAMIL_NADU, TAMIL_NADU),
+        (TELANGANA, TELANGANA),
+        (TRIPURA, TRIPURA),
+        (UTTAR_PRADESH, UTTAR_PRADESH),
+        (UTTARAKAND, UTTARAKAND),
+        (WEST_BENGAL, WEST_BENGAL),
+        (ANDAMAN_AND_NICOBAR_ISLANDS, ANDAMAN_AND_NICOBAR_ISLANDS),
+        (CHANDIGARH, CHANDIGARH),
+        (DADRA_AND_NAGAR_HAVELI, DADRA_AND_NAGAR_HAVELI),
+        (DAMAN_AND_DIU, DAMAN_AND_DIU),
+        (LAKSHADWEEP, LAKSHADWEEP),
+        (NATIONAL_CAPITAL_TERRITORY_OF_DELHI,NATIONAL_CAPITAL_TERRITORY_OF_DELHI),
+        (PUDUCHERRY, PUDUCHERRY)
     )
     email = models.EmailField(
         'email address', 
@@ -191,6 +192,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(
         max_length=50,
         choices=STATE_CHOICES,
+        default=KARNATAKA,
         null=True,
         blank=True,
         verbose_name="State",
@@ -243,3 +245,39 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+    
+    def is_employer_profile_completed(self):
+        from employer.models import Employer
+        try:
+            employer = Employer.objects.get(user=self)
+            return all([
+                employer.company_name, 
+                employer.company_website, 
+                employer.contact_person_name, 
+                employer.contact_number, 
+                employer.company_address, 
+                employer.city, 
+                employer.state, 
+                employer.country
+            ])
+        except Employer.DoesNotExist:
+            return False
+
+    def is_applicant_profile_completed(self):
+        return all([
+            self.first_name, 
+            self.last_name, 
+            self.date_of_birth, 
+            self.address_line_1, 
+            self.city, 
+            self.state, 
+            self.country
+        ])
+
+    @property
+    def is_profile_completed(self):
+        if self.user_type == self.EMPLOYER:
+            return self.is_employer_profile_completed()
+        elif self.user_type == self.APPLICANT_USER:
+            return self.is_applicant_profile_completed()
+        return False

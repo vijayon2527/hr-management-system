@@ -15,13 +15,13 @@
         d-flex 
         align-items-center 
         gap-2 
-        {% is_active 'applicant_profile_personal' 'applicant_profile_professional' %}" 
+        {% is_active 'applicant_personal_profile' 'applicant_professional_profile' %}" 
         aria-current="page" 
-        href="{% url 'applicant:applicant_profile_personal' %}"
+        href="{% url 'applicant:applicant_personal_profile' %}"
         >
         Profile
         </a>
-        <a class="nav-link 
+        <!-- <a class="nav-link 
         d-flex 
         align-items-center 
         gap-2 
@@ -30,7 +30,7 @@
         href="{% url 'applicant:applicant_resume' %}"
         >
             My Resume
-        </a> 
+        </a>  -->
         <a class="nav-link 
         d-flex 
         align-items-center 

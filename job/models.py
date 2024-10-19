@@ -5,7 +5,6 @@ from .utils import generate_unique_slug
 from job.managers import JobManager, SkillManager
 from tinymce.models import HTMLField
 from users.models import User
-from employer.models import Employer
 
 class Skill(models.Model):
     name = models.CharField(max_length=50)
@@ -325,6 +324,7 @@ class Job(models.Model):
     
     @property
     def get_company_name(self):
+        from employer.models import Employer
         return Employer.objects.filter(user=self.user).first().company_name
     
     @property

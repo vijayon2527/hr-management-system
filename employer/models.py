@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from users.models import User
+from job.models import Job
 
 def validate_file_size(file):
     limit = 2 * 1024 * 1024  # 2 MB
@@ -60,7 +61,8 @@ class Employer(models.Model):
         blank=True, 
         help_text="Enter your 10-digit mobile number without country code or spaces. Example: 8088870574."
     )
-    company_address = models.TextField(
+    company_address = models.CharField(
+         max_length=255,
         blank=True, 
         null=True
     )
@@ -86,6 +88,8 @@ class Employer(models.Model):
         null=True
     )
     industry = models.CharField(
+        choices=Job.INDUSTRY_CHOICES,
+        default=Job.INDUSTRY_SOFTWARE,
         max_length=100, 
         blank=True, 
         null=True

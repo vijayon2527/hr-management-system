@@ -8,14 +8,22 @@ class RootView(RedirectView):
     pattern_name = 'article-detail'
 
     def get_redirect_url(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            user_type = self.request.user.user_type
-            if user_type == User.SUPER_ADMIN:
+        user = self.request.user
+        if user.is_authenticated:
+            if user.user_type == User.SUPER_ADMIN:
                 next_url = 'super_admin:super_admin_analytics'
-            elif user_type == User.EMPLOYER:
-                next_url = 'employer:employer_dashboard'
-            elif user_type == User.APPLICANT_USER:
-                next_url = 'applicant:applicant_dashboard'
+
+            elif user.user_type == User.EMPLOYER:
+                if not user.is_profile_completed:
+                    next_url = 'employer:employer_profile'
+                else:
+                    next_url = 'employer:employer_dashboard'
+
+            elif user.user_type == User.APPLICANT_USER:
+                if not user.is_profile_completed:
+                    next_url = 'applicant:applicant_personal_profile'
+                else:
+                    next_url = 'applicant:applicant_dashboard'
         else:
             next_url = 'job:job_list'
 

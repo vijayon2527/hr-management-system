@@ -1,0 +1,42 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block dashboard_extra_css %}
+<style>
+    @media (max-width: 760px) {
+    .buttons {
+        display: flex;
+        padding: -10px;
+        margin: -10px;
+    }
+    .btn{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+}
+</style>
+{% endblock dashboard_extra_css %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">My Profile</h4>
+    </div>
+    <div class="card-body">
+        <div class="buttons">
+            <a class="btn btn-outline-secondary" href="{% url 'applicant:applicant_personal_profile' %}">Personal Info</a>
+            <a class="btn btn-outline-secondary {% if '/applicant-professional-profile/' in request.path %}active{% endif %}" href="{% url 'applicant:applicant_professional_profile' %}">Professional Info</a>
+        </div>
+        <hr>
+        <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+        <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {{ form.media }}
+            <input type="submit" class="btn btn-primary btn-sm w-100">
+        </form>
+    </div>
+</div>
+{% endblock dashboard_content %}
+{% block dashboard_extra_js %}
+<script src="{% static 'dashboard/applicant/applicant_professional_profile.js' %}"></script>
+{% endblock dashboard_extra_js %}

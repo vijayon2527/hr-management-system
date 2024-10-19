@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from agphr.utils.decorators import allow_access_to
-from django.db import transaction
 from users.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
@@ -14,53 +13,45 @@ from applicant.forms import (ApplicantProfileForm,
 from common.forms import UserPasswordChangeForm
 from common.utils import change_user_password
 from job.models import Job
-import logging
 
 @allow_access_to([User.APPLICANT_USER])
 def applicant_dashboard_view(request,):
   return render(request, 'dashboard/applicant/applicant_dashboard.html')
 
 @allow_access_to([User.APPLICANT_USER])   
-def applicant_profile_view(request):
+def applicant_personal_profile_view(request):
     user = request.user
     applicant, created = Applicant.objects.get_or_create(user=user)
-    applicant_user_form = None
-    applicant_profile_form = None
-    
-    # Handle Aersonal Info
-    if "/personal-info/" in request.path:
-        if request.method=="POST":
-            applicant_user_form = ApplicantUserProfileForm(request.POST, instance=user)
-            if applicant_user_form.is_valid():
-                applicant_user_form.save()
-                messages.success(request, "Profile updated successfully")
-                return redirect("applicant:applicant_profile_personal")
-            else:
-                return render(request, 'dashboard/applicant/applicant_profile.html', {'applicant_user_form': applicant_user_form})
+    if request.method=="POST":
+        form = ApplicantUserProfileForm(request.POST, instance=user)
+        resume_form = ApplicantResumeForm(request.POST, request.FILES, instance=applicant)
+        if form.is_valid() and resume_form.is_valid():
+            form.save()
+            resume_form.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect("applicant:applicant_personal_profile")
         else:
-            applicant_user_form = ApplicantUserProfileForm(instance=user)
-            context = {
-                'applicant_user_form': applicant_user_form,
-            }
-            return render(request, 'dashboard/applicant/applicant_profile.html', context)
+            return render(request, 'dashboard/applicant/applicant_personal_profile.html', {'form': form, 'resume_form': resume_form})
+    else:
+        form = ApplicantUserProfileForm(instance=user)
+        resume_form = ApplicantResumeForm(instance=applicant)
+    return render(request, 'dashboard/applicant/applicant_personal_profile.html', {'form': form, 'resume_form': resume_form})
 
-    # Handle Professional Info
-    elif "/professional-info/" in request.path:
-        if request.method=="POST":
-            applicant_profile_form = ApplicantProfileForm(request.POST, instance=applicant)
-            if applicant_profile_form.is_valid():
-                applicant_profile_form.save()
-                messages.success(request, "Profile updated successfully")
-                return redirect("applicant:applicant_profile_professional")
-            else:
-                context = {
-                    'applicant_profile_form': applicant_profile_form,
-                }
-                return render(request, 'dashboard/applicant/applicant_profile.html', context)
+@allow_access_to([User.APPLICANT_USER])   
+def applicant_professional_profile_view(request):
+    user = request.user
+    applicant, created = Applicant.objects.get_or_create(user=user)
+    if request.method=="POST":
+        form = ApplicantProfileForm(request.POST, instance=applicant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect("applicant:applicant_professional_profile")
         else:
-            applicant_profile_form = ApplicantProfileForm(instance=applicant)
-        return render(request, 'dashboard/applicant/applicant_profile.html', {'applicant_profile_form': applicant_profile_form})
-
+            return render(request, 'dashboard/applicant/applicant_professional_profile.html', {'form': form})
+    else:
+        form = ApplicantProfileForm(instance=applicant)
+    return render(request, 'dashboard/applicant/applicant_professional_profile.html', {'form': form})
 
 @allow_access_to([User.APPLICANT_USER])
 def applicant_resume_view(request,):
