@@ -1,22 +1,51 @@
   {% block extra_css %}
   <style>
+    @media (min-width: 767px){
+      #id_search{
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-right: none!important;
+        border: 2px solid var(--primary-color);
+
+      }
+      #id_location{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        /* border-inline: none!important; */
+        border: 2px solid var(--primary-color);
+      }
+      #id_submit{
+          border-bottom-left-radius: 0;
+          border-top-left-radius: 0;
+          border-left: none!important;
+          border: 2px solid var(--primary-color);
+      }
+      #id_search, #id_location, #id_submit{
+        background-color: white;
+        box-shadow: 4px 4px 4px gray ;
+      }
+      #id_search, #id_location, #id_submit{
+        padding: 15px;
+        font-size: 1.1rem;
+
+      }
+    }
+
   #id_search{
       border-top-left-radius: 25px;
       border-bottom-left-radius: 25px;
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-      border-right: none;
     }
     #id_location{
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-      border-left: none!important;
+      border-inline: none!important;
     }
   #id_submit{
       border-top-right-radius: 25px;
       border-bottom-right-radius: 25px;
+      border-left: none!important;
+      background-color: var(--primary-color);
+      color: white;
     }
   .ui-autocomplete {
       max-height: 400px;
@@ -29,7 +58,7 @@
   .error{
       color:red;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     input[type=text], input[type=submit]{
       border-top-left-radius: 25px!important;
       border-top-right-radius: 25px!important;
@@ -38,7 +67,7 @@
       margin-bottom: 2px;
     }
   }
-  @media (min-width: 768px){
+  @media (min-width: 767px){
     .class_skill{
         padding-right:0;
     }
@@ -49,15 +78,6 @@
     .class_submit{
         padding-left:0;
     }
-  }
-  #id_search, #id_location, #id_submit{
-    padding: 10px;
-    font-size: 1.1rem;
-
-  }
-
-  body{
-    background-color: rgb(236, 231, 225);
   }
   </style>
   {% endblock %}

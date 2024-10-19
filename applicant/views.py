@@ -108,11 +108,11 @@ def apply_job_view(request, slug):
         try:
             applicant = Applicant.objects.get(user=user)
         except Applicant.DoesNotExist:
-            messages.warning(request, "You need to register as an applicant before applying for jobs, or ipdate your applicant profile")
+            messages.error(request, "You need to register as an applicant before applying for jobs, or ipdate your applicant profile")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
         if Application.objects.filter(job=job, applicant=applicant).exists():
-            messages.warning(request, "You have already applied for this job.")
+            messages.error(request, "You have already applied for this job.")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list')) 
 
         try:
@@ -124,15 +124,15 @@ def apply_job_view(request, slug):
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
         except IntegrityError:
-            messages.warning(request, "It looks like you've already applied for this job. Please check your application status.")
+            messages.error(request, "It looks like you've already applied for this job. Please check your application status.")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
         except ValidationError as ve:
-            messages.warning(request, "There was a problem with your submission. Please ensure all fields are filled out correctly.")
+            messages.error(request, "There was a problem with your submission. Please ensure all fields are filled out correctly.")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
         except Exception as e:
-            messages.warning(request, "Something went wrong. Please try again later.")
+            messages.error(request, "Something went wrong. Please try again later.")
             return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
 
     # If the request is not POST, redirect to job list

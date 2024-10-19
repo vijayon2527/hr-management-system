@@ -58,7 +58,7 @@ class JobList(ListView):
             job_length = len(object_list)
             if job_length < 1:
                 object_list = Job.objects.published_job_lists()
-                messages.warning(self.request, "No job found.")
+                messages.error(self.request, "No job found.")
             else:
                 messages.success(self.request, f"{job_length} Job found.")
         return object_list
@@ -71,7 +71,7 @@ class JobList(ListView):
                 job = Job.objects.get(slug=job_title)
                 context['job'] = job
             except Job.DoesNotExist:
-                messages.warning(self.request, "The requested job was not found.")
+                messages.error(self.request, "The requested job was not found.")
                 context['job'] = None
         else:
             job_list = context.get('jobs')

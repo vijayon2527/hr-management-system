@@ -116,7 +116,7 @@ def employer_create_job_view(request):
             messages.success(request, "Data saved successfully")
             return redirect(".")
         else:
-            messages.warning(request, "No valid data")
+            messages.error(request, "No valid data")
             return render(request, 'dashboard/employer/employer_create_job.html', {'form': form})
     else:
         form = CreateJobForm()
@@ -139,7 +139,7 @@ def employer_job_update_view(request, slug):
             messages.success(request, "Data saved successfully")
             return redirect("employer:employer_update_job", slug=job.slug)
         else:
-            messages.warning(request, "No valid data")
+            messages.error(request, "No valid data")
             return render(request, 'dashboard/employer/employer_job_update.html', {'form': form, 'job':job})
 
     else:

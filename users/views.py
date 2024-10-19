@@ -92,7 +92,7 @@ def register_view(request):
             messages.success(request, "Your account has been created successfully.")
             return redirect('redirect_url')
         else:
-            messages.warning(request, "invalid form")
+            messages.error(request, "invalid form")
             return render(request, 'users/register.html', {'form': form})
     else:
         if request.user.is_authenticated:
@@ -114,14 +114,14 @@ class OTPVerificationView(View):
         form = OTPVerificationForm(request.POST)
         
         if not form.is_valid():
-            messages.warning(request, "Invalid form data")
+            messages.error(request, "Invalid form data")
             return render(request, self.template_name, {'form': form})
         
         entered_otp = form.cleaned_data.get('otp_code')
         session_data = request.session.get(SESSION_REGISTRATION_KEY)
         
         if not session_data:
-            messages.warning(request, "OTP is expired or invalid.")
+            messages.error(request, "OTP is expired or invalid.")
             return redirect('users:register')
         
         stored_otp = session_data.get('otp')
@@ -145,10 +145,10 @@ class OTPVerificationView(View):
                 messages.success(request, "User registered successfully.")
                 return redirect('users:login')
             except Exception as e:
-                messages.warning(request, f"Error: {str(e)}")
+                messages.error(request, f"Error: {str(e)}")
                 return redirect('users:otp_verification')
         else:
-            messages.warning(request, "Invalid OTP")
+            messages.error(request, "Invalid OTP")
             return redirect('users:otp_verification')
 
 def login_view(request):
@@ -166,9 +166,9 @@ def login_view(request):
                 messages.success(request, f"Welcome, {user.get_username() if user.get_username() else user.mobile}!")
                 return redirect('redirect_url')
             else:
-                messages.warning(request, "Invalid mobile number or password")
+                messages.error(request, "Invalid mobile number or password")
         else:
-            messages.warning(request, "Invalid login details")
+            messages.error(request, "Invalid login details")
             return render(request, 'users/login.html', {'form': form})
     else:
         form = LoginForm()

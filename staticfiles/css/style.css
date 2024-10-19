@@ -19,12 +19,13 @@
 .border-primary {
   border-color: var(--primary-color) !important;
 }
-*{
+body{
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   /* font-size: 1.2rem; */
+  background-color: rgb(236, 231, 225);
 }
 
 /* body{

@@ -82,10 +82,10 @@ def super_admin_job_update_view(request, slug):
                     return redirect("super_admin:super_admin_job_update", slug=job.slug)
             except:
                 logging.info("Not able to update the job")
-                messages.warning(request, "Not able to update, please try again")
+                messages.error(request, "Not able to update, please try again")
                 return redirect(".")
         else:
-            messages.warning(request, "No valid data")
+            messages.error(request, "No valid data")
             return render(request, 'dashboard/super_admin/super_admin_job_update.html', {'form': form, 'job':job})
 
     else:

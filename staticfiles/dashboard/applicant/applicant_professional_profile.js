@@ -34,11 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Validation for bio
         var bioField = document.getElementById("id_bio");
 
-        if (!bioField.value){
-            isValid = showError(bioField, validationMessages.bio);
-                if (!firstInvalidField) firstInvalidField = bioField;
-            }
-            
         if (bioField.value.length > 500) {
             isValid = showError(bioField, validationMessages.bio);
             if (!firstInvalidField) firstInvalidField = bioField;
