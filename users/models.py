@@ -250,20 +250,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         from employer.models import Employer
         try:
             employer = Employer.objects.get(user=self)
-            return all([
-                employer.company_name, 
-                employer.company_website, 
-                employer.contact_person_name, 
-                employer.contact_number, 
-                employer.company_address, 
-                employer.city, 
-                employer.state, 
-                employer.country
-            ])
         except Employer.DoesNotExist:
             return False
 
+        return all([
+            employer.company_name, 
+            employer.company_website, 
+            employer.contact_person_name, 
+            employer.contact_number, 
+            employer.company_address, 
+            employer.city, 
+            employer.state, 
+            employer.country
+        ])
+
     def is_applicant_profile_completed(self):
+        from applicant.models import Applicant
+        try:
+            applicant = Applicant.objects.get(user=self)
+        except Applicant.DoesNotExist:
+            return False
+
         return all([
             self.first_name, 
             self.last_name, 
@@ -271,7 +278,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.address_line_1, 
             self.city, 
             self.state, 
-            self.country
+            self.country,
+            applicant.resume
         ])
 
     @property

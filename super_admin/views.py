@@ -35,7 +35,7 @@ def super_admin_employeer_detail_view(request, slug):
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_applicant_list_view(request):
-    applicants = Applicant.objects.all()
+    applicants = Applicant.objects.all().order_by('-created_at')
     return render(request, 'dashboard/super_admin/super_admin_applicant_list.html', {'applicants': applicants})
 
 @allow_access_to([User.SUPER_ADMIN])
@@ -195,7 +195,7 @@ def super_admin_delete_skill_view(request, pk):
 
 # @allow_access_to([User.SUPER_ADMIN])
 def super_admin_employer_list_view(request):
-    employers = Employer.objects.all()
+    employers = Employer.objects.all().order_by('-created_at')
     context = {
         'employers': employers,
     }

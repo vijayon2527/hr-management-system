@@ -1,20 +1,13 @@
-import logging
-
+from django.utils.timesince import timesince
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
-
 from hitcount.views import HitCountDetailView
-
 from job.models import Job, Skill
-from users.models import User
 
 
 @csrf_exempt

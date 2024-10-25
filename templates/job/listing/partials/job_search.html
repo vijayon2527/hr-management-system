@@ -1,110 +1,19 @@
-{% block extra_css %}
-<style>
-  @media (min-width: 767px) {
-    #id_search {
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-      border-right: none !important;
-      border: 2px solid var(--primary-color);
-    }
-
-    #id_location {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-      border: 2px solid var(--primary-color);
-    }
-
-    #id_submit {
-      border-bottom-left-radius: 0;
-      border-top-left-radius: 0;
-      border-left: none !important;
-      border: 2px solid var(--primary-color);
-    }
-
-    #id_search, #id_location, #id_submit {
-      background-color: white;
-      box-shadow: 4px 4px 4px gray;
-      padding: 15px;
-      margin-top: 20px;
-      font-size: 1.2rem;
-    }
-  }
-
-  /* Additional styles for smaller screens */
-  @media (max-width: 767px) {
-    input[type=text], input[type=submit] {
-      border-top-left-radius: 25px !important;
-      border-top-right-radius: 25px !important;
-      border-bottom-right-radius: 25px !important;
-      border-bottom-left-radius: 25px !important;
-      margin-bottom: 2px;
-    }
-  }
-
-  @media (min-width: 767px) {
-    .class_skill {
-      padding-right: 0;
-    }
-
-    .class_location {
-      padding-right: 0;
-      padding-left: 0;
-    }
-
-    .class_submit {
-      padding-left: 0;
-    }
-  }
-
-  #id_search {
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-  }
-
-  #id_location {
-    border-inline: none !important;
-  }
-
-  #id_submit {
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
-    border-left: none !important;
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  /* Custom scrollbar for autocomplete */
-  .ui-autocomplete {
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: hidden; /* prevent horizontal scrollbar */
-    padding-right: 20px; /* add padding to account for vertical scrollbar */
-  }
-
-  .error {
-    color: red;
-  }
-</style>
-{% endblock %}
-
-  <div class="mt-2">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <form action="{% url 'job:job_list' %}" id="id_search_form"novalidate>
-          <div class="row mb-3">
-            <div class="col-md-4 class_skill">
-              <input type="text" class="form-control" name="skills" id="id_search" placeholder="Type your skills, job title"autocomplete="off"required>
-            </div>
-            <div class="col-md-4 class_location">
-              <input type="text" class="form-control" name="locations" id="id_location" placeholder="Type location, locality"autocomplete="off" value="Bangalore, Karnataka" disabled required>
-            </div>
-            <div class="col-md-4 class_submit">
-              <input type="submit" class="btn w-100 submit_button btn-light"id="id_submit" value="Search">
-            </div>
+<div class="mt-2">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <form action="{% url 'job:job_list' %}" id="id_search_form"novalidate>
+        <div class="row mb-3">
+          <div class="col-md-4 class_skill">
+            <input type="text" class="form-control" name="skills" id="id_search" placeholder="Type your skills, job title"autocomplete="off"required>
           </div>
-        </form>
-      </div>
+          <div class="col-md-4 class_location">
+            <input type="text" class="form-control" name="locations" id="id_location" placeholder="Type location, locality"autocomplete="off" value="Bangalore, Karnataka" disabled required>
+          </div>
+          <div class="col-md-4 class_submit">
+            <input type="submit" class="btn w-100 submit_button btn-light"id="id_submit" value="Search">
+          </div>
+        </div>
+      </form>
     </div>
   </div>
+</div>

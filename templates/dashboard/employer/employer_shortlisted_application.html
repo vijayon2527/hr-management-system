@@ -147,7 +147,7 @@
                 <td>{{application.get_notice_period}}</td>
                 <td>{% if application.get_linkrdin_profile %}<a href="{{application.get_linkrdin_profile}}" target="_blank">{{application.linkedin_profile}}</a>{% else %}Not available{% endif %}</td>
                 <td>{{application.applied_on}}</td>
-                <td><a href="{{application.get_resume.url}}">resume</a></td>
+                <td>{% if application.get_resume %}<a href="{{application.get_resume.url}}" target="_blank">resume</a>{% else %}No resume uploaded{% endif %}</td>
                 <td>
                     <form method="post" action="{% url 'employer:employer_update_application_status' application.id %}">
                         {% csrf_token %}

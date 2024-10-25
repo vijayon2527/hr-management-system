@@ -1,0 +1,182 @@
+/* job searching starts */
+@media (min-width: 767px) {
+    #id_search {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border-right: none !important;
+      border: 2px solid var(--primary-color);
+    }
+
+    #id_location {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      border: 2px solid var(--primary-color);
+    }
+
+    #id_submit {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+      border-left: none !important;
+      border: 2px solid var(--primary-color);
+    }
+
+    #id_search, #id_location, #id_submit {
+      background-color: white;
+      box-shadow: 4px 4px 4px gray;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+  }
+
+  /* Additional styles for smaller screens */
+  @media (max-width: 767px) {
+    input[type=text], input[type=submit] {
+      border-top-left-radius: 25px !important;
+      border-top-right-radius: 25px !important;
+      border-bottom-right-radius: 25px !important;
+      border-bottom-left-radius: 25px !important;
+      margin-bottom: 2px;
+    }
+  }
+
+  @media (min-width: 767px) {
+    .class_skill {
+      padding-right: 0;
+    }
+
+    .class_location {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .class_submit {
+      padding-left: 0;
+    }
+  }
+
+  #id_search {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+  }
+
+  #id_location {
+    border-inline: none !important;
+  }
+
+  #id_submit {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-left: none !important;
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  /* Custom scrollbar for autocomplete */
+  .ui-autocomplete {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden; /* prevent horizontal scrollbar */
+    padding-right: 20px; /* add padding to account for vertical scrollbar */
+  }
+
+  .error {
+    color: red;
+  }
+
+  /* job searching ends */
+
+  /* job filrer starts */
+  .filter{
+    display: flex;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 767px){
+    .filter{
+      overflow-x: scroll;  
+    }
+    .form-select{
+      width:auto;
+    }
+  }
+  /* job filter ends */
+
+  /* job list card starts */
+  @media (max-width: 768px) {
+    .job-container {
+        flex-direction: column-reverse;
+    }
+    .job-detail {
+        width: 100%;
+    }
+    /* Hide the larger screen button on small screens */
+    .jobLargerScreenButton {
+        display: none;
+    }
+    /* Show the mobile button */
+    .jobMobileScreenButton {
+        display: block;
+    }
+}
+
+@media (min-width: 768px) {
+    /* Show the larger screen button */
+    .jobLargerScreenButton {
+        display: block;
+    }
+    /* Hide the mobile button */
+    .jobMobileScreenButton {
+        display: none;
+    }
+    .jobDetail {
+        display: none;
+    }
+}
+/* job list card ends */
+
+/* General styling for job-container, job-list, and job-detail */
+.job-container, .job-list, .job-detail {
+    background-color: #fff;
+}
+
+.job-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.job-list {
+    flex: 1;
+    padding: 20px;
+}
+
+.job-detail {
+    flex: 0 0 65%;
+    padding: 20px;
+    position: relative;
+}
+
+.sticky-detail {
+    position: sticky;
+    top: 20px;
+}
+
+.job-detail-body {
+    height: 500px;
+    overflow-y: auto;
+}
+
+/* Mobile view adjustments */
+@media (max-width: 768px) {
+    .job-container {
+        flex-direction: column-reverse;
+    }
+    .job-detail {
+        width: 100%;
+    }
+    .jobDetailCard {
+        display: none;
+    }
+}

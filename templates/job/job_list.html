@@ -1,180 +1,55 @@
 {% extends "base.html" %}
-{% load static humanize %}
+{% load static %}
+
 {% block extra_css %}
-<style>
-    .job-container {
-        display: flex;
-    }
-
-    /* Job List on the left */
-    .job-list {
-        flex: 1;
-        padding: 20px;
-        background-color: #fff;
-    }
-
-    /* Job Detail Section on the right */
-    .job-detail {
-        width: 65%;
-        padding: 20px;
-        background-color: #fff;
-        position: relative;
-    }
-
-    /* Sticky Effect for Job Detail */
-    .sticky-detail {
-        position: sticky;
-        top: 20px; /* It will stick 20px from the top */
-        background-color: #fff;
-    }
-
-    .job-detail-body{
-        height: 500px;
-        overflow-y: auto;
-    }
-    @media (max-width: 768px) {
-        .job-container {
-            flex-direction: column-reverse; /* Row layout for larger screens */
-        }
-        .job-detail {
-            width: 100%;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/job/listing/jobList.css' %}">
 {% endblock extra_css %}
+
 {% block content %}
-{% include "job/listing/partials/job_search.html" %}
-{% include "job/listing/partials/job_filter_header.html" %}
-<div class="job-container">
-    <div class="job-list">
-        <div id="job-list">
-            {% include 'job/listing/partials/job_list_card.html' %}
+    {% include "job/listing/partials/job_search.html" %}
+    {% include "job/listing/partials/job_filter_header.html" %}
+    
+    <div class="job-container">
+        <div class="job-list">
+            <div id="job-list">
+                {% include 'job/listing/partials/job_list_card.html' %}
+            </div>
+            <div id="load-more-container" class="text-center mb-3">
+                {% if page_obj.has_next %}
+                    <button id="load-more-btn" class="btn btn-light btn-sm w-100" data-page="2">Load More</button>
+                {% endif %}
+            </div>
         </div>
-        <div id="load-more-container" class="text-center mb-3">
-            {% if page_obj.has_next %}
-                <button id="load-more-btn" class="btn btn-light btn-sm w-100" data-page="2">Load More</button>
-            {% endif %}
+        
+        <div class="job-detail">
+            <div class="sticky-detail">
+                <div class="jobDetailCard">
+                    {% include "job/listing/partials/job_detail_card.html" %}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="job-detail">
-        <div class="sticky-detail">
-            {% include "job/listing/partials/job_detail_card.html" %}
-        </div>
-    </div>
-</div>
 {% endblock content %}
+
 {% block extra_js %}
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="{% static 'js/job/listing/partials/job_search.js' %}"></script>
+<script src="{% static 'js/job/listing/home/loadJob.js' %}"></script>
+<script src="{% static 'js/api.js' %}"></script>
 <script>
-    // Loading job list 
-    document.addEventListener('DOMContentLoaded', function () {
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        loadMoreBtn.addEventListener('click', function () {
-            const page = this.getAttribute('data-page');
-            loadMoreJobs(page);
-        });
+    async function applyJob(event, slug) {
+        event.preventDefault(); 
 
-        function loadMoreJobs(page) {
-            const url = `?page=${page}`;
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'  // AJAX request
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Append new jobs to the list
-                const jobList = document.getElementById('job-list');
-                jobList.innerHTML += data.jobs_html;
-                
-                // Update "Load More" button
-                if (data.has_next) {
-                    const newPage = parseInt(page) + 1;
-                    loadMoreBtn.setAttribute('data-page', newPage);
-                } else {
-                    loadMoreBtn.remove();
-                }
-            })
-            .catch(error => console.error('Error loading more jobs:', error));
+        const url = `/applicant/applicant-apply-job/${slug}/`;
+        const response = await apiRequest(url, 'POST');
+
+        if (response.success) {
+            toastr.success(response.message, 'Success');
+        } else {
+            toastr.error(response.message, 'Error');
         }
-    });
-
-    // loading job detail
-    function loadJobDetails(slug) {
-        const url = `?job_title=${slug}`;
-        
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'  // AJAX request
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Update the job details section with the new content
-            const jobDetailContainer = document.querySelector('.job-detail .sticky-detail');
-            jobDetailContainer.innerHTML = data.job_detail_html;
-        })
-        .catch(error => console.error('Error loading job details:', error));
     }
-    
-   // Function to display job details in a Bootbox modal
-   function showJobDetails(slug) {
-    const url = `?job_title=${slug}`; 
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json(); 
-    })
-    .then(data => {
-        const jobDetailHtml = data.job_detail_html; // Get the job detail HTML
-
-        // Check if the response contains the job detail HTML
-        if (!jobDetailHtml) {
-            console.error('Job detail HTML is missing');
-            bootbox.alert("Error: Job detail is not available.");
-            return;
-        }
-
-        // Show the job detail in a Bootbox modal
-        bootbox.dialog({
-            title: "Job Details",
-            message: jobDetailHtml, // Inject the HTML response into Bootbox
-            buttons: {
-                confirm: {
-                    label: 'Apply Now',
-                    className: 'btn-success',
-                    callback: function() {
-                        // Handle application logic here, if needed
-                        console.log("You have applied for the job.");
-                    }
-                },
-                cancel: {
-                    label: 'Cancel',
-                    className: 'btn-danger',
-                    callback: function() {
-                        console.log("You cancelled the application.");
-                    }
-                }
-            }
-        });
-    })
-    .catch(error => {
-        console.error('Error loading job details:', error);
-        bootbox.alert("Error loading job details.");
-    });
-}
-
 </script>
+
 {% endblock extra_js %}

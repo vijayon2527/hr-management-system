@@ -20,7 +20,7 @@
           <tbody>
             {% for application  in applications %}
             <tr>
-              <th scope="row">1</th>
+              <th scope="row">{{ forloop.counter}}</th>
               <td>{{application.get_company_name}}</td>
               <td>{{application.get_job_title}}</td>
               <td>{{application.get_role}}</td>

@@ -1,18 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.db import IntegrityError
+
 from agphr.utils.decorators import allow_access_to
 from users.models import User
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import login_required
 from applicant.models import Applicant, Application
-from applicant.forms import (ApplicantProfileForm, 
-                             ApplicantUserProfileForm,
-                             ApplicantResumeForm
-							)
+from job.models import Job
+from .models import Job, Applicant, Application
+
+from applicant.forms import (
+    ApplicantProfileForm, 
+    ApplicantUserProfileForm,
+    ApplicantResumeForm
+)
 from common.forms import UserPasswordChangeForm
 from common.utils import change_user_password
-from job.models import Job
 
 @allow_access_to([User.APPLICANT_USER])
 def applicant_dashboard_view(request,):
@@ -99,41 +104,58 @@ def applicant_delete_account_view(request):
     messages.success(request, 'Your account has been deleted successfully')
     return redirect('job:job_list')
 
-@login_required 
+@csrf_exempt
+@login_required
 def apply_job_view(request, slug):
+    job = get_object_or_404(Job, slug=slug)
+    user = request.user
+    print(user)
     if request.method == "POST":
-        job = get_object_or_404(Job, slug=slug)
-        user = request.user
-
         try:
+            # Attempt to get the applicant associated with the logged-in user
             applicant = Applicant.objects.get(user=user)
+
+            # Check if the applicant's profile is completed
+            if not applicant.user.is_profile_completed:
+                return JsonResponse({
+                    'success': False,
+                    'message': "Please update your profile to apply for a job."
+                })
+
+            # Check if the applicant has already applied for this job
+            if Application.objects.filter(job=job, applicant=applicant).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': "You have already applied for this job."
+                })
+
+            # Create the job application
+            Application.objects.create(job=job, applicant=applicant)
+            return JsonResponse({
+                'success': True,
+                'message': "You have successfully applied for this job."
+            })
+
         except Applicant.DoesNotExist:
-            messages.error(request, "You need to register as an applicant before applying for jobs, or ipdate your applicant profile")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
-
-        if Application.objects.filter(job=job, applicant=applicant).exists():
-            messages.error(request, "You have already applied for this job.")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list')) 
-
-        try:
-            Application.objects.create(
-                job=job,
-                applicant=applicant,
-            )
-            messages.success(request, "You have successfully applied for this job.")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
+            return JsonResponse({
+                'success': False,
+                'message': "You need to login as an applicant before applying for jobs."
+            })
 
         except IntegrityError:
-            messages.error(request, "It looks like you've already applied for this job. Please check your application status.")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
-
-        except ValidationError as ve:
-            messages.error(request, "There was a problem with your submission. Please ensure all fields are filled out correctly.")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
+            return JsonResponse({
+                'success': False,
+                'message': "It looks like you've already applied for this job. Please check your application status."
+            })
 
         except Exception as e:
-            messages.error(request, "Something went wrong. Please try again later.")
-            return redirect(request.META.get('HTTP_REFERER', 'job:job_list'))
+            print(f"Unexpected error: {e}")
+            return JsonResponse({
+                'success': False,
+                'message': "Something went wrong. Please try again later."
+            })
 
-    # If the request is not POST, redirect to job list
-    return redirect("job:job_list")
+    return JsonResponse({
+        'success': False,
+        'message': "Invalid request method."
+    })
