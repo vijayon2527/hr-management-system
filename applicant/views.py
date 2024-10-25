@@ -104,32 +104,32 @@ def applicant_delete_account_view(request):
     messages.success(request, 'Your account has been deleted successfully')
     return redirect('job:job_list')
 
-@csrf_exempt
-@login_required
 def apply_job_view(request, slug):
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'success': False,
+            'message': "You need to be logged in to apply for a job."
+        })
+
     job = get_object_or_404(Job, slug=slug)
     user = request.user
-    print(user)
+
     if request.method == "POST":
         try:
-            # Attempt to get the applicant associated with the logged-in user
             applicant = Applicant.objects.get(user=user)
 
-            # Check if the applicant's profile is completed
             if not applicant.user.is_profile_completed:
                 return JsonResponse({
                     'success': False,
                     'message': "Please update your profile to apply for a job."
                 })
 
-            # Check if the applicant has already applied for this job
             if Application.objects.filter(job=job, applicant=applicant).exists():
                 return JsonResponse({
                     'success': False,
                     'message': "You have already applied for this job."
                 })
 
-            # Create the job application
             Application.objects.create(job=job, applicant=applicant)
             return JsonResponse({
                 'success': True,

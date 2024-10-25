@@ -16,7 +16,6 @@
             <div class="card-text">{{ job.job_description|safe }}</div>
             <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
             <form id="applyJobForm" onsubmit="applyJob(event, '{{ job.slug }}')">
-                {% csrf_token %}
                 <button type="submit" class="btn btn-light w-100"id="applyJobButton">Apply Job</button>
             </form>
         </div>
