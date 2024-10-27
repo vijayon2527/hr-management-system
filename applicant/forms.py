@@ -49,7 +49,7 @@ class ApplicantUserProfileForm(forms.ModelForm):
 
 
 class ApplicantResumeForm(forms.ModelForm):
+    resume = forms.FileField(required=True)
     class Meta:
         model = Applicant
         fields = ['resume']
-

@@ -39,7 +39,7 @@
 <script src="{% static 'js/api.js' %}"></script>
 <script>
     async function applyJob(event, slug) {
-        event.preventDefault(); 
+        event.preventDefault();
 
         const url = `/applicant/applicant-apply-job/${slug}/`;
         const response = await apiRequest(url, 'POST');
@@ -47,7 +47,7 @@
         if (response.success) {
             toastr.success(response.message, 'Success');
         } else {
-            toastr.error(response.message, 'Error');
+            toastr.error(response.message || "Please log in and try again", 'Error');
         }
     }
 </script>

@@ -32,7 +32,8 @@
             {% csrf_token %}
             {{ resume_form|crispy }}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-primary btn-sm w-100">
+            <input type="submit" class="btn btn-primary btn-sm w-25" value="Save and Continue">
+            <input type="submit" class="btn btn-primary btn-sm w-25" value="Personal Info" disabled>
         </form>
     </div>
 </div>

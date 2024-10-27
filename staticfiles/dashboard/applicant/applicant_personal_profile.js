@@ -33,16 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             state: "Please select your state",
             country: "Please select your country",
             postalCode: { empty: "Please enter your postal code", invalid: "Postal code must be exactly 6 digits" },
-            resume: "Please upload your resume"
         };
-
-        // Validation for each field...
-        // Resume validation
-        var resumeField = document.getElementById("id_resume");
-        if (!resumeField.value) {
-            isValid = showError(resumeField, validationMessages.resume);
-            if (!firstInvalidField) firstInvalidField = resumeField;
-        }
 
         // First name validation
         var firstNameField = document.getElementById("id_first_name");

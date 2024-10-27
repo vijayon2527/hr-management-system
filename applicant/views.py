@@ -34,7 +34,7 @@ def applicant_personal_profile_view(request):
             form.save()
             resume_form.save()
             messages.success(request, "Profile updated successfully")
-            return redirect("applicant:applicant_personal_profile")
+            return redirect("applicant:applicant_professional_profile")
         else:
             return render(request, 'dashboard/applicant/applicant_personal_profile.html', {'form': form, 'resume_form': resume_form})
     else:
@@ -104,6 +104,7 @@ def applicant_delete_account_view(request):
     messages.success(request, 'Your account has been deleted successfully')
     return redirect('job:job_list')
 
+@csrf_exempt
 def apply_job_view(request, slug):
     if not request.user.is_authenticated:
         return JsonResponse({
