@@ -104,7 +104,6 @@ def applicant_delete_account_view(request):
     messages.success(request, 'Your account has been deleted successfully')
     return redirect('job:job_list')
 
-@csrf_exempt
 def apply_job_view(request, slug):
     if not request.user.is_authenticated:
         return JsonResponse({

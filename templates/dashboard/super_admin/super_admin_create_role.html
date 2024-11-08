@@ -1,0 +1,20 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Industries, Functional Areas and Their Roles / Create Role</h4>
+    </div>
+    <div class="card-body">
+        {% include 'dashboard/super_admin/partials/induster_functional_area_role_header.html' %}
+        <form id="industryForm" method="post" novalidate>
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+{% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+{% endblock dashboard_extra_js %}

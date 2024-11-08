@@ -5,7 +5,7 @@ from .utils import generate_unique_slug
 from job.managers import JobManager, SkillManager
 from tinymce.models import HTMLField
 from users.models import User
-
+from super_admin.models import Industry, FunctionalArea, Role
 class Skill(models.Model):
     name = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -134,9 +134,42 @@ class Job(models.Model):
         max_length=255,
         help_text="The title of the job position, e.g., 'Software Engineer'."
     )
-    role = models.CharField(
-        max_length=255,
-        help_text="Specific role within the job, e.g., 'Backend Developer'."
+    # industry = models.CharField(
+    #     choices=INDUSTRY_CHOICES,
+    #     default=INDUSTRY_SOFTWARE,
+    #     max_length=100,
+    #     help_text="Industry to which the job belongs, e.g., 'IT-Software', 'Finance'."
+    # )
+    # functional_area = models.CharField(
+    #     choices=FUNCTIONAL_AREA_CHOICES,
+    #     default=FUNCTIONAL_DEVELOPMENT,
+    #     max_length=100,
+    #     help_text="Functional area of the job, e.g., 'Development', 'HR'."
+    # )
+    # role = models.CharField(
+    #     max_length=255,
+    #     help_text="Specific role within the job, e.g., 'Backend Developer'."
+    # )
+    industry = models.ForeignKey(
+        Industry,
+        on_delete=models.CASCADE,
+        related_name='jobs',
+        help_text="Industry to which the job belongs.",
+        verbose_name="Industry"
+    )
+    functional_area = models.ForeignKey(
+        FunctionalArea,
+        on_delete=models.CASCADE,
+        related_name='jobs',
+        help_text="Functional area of the job.",
+        verbose_name="Functional Area"
+    )
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        related_name='jobs',
+        help_text="Specific role within the job.",
+        verbose_name="Role"
     )
     skills = models.ManyToManyField(
         Skill,
@@ -149,24 +182,32 @@ class Job(models.Model):
     )
     min_experience = models.DecimalField(
         max_digits=4,
-        decimal_places=2, 
-        validators=[MinValueValidator(0.0)], 
-        help_text="Minimum years of experience required (e.g., 2.5)."
+        decimal_places=2,
+        validators=[MinValueValidator(0.0)],
+        verbose_name="Minimum Experience (Years)",
+        help_text="Enter the minimum years of experience required (e.g., 2.5 for two and a half years)."
     )
+
     max_experience = models.DecimalField(
         max_digits=4,
         decimal_places=2,
         validators=[MinValueValidator(0.0), MaxValueValidator(50.0)],
-        help_text="Maximum years of experience required (e.g., 5.0)."
+        verbose_name="Maximum Experience (Years)",
+        help_text="Enter the maximum years of experience required (e.g., 5.0 for five years)."
     )
+
     min_salary = models.PositiveIntegerField(
         validators=[MinValueValidator(0)],
-        help_text="Minimum salary offered, e.g., '500000' for 5,00,000 INR."
+        verbose_name="Minimum Salary (INR)",
+        help_text="Enter the minimum monthly salary offered in INR (e.g., '50000' for 50,000)."
     )
+
     max_salary = models.PositiveIntegerField(
         validators=[MinValueValidator(0)],
-        help_text="Maximum salary offered, e.g., '700000' for 7,00,000 INR."
+        verbose_name="Maximum Salary (INR)",
+        help_text="Enter the maximum monthly salary offered in INR (e.g., '70000' for 70,000)."
     )
+
     salary_currency = models.CharField(
         choices=CURRENCY_CHOICES,
         max_length=50,
@@ -176,7 +217,7 @@ class Job(models.Model):
     salary_period = models.CharField(
         max_length=10,
         choices=SALARY_PERIOD_CHOICES,
-        default=SALARY_PERIOD_PER_YEAR,
+        default=SALARY_PERIOD_PER_MONTH,
         help_text="Salary period, e.g., 'Per Year', 'Per Month'."
     )
     no_of_openings = models.PositiveSmallIntegerField(
@@ -186,18 +227,6 @@ class Job(models.Model):
     qualification = models.CharField(
         max_length=255,
         help_text="Qualification required for the job (optional)."
-    )
-    industry = models.CharField(
-        choices=INDUSTRY_CHOICES,
-        default=INDUSTRY_SOFTWARE,
-        max_length=100,
-        help_text="Industry to which the job belongs, e.g., 'IT-Software', 'Finance'."
-    )
-    functional_area = models.CharField(
-        choices=FUNCTIONAL_AREA_CHOICES,
-        default=FUNCTIONAL_DEVELOPMENT,
-        max_length=100,
-        help_text="Functional area of the job, e.g., 'Development', 'HR'."
     )
     employment_type = models.CharField(max_length=50, 
                                         choices=EMPLOYMENT_TYPE_CHOICES, 

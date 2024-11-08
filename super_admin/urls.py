@@ -17,7 +17,21 @@ from .views import (super_admin_analytics_view,
 
                     super_admin_employer_list_view,
                     super_admin_employer_detail_view,
-                    super_admin_user_list_view
+                    super_admin_user_list_view,
+
+                    super_admin_create_industry_view,
+                    super_admin_create_functional_area_view,
+                    super_admin_create_role_view,
+
+                    super_admin_industry_list_view,
+                    super_admin_functional_area_list_view,
+                    super_admin_role_list_view,
+
+                    super_admin_update_industry_view,
+                    super_admin_update_functional_area_view,
+                    super_admin_update_role_view,
+                    get_functional_areas,
+                    get_roles
                     )
 
 app_name='super_admin'
@@ -43,4 +57,19 @@ urlpatterns = [
     path("super_admin-employer-detail/<int:pk>/", super_admin_employer_detail_view, name='super_admin_employer_detail'),
 
     path("super_admin-user-list/", super_admin_user_list_view, name='super_admin_user_list'),
+    
+    path("super_admin-create-industry/", super_admin_create_industry_view, name='super_admin_create_industry'),
+    path("super_admin-create-functional-area/", super_admin_create_functional_area_view, name='super_admin_create_functional_area'),
+    path("super_admin-create-role/", super_admin_create_role_view, name='super_admin_create_role'),
+
+    path("super_admin-industry-list/", super_admin_industry_list_view, name='super_admin_industry_list'),
+    path("super_admin-functional-area-list/", super_admin_functional_area_list_view, name='super_admin_functional_area_list'),
+    path("super_admin-role-list/", super_admin_role_list_view, name='super_admin_role_list'),
+
+    path("super_admin-update-industry/<int:pk>/", super_admin_update_industry_view, name='super_admin_update_industry'),
+    path("super_admin-update-functional-area/<int:pk>/", super_admin_update_functional_area_view, name='super_admin_update_functional_area'),
+    path("super_admin-update-role/<int:pk>/", super_admin_update_role_view, name='super_admin_update_role'),
+
+    path('get-functional-areas/', get_functional_areas, name='get_functional_areas'),
+    path('get-roles/', get_roles, name='get_roles'),
 ]

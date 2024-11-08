@@ -84,4 +84,16 @@
         All Skills
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link 
+        d-flex 
+        align-items-center 
+        gap-2 
+        {% is_active 'super_admin_create_industry' 'super_admin_create_functional_area' 'super_admin_create_role' 'super_admin_industry_list' 'super_admin_functional_area_list' 'super_admin_role_list' 'super_admin_update_industry' 'super_admin_update_functional_area' 'super_admin_update_role' %}" 
+        aria-current="page" 
+        href="{% url 'super_admin:super_admin_industry_list' %}"
+        >
+        Industries, Functional Areas and Their Roles
+        </a>
+    </li>
 </ul>

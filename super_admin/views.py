@@ -12,6 +12,8 @@ from employer.models import Employer
 from django.utils import timezone
 from django.db import transaction
 import logging
+from .forms import IndustryForm, FunctionalAreaForm, RoleForm
+from .models import Industry, FunctionalArea, Role
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_analytics_view(request):
@@ -216,3 +218,111 @@ def super_admin_user_list_view(request):
         'users': users,
     }
     return render(request, 'dashboard/super_admin/super_admin_user_list.html', context)
+
+def super_admin_create_industry_view(request):
+    if request.method == "POST":
+        form = IndustryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Industry created successfully')
+            return redirect('super_admin:super_admin_create_industry')
+        else:
+            return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
+    else:
+        form = IndustryForm()
+    return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
+
+def super_admin_create_functional_area_view(request):
+    if request.method == 'POST':
+        form = FunctionalAreaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Functional area created successfully!')
+            return redirect('super_admin:super_admin_create_functional_area')
+    else:
+        form = FunctionalAreaForm()
+    return render(request, 'dashboard/super_admin/super_admin_create_functional_area.html', {'form': form})
+
+def super_admin_create_role_view(request):
+    if request.method == 'POST':
+        form = RoleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Role created successfully!')
+            return redirect('super_admin:super_admin_create_role')
+    else:
+        form = RoleForm() 
+    return render(request, 'dashboard/super_admin/super_admin_create_role.html', {'form': form})
+
+def super_admin_industry_list_view(request):
+    industries = Industry.objects.all()
+    return render(request, 'dashboard/super_admin/super_admin_industry_list.html', {'industries': industries})
+
+def super_admin_functional_area_list_view(request):
+    functional_areas = FunctionalArea.objects.all()
+    return render(request, 'dashboard/super_admin/super_admin_functional_area_list.html', {'functional_areas': functional_areas})
+
+def super_admin_role_list_view(request):
+    roles = Role.objects.all()
+    return render(request, 'dashboard/super_admin/super_admin_role_list.html', {'roles': roles})
+
+def super_admin_update_industry_view(request, pk):
+    industry = get_object_or_404(Industry, pk=pk)
+    if request.method == 'POST':
+        form = IndustryForm(request.POST, instance=industry)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Industry updated successfully!')
+            return redirect('super_admin:super_admin_update_industry', pk=pk)  # Redirect to the list view
+    else:
+        form = IndustryForm(instance=industry)
+    return render(request, 'dashboard/super_admin/super_admin_update_industry.html', {'form': form, 'industry': industry})
+
+def super_admin_update_functional_area_view(request, pk):
+    functional_area = get_object_or_404(FunctionalArea, pk=pk)
+    industries = Industry.objects.all()
+    functional_areas = FunctionalArea.objects.all()
+    roles = Role.objects.all()
+
+    if request.method == 'POST':
+        form = FunctionalAreaForm(request.POST, instance=functional_area)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Functional area updated successfully!')
+            return redirect('super_admin:super_admin_update_functional_area', pk=pk)
+    else:
+        form = FunctionalAreaForm(instance=functional_area)
+        context = {
+            'form': form, 
+            'functional_area': functional_area,
+            'industries': industries,
+            'functional_areas': functional_areas,
+            'roles': roles
+            }
+    return render(request, 'dashboard/super_admin/super_admin_update_functional_area.html', context)
+
+def super_admin_update_role_view(request, pk):
+    role = get_object_or_404(Role, pk=pk)
+    if request.method == 'POST':
+        form = RoleForm(request.POST, instance=role)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Role updated successfully!')
+            return redirect('super_admin:super_admin_update_role', pk=pk)
+    else:
+        form = RoleForm(instance=role)
+    return render(request, 'dashboard/super_admin/super_admin_update_role.html', {'form': form, 'role': role})
+
+# AJAX views for dependent dropdowns
+from django.http import JsonResponse
+def get_functional_areas(request):
+    industry_id = request.GET.get("industry_id")
+    functional_areas = FunctionalArea.objects.filter(industry_id=industry_id)
+    data = [{"id": fa.id, "name": fa.name} for fa in functional_areas]
+    return JsonResponse(data, safe=False)
+
+def get_roles(request):
+    functional_area_id = request.GET.get("functional_area_id")
+    roles = Role.objects.filter(functional_area_id=functional_area_id)
+    data = [{"id": role.id, "name": role.name} for role in roles]
+    return JsonResponse(data, safe=False)
