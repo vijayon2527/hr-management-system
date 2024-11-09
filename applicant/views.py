@@ -43,6 +43,16 @@ def applicant_personal_profile_view(request):
     return render(request, 'dashboard/applicant/applicant_personal_profile.html', {'form': form, 'resume_form': resume_form})
 
 @allow_access_to([User.APPLICANT_USER])   
+def applicant_profile_picture_view(request):
+    if request.method=="POST":
+        profile_pic = request.FILES.get('profile_picture')
+        user = request.user
+        user.profile_pic = profile_pic
+        user.save()
+        messages.success(request, "Profile Picture updated successfully")
+        return redirect('applicant:applicant_personal_profile')
+
+@allow_access_to([User.APPLICANT_USER])   
 def applicant_professional_profile_view(request):
     user = request.user
     applicant, created = Applicant.objects.get_or_create(user=user)
