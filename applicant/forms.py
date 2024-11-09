@@ -35,7 +35,8 @@ class ApplicantUserProfileForm(forms.ModelForm):
     )
     class Meta:
         model = User
-        fields = ['first_name',
+        fields = ['profile_pic',
+                  'first_name',
                   'last_name',
                   'date_of_birth',
                   'address_line_1',

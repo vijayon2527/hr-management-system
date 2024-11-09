@@ -39,76 +39,8 @@
     </form>
   </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="jobPrevModal" tabindex="-1" aria-labelledby="jobPrevModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="jobPrevModalLabel">Preview job post</h5>
-          <button type="button"  class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="card">
-                <div class="card-body">
-                   <div id="divcontentPreview"></div> 
-                </div>
-              </div>
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
-    </div>
-</div>
 {% endblock dashboard_content %}
 {% block dashboard_extra_js %}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Attach change event listener for industry
-    const industrySelect = document.getElementById("id_industry");
-    if (industrySelect) {
-        industrySelect.addEventListener("change", loadFunctionalAreas);
-    }
-
-    // Attach change event listener for functional area
-    const functionalAreaSelect = document.getElementById("id_functional_area");
-    if (functionalAreaSelect) {
-        functionalAreaSelect.addEventListener("change", loadRoles);
-    }
-});
-
-function loadFunctionalAreas() {
-    const industryId = document.getElementById("id_industry").value;
-    if (!industryId) return;
-
-    fetch(`/super_admin/get-functional-areas/?industry_id=${industryId}`)
-        .then(response => response.json())
-        .then(data => {
-            const functionalAreaSelect = document.getElementById("id_functional_area");
-            functionalAreaSelect.innerHTML = '<option value="">Select Functional Area</option>';
-            data.forEach(area => {
-                functionalAreaSelect.innerHTML += `<option value="${area.id}">${area.name}</option>`;
-            });
-        })
-        .catch(error => console.error('Error loading functional areas:', error));
-}
-
-function loadRoles() {
-    const functionalAreaId = document.getElementById("id_functional_area").value;
-    if (!functionalAreaId) return;
-
-    fetch(`/super_admin/get-roles/?functional_area_id=${functionalAreaId}`)
-        .then(response => response.json())
-        .then(data => {
-            const roleSelect = document.getElementById("id_role");
-            roleSelect.innerHTML = '<option value="">Select Role</option>';
-            data.forEach(role => {
-                roleSelect.innerHTML += `<option value="${role.id}">${role.name}</option>`;
-            });
-        })
-        .catch(error => console.error('Error loading roles:', error));
-}
-
-</script>
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'js/dashboard/state_city.js' %}"></script>
@@ -116,4 +48,5 @@ function loadRoles() {
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script src="{% static 'js/dashboard/skills_add.js' %}"></script>
+<script src="{% static 'js/dashboard/industry_functional_area_role.js' %}"></script>
 {% endblock dashboard_extra_js %}

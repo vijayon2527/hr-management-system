@@ -1,4 +1,3 @@
-from django.utils.timesince import timesince
 from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
@@ -6,7 +5,8 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
-from hitcount.views import HitCountDetailView
+from hitcount.models import HitCount
+from hitcount.views import HitCountMixin
 from job.models import Job, Skill
 
 
@@ -62,6 +62,7 @@ class JobList(ListView):
         if job_title:
             try:
                 job = Job.objects.get(slug=job_title)
+                self.increment_hit_count(job)
                 context['job'] = job
             except Job.DoesNotExist:
                 messages.error(self.request, "The requested job was not found.")
@@ -90,6 +91,10 @@ class JobList(ListView):
                 })
         
         return super().render_to_response(context, **response_kwargs)
+
+    def increment_hit_count(self, job):
+        hit_count = HitCount.objects.get_for_object(job)
+        HitCountMixin.hit_count(self.request, hit_count)
 
 job_list = JobList.as_view()
 

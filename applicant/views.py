@@ -28,7 +28,7 @@ def applicant_personal_profile_view(request):
     user = request.user
     applicant, created = Applicant.objects.get_or_create(user=user)
     if request.method=="POST":
-        form = ApplicantUserProfileForm(request.POST, instance=user)
+        form = ApplicantUserProfileForm(request.POST, request.FILES, instance=user)
         resume_form = ApplicantResumeForm(request.POST, request.FILES, instance=applicant)
         if form.is_valid() and resume_form.is_valid():
             form.save()
@@ -131,6 +131,8 @@ def apply_job_view(request, slug):
                 })
 
             Application.objects.create(job=job, applicant=applicant)
+            job.job_applied_count+=1
+            job.save()
             return JsonResponse({
                 'success': True,
                 'message': "You have successfully applied for this job."

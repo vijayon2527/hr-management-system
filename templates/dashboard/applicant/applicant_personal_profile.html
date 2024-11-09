@@ -12,8 +12,23 @@
         width: 100%;
         margin: 0;
         padding: 0;
+        }
     }
-}
+    .bio{
+        text-align: center;
+    }
+    .profile {
+        border-radius: 50%;
+        border: 2px solid red;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile:hover {
+        transform: scale(1.05); /* Slightly enlarge the image */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+    }
+
 </style>
 {% endblock dashboard_extra_css %}
 {% block dashboard_content %}
@@ -28,13 +43,42 @@
         </div>
         <hr>
         <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+        
+        <div class="bio">
+            <img class="profile" 
+                 src="{% if form.instance.profile_pic %}{{ form.instance.profile_pic.url }}{% else %}{% static 'images/profile.png' %}{% endif %}" 
+                 width="200" 
+                 alt="Not found" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#staticBackdrop">
+        </div> 
+        
         <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
             {% csrf_token %}
-            {{ resume_form|crispy }}
             {{ form|crispy }}
+            {{ resume_form|crispy }}
             <input type="submit" class="btn btn-primary btn-sm w-25" value="Save and Continue">
             <input type="submit" class="btn btn-primary btn-sm w-25" value="Personal Info" disabled>
         </form>
+    </div>
+</div>  
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Profile Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img class="profile" 
+                     src="{% if form.instance.profile_pic %}{{ form.instance.profile_pic.url }}{% else %}{% static 'images/profile.png' %}{% endif %}" 
+                     width="100%" 
+                     alt="Not found">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock dashboard_content %}
