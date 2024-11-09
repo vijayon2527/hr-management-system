@@ -39,17 +39,22 @@
 <script src="{% static 'js/api.js' %}"></script>
 <script>
     async function applyJob(event, slug) {
-        event.preventDefault();
+    event.preventDefault();
 
-        const url = `/applicant/applicant-apply-job/${slug}/`;
-        const response = await apiRequest(url, 'POST');
+    const url = `/applicant/applicant-apply-job/${slug}/`;
+    const response = await apiRequest(url, 'POST');
 
-        if (response.success) {
-            toastr.success(response.message, 'Success');
-        } else {
-            toastr.error(response.message || "Please log in and try again", 'Error');
+    if (response.success) {
+        toastr.success(response.message, 'Success');
+    } else {
+        if (response.redirect_url) {
+        window.location.href = response.redirect_url;
+    } else {
+            toastr.error(response.message || "An error occurred. Please try again.", 'Error');
         }
     }
+}
+
 </script>
 
 {% endblock extra_js %}

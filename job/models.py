@@ -344,7 +344,7 @@ class Job(models.Model):
         ordering = ['-id']
 
     def save(self, *args, **kwargs):
-        if not self.slug or slugify(self.job_title) != self.slug:
+        if not self.pk:
             self.slug = generate_unique_slug(Job, self.job_title)
         super().save(*args, **kwargs)
 

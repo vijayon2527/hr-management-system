@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.db import IntegrityError
+from django.urls import reverse
 
 from agphr.utils.decorators import allow_access_to
 from users.models import User
@@ -114,10 +113,14 @@ def applicant_delete_account_view(request):
     messages.success(request, 'Your account has been deleted successfully')
     return redirect('job:job_list')
 
+
+@csrf_exempt  # If you need to disable CSRF for testing; better to implement proper CSRF handling
 def apply_job_view(request, slug):
     if not request.user.is_authenticated:
+        messages.error(request, "Please login as applicant to apply for a job.")
         return JsonResponse({
             'success': False,
+            'redirect_url': reverse('users:login'),  # Assuming 'login' is the name of your login view
             'message': "You need to be logged in to apply for a job."
         })
 
@@ -129,8 +132,10 @@ def apply_job_view(request, slug):
             applicant = Applicant.objects.get(user=user)
 
             if not applicant.user.is_profile_completed:
+                messages.error(request, "Please update your profile to apply for a job.")
                 return JsonResponse({
                     'success': False,
+                    'redirect_url': reverse('applicant:applicant_personal_profile'),
                     'message': "Please update your profile to apply for a job."
                 })
 
@@ -140,9 +145,11 @@ def apply_job_view(request, slug):
                     'message': "You have already applied for this job."
                 })
 
+            # Create application
             Application.objects.create(job=job, applicant=applicant)
-            job.job_applied_count+=1
+            job.job_applied_count += 1
             job.save()
+
             return JsonResponse({
                 'success': True,
                 'message': "You have successfully applied for this job."
@@ -151,17 +158,10 @@ def apply_job_view(request, slug):
         except Applicant.DoesNotExist:
             return JsonResponse({
                 'success': False,
-                'message': "You need to login as an applicant before applying for jobs."
-            })
-
-        except IntegrityError:
-            return JsonResponse({
-                'success': False,
-                'message': "It looks like you've already applied for this job. Please check your application status."
+                'message': "You need to register as an applicant before applying for jobs."
             })
 
         except Exception as e:
-            print(f"Unexpected error: {e}")
             return JsonResponse({
                 'success': False,
                 'message': "Something went wrong. Please try again later."

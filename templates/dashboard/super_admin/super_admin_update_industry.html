@@ -1,12 +1,23 @@
 {% extends "dashboard/dashboard_base.html" %}
-{% load static crispy_forms_tags %}
+{% load static crispy_forms_tags common_tags %}
 {% block dashboard_content %}
 <div class="card mx-auto">
     <div class="card-header card-header-primary">
-        <h4 class="card-title" style="font-size: 20px;">Industries, Functional Areas and Their Roles / Update Industry</h4>
+        <h4 class="card-title" style="font-size: 20px;">Industry / Update</h4>
     </div>
     <div class="card-body">
-        {% include 'dashboard/super_admin/partials/induster_functional_area_role_header.html' %}
+        <div class="mb-2" style="overflow-x: auto; white-space: nowrap;">
+            <a href="{% url 'super_admin:super_admin_industry_list' %}" 
+               class="btn btn-outline-primary
+               {% is_active 'super_admin_industry_list' 'super_admin_update_industry' %}">
+               Industry List
+            </a>
+            <a href="{% url 'super_admin:super_admin_create_industry' %}" 
+            class="btn btn-outline-primary
+            {% is_active 'super_admin_create_industry' %}">
+            Create Industry
+            </a>
+        </div>
         <form id="industryForm" method="post" novalidate>
             {% csrf_token %}
             {{form|crispy}}
