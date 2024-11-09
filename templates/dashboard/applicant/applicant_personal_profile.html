@@ -18,16 +18,29 @@
         text-align: center;
     }
     .profile {
-        border-radius: 50%;
+        width: 300px; /* Adjust width */
+        height: 300px; /* Set height to be the same as width */
+        border-radius: 50%; /* Makes the image circular */
         border: 2px solid red;
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        object-fit: cover; /* Ensures the image covers the container */
     }
-
+    
+    .profile-modal {
+        width: 100%; /* Allow the image to take up the full width of the modal */
+        height: auto; /* Maintain the aspect ratio */
+        max-width: 480px; /* Optional: set a max width */
+        max-height: 480px; /* Optional: set a max height */
+        border-radius: 50%; /* Ensure the image is circular */
+        object-fit: cover; /* Ensures the image covers the circular area without stretching */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth effect */
+    }
     .profile:hover {
         transform: scale(1.05); /* Slightly enlarge the image */
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
     }
+    
 
 </style>
 {% endblock dashboard_extra_css %}
@@ -50,7 +63,7 @@
                  width="200" 
                  alt="Not found" 
                  data-bs-toggle="modal" 
-                 data-bs-target="#staticBackdrop">
+                 data-bs-target="#staticBackdrop"><br>
         </div> 
         
         <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
@@ -70,7 +83,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <img class="profile" 
+                <img class="profile-modal" 
                      src="{% if form.instance.profile_pic %}{{ form.instance.profile_pic.url }}{% else %}{% static 'images/profile.png' %}{% endif %}" 
                      width="100%" 
                      alt="Not found">

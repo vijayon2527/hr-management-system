@@ -1,4 +1,5 @@
 {% extends 'dashboard/dashboard_base.html' %}
+{% load common_tags %}
 {% load hitcount_tags humanize %}
 {% block dashboard_extra_css %}
 <style>
@@ -12,10 +13,21 @@
 {% block dashboard_content %}
 <div class="card col mx-auto">
     <div class="card-header card-header-primary">
-        <h4 class="card-title" style="font-size: 20px;">Industries, Functional Areas and Their Roles / Industry List</h4>
+        <h4 class="card-title" style="font-size: 20px;">Industry</h4>
     </div>
   <div class="card-body">
-        {% include 'dashboard/super_admin/partials/induster_functional_area_role_header.html' %}
+    <div class="mb-2" style="overflow-x: auto; white-space: nowrap;">
+        <a href="{% url 'super_admin:super_admin_industry_list' %}" 
+           class="btn btn-outline-primary
+           {% is_active 'super_admin_industry_list' 'super_admin_update_industry' %}">
+           Industry List
+        </a>
+        <a href="{% url 'super_admin:super_admin_create_industry' %}" 
+        class="btn btn-outline-primary
+        {% is_active 'super_admin_create_industry' %}">
+        Create Industry
+        </a>
+    </div>
     <table class="table table-primary table-striped table-bordered">
     <thead>
         <tr>

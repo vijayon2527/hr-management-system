@@ -20,10 +20,6 @@ def super_admin_analytics_view(request):
   return render(request, 'dashboard/super_admin/super_admin_analytics.html')
 
 @allow_access_to([User.SUPER_ADMIN])
-def super_admin_user_list_view(request):
-    pass
-
-@allow_access_to([User.SUPER_ADMIN])
 def super_admin_user_detail_view(request, pk):
     pass
 
@@ -213,7 +209,7 @@ def super_admin_employer_detail_view(request, pk):
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_user_list_view(request):
-    users = User.objects.all()
+    users = User.objects.all().order_by('-id')
     context = {
         'users': users,
     }
