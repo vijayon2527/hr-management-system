@@ -2,6 +2,9 @@
 {% load hitcount_tags humanize %}
 {% block dashboard_extra_css %}
 <style>
+    .dataTables_wrapper {
+        margin-top: 20px;
+    }
     .fabutton {
         background: none;
         padding: 0px;
@@ -13,258 +16,109 @@
     }
 </style>
 {% endblock dashboard_extra_css %}
+
 {% block dashboard_content %}
 <div class="card col mx-auto">
     <div class="card-header card-header-primary">
-        <h4 class="card-title" style="font-size: 20px;">Job Lists</h4>
+        <h4 class="card-title" style="font-size: 20px;">Data Table</h4>
     </div>
-  <div class="card-body">
-    <form action=".">
-        <div class="d-flex flex-row justify-content align-items-center">
-            <div class="search_from"><input type="text" name="name" class="form-control py-2"required></div>
-            <button type="submit" class="btn btn-primary"><span>Search</span></button></div>
+    <div class="card-body">
+        <div style="overflow-x:auto;">
+            <table id="example" class="display table table-striped table-bordered nowrap" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Job Title</th>
+                        <th>Industry</th>
+                        <th>Functional Area</th>
+                        <th>Role</th>
+                        <th>City</th>
+                        <th>Uploaded at</th>
+                        <th>Published at</th>
+                        <th>Publish</th>
+                        <th>applicants</th>
+                        <th>Views</th>
+                        <th>Actions</th>
+                        <th>Recommended</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ job.slug }}</td>
+                        <td>{{ job.industry.name }}</td>
+                        <td>{{ job.functional_area.name }}</td>
+                        <td>{{ job.role.name }}</td>
+                        <td>{{ job.city }}</td>
+                        <td>{{job.uploaded_at|naturaltime}}</td>
+                        <td>{{job.published_at|naturaltime}}</td>
+                        <td>
+                            <div class="form-check form-switch">
+                                {% if job.publish %}
+                                <a href="{% url 'super_admin:super_admin_job_unpublish' job.slug %}"onclick="return confirm('Are you sure, you want to unpublish?')"><i class="fa-solid fa-toggle-on"data-toggle="tooltip" title="Unpublish"></i></a>
+                                {% else %}
+                                <a href="{% url 'super_admin:super_admin_job_publish' job.slug %}"onclick="return confirm('Are you sure, you want to publish?')"><i class="fa-solid fa-toggle-off text-secondary"data-toggle="tooltip" title="Publish"></i></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td><i class="fa-sharp fa-solid fa-file-import text-primary me-2"data-toggle="tooltip" title="Total no of applicants"></i>{{job.job_applied_count}}</td>
+                        <td><i class="fa-regular fa-eye text-info me-2"data-toggle="tooltip" title="Total no of views"></i>{% get_hit_count for job %}</td>
+                        <td>
+                            <table >
+                                <tr>
+                                    <td><a href="{% url 'super_admin:super_admin_job_detail' job.slug %}"><i class="fa-brands fa-readme mx-2"data-toggle="tooltip" title="Click to see job detail"></i></a></td>
+                                    <td><a href="{% url 'super_admin:super_admin_job_update' job.slug %}"><i class="fa-solid fa-pen mx-2 text-info"data-toggle="tooltip" title="Click to update job"></i></a></td>
+                                    <td><a href="{% url 'super_admin:super_admin_job_delete' job.slug %}"onclick="return confirm('Are you sure you want to delete?')"><i class="fa-solid fa-trash mx-2 text-danger"data-toggle="tooltip" title="Click to delete"></i></a></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            {% if job.recommended_job == 0 %}
+                            <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-outline-secondary btn-sm add"data-toggle="tooltip" title="Click to add as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">add</a>
+                            {% else %}
+                            <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-primary btn-sm add"data-toggle="tooltip" title="Click to remove as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">remove</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </form>
-    <div style="overflow-x:auto!important">
-        <table class="table table-primary table-striped table-bordered">
-            <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='job_title'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            
-                            </form>
-                        </div>
-                        <div>
-                            Job title
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-job_title'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col">
-                </div>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <form action="">
-                            <input type='hidden' name='sorting_value' value='country'>
-                            <button type="submit" class="fabutton">
-                                <i class="fa-sharp fa-solid fa-up-long"></i>
-                            </button>
-                        </form>
-                    </div>
-                    <div>
-                        Country
-                    </div>
-                    <div>
-                        <form action=".">
-                            <input type='hidden' name='sorting_value' value='-country'>
-                            <button type="submit" class="fabutton">
-                                <i class="fa-sharp fa-solid fa-down-long"></i>
-                            </button>
-                        </form>
-                    </div>
-                </th>
-                <th scope="col">
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='place'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            Place
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-place'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='uploaded_at'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            Uploaded at
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-uploaded_at'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='published_at'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            Published at
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-published_at'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='publish'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            Publish
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-publish'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='job_applied_count'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            applicants
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-job_applied_count'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-                <th scope="col" class="text-center">
-                    Views
-                </th>
-                <th scope="col" class="text-center">Actions</th>
-                <!-- <th scope="col" class="text-center">Recommended</th> -->
-                <th scope="col">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <form action="">
-                                <input type='hidden' name='sorting_value' value='recommended_job'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-up-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div>
-                            Recommended
-                        </div>
-                        <div>
-                            <form action=".">
-                                <input type='hidden' name='sorting_value' value='-recommended_job'>
-                                <button type="submit" class="fabutton">
-                                    <i class="fa-sharp fa-solid fa-down-long"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for job in jobs %}
-                <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{job.job_title|truncatechars:20}}</td>
-                <td>{{job.country|truncatechars:20}}</td>
-                <td>{{job.place|truncatechars:20}}</td>
-                <td>{{job.uploaded_at|naturaltime|truncatechars:20}}</td>
-                <td>{{job.published_at|naturaltime|truncatechars:20}}</td>
-                <td>
-                    <div class="form-check form-switch">
-                        {% if job.publish %}
-                        <a href="{% url 'super_admin:super_admin_job_unpublish' job.slug %}"onclick="return confirm('Are you sure, you want to unpublish?')"><i class="fa-solid fa-toggle-on"data-toggle="tooltip" title="Unpublish"></i></a>
-                        {% else %}
-                        <a href="{% url 'super_admin:super_admin_job_publish' job.slug %}"onclick="return confirm('Are you sure, you want to publish?')"><i class="fa-solid fa-toggle-off text-secondary"data-toggle="tooltip" title="Publish"></i></a>
-                        {% endif %}
-                    </div>
-                </td>
-                <td><i class="fa-sharp fa-solid fa-file-import text-primary me-2"data-toggle="tooltip" title="Total no of applicants"></i>{{job.job_applied_count}}</td>
-                <td><i class="fa-regular fa-eye text-info me-2"data-toggle="tooltip" title="Total no of views"></i>{% get_hit_count for job %}</td>
-                <td>
-                    <table >
-                        <tr>
-                            <td><a href="{% url 'super_admin:super_admin_job_detail' job.slug %}"><i class="fa-brands fa-readme mx-2"data-toggle="tooltip" title="Click to see job detail"></i></a></td>
-                            <td><a href="{% url 'super_admin:super_admin_job_update' job.slug %}"><i class="fa-solid fa-pen mx-2 text-info"data-toggle="tooltip" title="Click to update job"></i></a></td>
-                            <td><a href="{% url 'super_admin:super_admin_job_delete' job.slug %}"onclick="return confirm('Are you sure you want to delete?')"><i class="fa-solid fa-trash mx-2 text-danger"data-toggle="tooltip" title="Click to delete"></i></a></td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    {% if job.recommended_job == 0 %}
-                    <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-outline-secondary btn-sm add"data-toggle="tooltip" title="Click to add as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">add</a>
-                    {% else %}
-                    <a href="{% url 'super_admin:super_admin_toggle_recommended_jobs' job.slug %}"class="btn btn-primary btn-sm add"data-toggle="tooltip" title="Click to remove as recommended job"onclick="return confirm('Are you sure, you want to make changes?')">remove</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
     </div>
-  </div>
 </div>
 {% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            language: {
+                search: "Filter records:",
+                lengthMenu: "Show _MENU_ entries per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries to show",
+                infoFiltered: "(filtered from _MAX_ total entries)",
+                zeroRecords: "No matching records found",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "Next",
+                    previous: "Previous"
+                }
+            },
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+            order: [[0, 'asc']], // Sort by the first column by default
+            scrollX: true,
+            fixedHeader: true
+        });
+    });
+</script>
+{% endblock dashboard_extra_js %}

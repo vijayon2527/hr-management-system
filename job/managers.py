@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 import operator
 from functools import reduce
 from datetime import date, timedelta
@@ -114,11 +115,13 @@ class JobQuerySet(models.QuerySet):
         return jobs
     
     def toggle_recommended_jobs(self, slug, user=None):
-        job = self.get(slug=slug, user=user)
+        # job = self.get(slug=slug, user=user) # commented because super admin was not able to perform
+        job = self.get(slug=slug)
         if job.recommended_job == True:
             job.recommended_job = False
         else:
             job.recommended_job = True
+            job.published_at=timezone.now()
         job.save()
         return
     
