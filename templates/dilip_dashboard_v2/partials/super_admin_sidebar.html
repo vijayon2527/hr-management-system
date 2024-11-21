@@ -60,7 +60,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'super_admin:super_admin_employer_list' %}" class="nav-link">
+            <a href="{% url 'super_admin:super_admin_employer_list' %}" 
+            class="nav-link
+            {% is_active 'super_admin_employer_list' %}"
+            >
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Employer List
@@ -81,16 +84,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'super_admin:super_admin_user_list' %}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                User List
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link 
+            {% is_active 'super_admin_skill_list' %}"
+            >
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 Skills
@@ -100,7 +96,10 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'super_admin:super_admin_skill_list' %}" class="nav-link">
+                <a href="{% url 'super_admin:super_admin_skill_list' %}" 
+                class="nav-link
+                {% is_active 'super_admin_skill_list' %}"
+                >
                   <i class="far fa-circle nav-icon"></i>
                   <p>Skill Lists</p>
                 </a>

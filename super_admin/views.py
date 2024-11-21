@@ -197,7 +197,7 @@ def super_admin_employer_list_view(request):
     context = {
         'employers': employers,
     }
-    return render(request, 'dashboard/super_admin/super_admin_employer_list.html', context=context)
+    return render(request, 'dilip_dashboard_v2/super_admin/super_admin_employer_list.html', context=context)
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_employer_detail_view(request, pk):
