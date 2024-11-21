@@ -1,0 +1,18 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load crispy_forms_tags %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">My Resume</h4>
+      </div>
+    <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{form|crispy}}
+      </div>
+      <input type="submit" class="btn btn-primary btn-sm w-100">
+    </form>
+  </div>
+</div>
+{% endblock dashboard_content %}

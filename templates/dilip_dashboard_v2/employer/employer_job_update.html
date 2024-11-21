@@ -1,0 +1,53 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load hitcount_tags humanize static crispy_forms_tags %}
+{% block dashboard_extra_css %}
+<style>
+    .fabutton {
+        background: none;
+        padding: 0px;
+        border: none;
+    }
+    .add{
+        border-radius: 20px;
+        width: 100px;
+    }
+</style>
+{% endblock dashboard_extra_css %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+      <h4 class="card-title" style="font-size: 20px;">Update Job</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{form|crispy}}
+        {{form.media}}
+
+        <div class="mb-3">
+            <label for="id_skills1" class="form-label">Skill required:</label>
+            <ul class="list-group list-group-horizontal mb-1 d-flex flex-wrap field_wrapper1">
+            {% for skill in job.skills.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <input type="hidden" id="{{skill.name}}" name="skills" value="{{skill.id}}"><h6><span class="badge bg-success mx-1">{{skill.name}}</span></h6><a href="javascript:void(0);" class="remove_button"><i class="fa fa-trash text-danger"></i></a>
+            </li>
+            {% endfor %}
+           </ul>   
+            <input type="search" class="form-control" id="id_skills1" name="id_skills1" placeholder="Enter Skill">
+        </div>
+
+        <input type="submit" class="btn btn-light w-100">
+      </form>
+    </div>
+  </div>
+{% endblock dashboard_content %}
+{% block dashboard_extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/dashboard/validation.js' %}"></script>
+<script src="{% static 'js/dashboard/job_preview_update.js' %}"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script src="{% static 'js/dashboard/skills_add.js' %}"></script>
+<script src="{% static 'js/dashboard/industry_functional_area_role.js' %}"></script>
+{% endblock dashboard_extra_js %}

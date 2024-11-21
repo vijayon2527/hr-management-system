@@ -1,0 +1,281 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block dashboard_content %}
+<h2 class="text-center bg-secondary mt-2 p-2">User List</h2>
+<a href="{% url 'super_admin:user_list' %}"class="btn btn-outline-primary mb-2 text-dark">All Users</a>
+<a href="?user_type=SCHOOL_USER"class="btn btn-outline-primary mb-2 text-dark">All School Users</a>
+<a href="?user_type=PARENT"class="btn btn-outline-primary mb-2 text-dark">All Parent Users </a>
+<a href="?active_status=True"class="btn btn-outline-primary mb-2 text-dark">All Active Users </a>
+<a href="?active_status=False"class="btn btn-outline-primary mb-2 text-dark">All Inactive Users </a>
+<a href=""class="btn btn-outline-primary mb-2 text-dark">Create User </a>
+<table class="table table-primary table-striped table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Active Status</th>
+            <th scope="col" colspan="3" class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Dilip</td>
+            <td>Sapkota</td>
+            <td>dilip@gmail.com</td>
+            <td>8808080808</td>
+            <td>
+                <select class="form-select" aria-label="Default select example">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>Alice</td>
+            <td>Johnson</td>
+            <td>alice.johnson@example.com</td>
+            <td>9101010101</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>John</td>
+            <td>Doe</td>
+            <td>john.doe@example.com</td>
+            <td>9202020202</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>Jane</td>
+            <td>Smith</td>
+            <td>jane.smith@example.com</td>
+            <td>9303030303</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>Mike</td>
+            <td>Jones</td>
+            <td>mike.jones@example.com</td>
+            <td>9404040404</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>Linda</td>
+            <td>Williams</td>
+            <td>linda.williams@example.com</td>
+            <td>9505050505</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">7</th>
+            <td>David</td>
+            <td>Martinez</td>
+            <td>david.martinez@example.com</td>
+            <td>9606060606</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">8</th>
+            <td>Sarah</td>
+            <td>Lee</td>
+            <td>sarah.lee@example.com</td>
+            <td>9707070707</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">9</th>
+            <td>Emily</td>
+            <td>Clark</td>
+            <td>emily.clark@example.com</td>
+            <td>9808080808</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">10</th>
+            <td>James</td>
+            <td>Brown</td>
+            <td>james.brown@example.com</td>
+            <td>9909090909</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">11</th>
+            <td>Sophia</td>
+            <td>Davis</td>
+            <td>sophia.davis@example.com</td>
+            <td>9811111111</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">16</th>
+            <td>Matthew</td>
+            <td>Rodriguez</td>
+            <td>matthew.rodriguez@example.com</td>
+            <td>9866666666</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">17</th>
+            <td>Olivia</td>
+            <td>Martinez</td>
+            <td>olivia.martinez@example.com</td>
+            <td>9877777777</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">18</th>
+            <td>Henry</td>
+            <td>Hernandez</td>
+            <td>henry.hernandez@example.com</td>
+            <td>9888888888</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">19</th>
+            <td>Grace</td>
+            <td>Lee</td>
+            <td>grace.lee@example.com</td>
+            <td>9899999999</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+        <tr>
+            <th scope="row">20</th>
+            <td>Jack</td>
+            <td>Thompson</td>
+            <td>jack.thompson@example.com</td>
+            <td>9900000000</td>
+            <td>
+                <select class="form-select">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </td>
+            <td><a href="" class="btn btn-info btn-sm w-100">Details</a></td>
+            <td><a href="" class="btn btn-warning btn-sm w-100">Update</a></td>
+            <td><a href="" class="btn btn-danger btn-sm w-100">Delete</a></td>
+        </tr>
+    </tbody>
+</table>
+{% endblock dashboard_content %}

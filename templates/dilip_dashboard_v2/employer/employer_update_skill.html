@@ -1,0 +1,29 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+{% block dashboard_extra_css %}
+<style>
+  .error{
+    color:red;
+}
+</style>
+{% endblock dashboard_extra_css %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+  <div class="card-header card-header-primary">
+    <h4 class="card-title" style="font-size: 20px;">Update Skill</h4>
+  </div>
+  <div class="card-body">
+    <form action="." method="post" id="id_skill">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary btn-sm w-100 mt-1"><span>Submit</span></button>
+    </form>
+  </div>
+</div>
+{% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/dashboard/validation.js' %}"></script>
+{% endblock dashboard_extra_js %}

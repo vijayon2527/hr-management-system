@@ -1,0 +1,94 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags common_tags %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Functional Area / Update</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-2" style="overflow-x: auto; white-space: nowrap;">
+            <a href="{% url 'super_admin:super_admin_functional_area_list' %}" 
+                class="btn btn-outline-primary
+                {% is_active 'super_admin_functional_area_list' 'super_admin_update_functional_area' %}">
+                Functional Area List
+            </a>
+            <a href="{% url 'super_admin:super_admin_create_functional_area' %}" 
+                class="btn btn-outline-primary 
+                {% is_active 'super_admin_create_functional_area' %}">
+                Create Functional Area
+            </a>
+        </div>
+        <form id="industryForm" method="post" novalidate>
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-primary">
+        </form>
+
+        <!-- <h2>{% if form.instance.pk %}Update{% else %}Create{% endif %} Functional Area</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_industry">Industry:</label>
+                <select id="id_industry" name="industry" onchange="loadFunctionalAreas()"class="form-control">
+                    <option value="">Select Industry</option>
+                    {% for industry in industries %}
+                    <option value="{{ industry.pk }}">{{ industry.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_functional_area">Functional Area:</label>
+                <select id="id_functional_area" name="functional_area" onchange="loadRoles()"class="form-control">
+                    <option value="">Select Functional Area</option>
+                    {% for functional_area in functional_areas %}
+                    <option value="{{ functional_area.pk }}">{{ functional_area.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_role">Role:</label>
+                <select id="id_role" name="role" class="form-control">
+                    <option value="">Select Role</option>
+                    {% for role in roles %}
+                    <option value="{{ role.pk }}">{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn btn-primary">
+        </form> -->
+    </div>
+</div>
+{% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+<script>
+    function loadFunctionalAreas() {
+        const industryId = document.getElementById("id_industry").value;
+        fetch(`/super_admin/get-functional-areas/?industry_id=${industryId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                const functionalAreaSelect = document.getElementById("id_functional_area");
+                functionalAreaSelect.innerHTML = '<option value="">Select Functional Area</option>';
+                data.forEach(area => {
+                    functionalAreaSelect.innerHTML += `<option value="${area.id}">${area.name}</option>`;
+                });
+            });
+    }
+
+    function loadRoles() {
+        const functionalAreaId = document.getElementById("id_functional_area").value;
+        fetch(`/super_admin/get-roles/?functional_area_id=${functionalAreaId}`)
+            .then(response => response.json())
+            .then(data => {
+                const roleSelect = document.getElementById("id_role");
+                roleSelect.innerHTML = '<option value="">Select Role</option>';
+                data.forEach(role => {
+                    roleSelect.innerHTML += `<option value="${role.id}">${role.name}</option>`;
+                });
+            });
+    }
+</script>
+{% endblock dashboard_extra_js %}

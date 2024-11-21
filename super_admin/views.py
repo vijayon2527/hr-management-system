@@ -34,7 +34,7 @@ def super_admin_employeer_detail_view(request, slug):
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_applicant_list_view(request):
     applicants = Applicant.objects.all().order_by('-created_at')
-    return render(request, 'dashboard/super_admin/super_admin_applicant_list.html', {'applicants': applicants})
+    return render(request, 'dilip_dashboard_v2/super_admin/super_admin_applicant_list.html', {'applicants': applicants})
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_applicant_detail_view(request):
@@ -42,7 +42,7 @@ def super_admin_applicant_detail_view(request):
 
 @method_decorator(allow_access_to([User.SUPER_ADMIN]), name="dispatch")
 class SuperAdminJobListView(ListView):
-    template_name = 'dashboard/super_admin/super_admin_job_list.html'
+    template_name = 'dilip_dashboard_v2/super_admin/super_admin_job_list.html'
     context_object_name = 'jobs'
     # paginate_by = 10
     

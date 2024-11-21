@@ -1,0 +1,23 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Skill Details</h4>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">added</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{skill.name}}</th>
+            <td>{{skill.created_at}}</td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock dashboard_content %}

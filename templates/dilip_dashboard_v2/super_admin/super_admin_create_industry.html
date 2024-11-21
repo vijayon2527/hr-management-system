@@ -1,0 +1,31 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags common_tags %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Industry / Create</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-2" style="overflow-x: auto; white-space: nowrap;">
+            <a href="{% url 'super_admin:super_admin_industry_list' %}" 
+               class="btn btn-outline-primary
+               {% is_active 'super_admin_industry_list' 'super_admin_update_industry' %}">
+               Industry List
+            </a>
+            <a href="{% url 'super_admin:super_admin_create_industry' %}" 
+            class="btn btn-outline-primary
+            {% is_active 'super_admin_create_industry' %}">
+            Create Industry
+            </a>
+        </div>
+        <form id="industryForm" method="post" novalidate>
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+{% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+{% endblock dashboard_extra_js %}

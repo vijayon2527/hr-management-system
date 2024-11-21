@@ -1,0 +1,31 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags common_tags %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">Functional Area / Create</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-2" style="overflow-x: auto; white-space: nowrap;">
+            <a href="{% url 'super_admin:super_admin_functional_area_list' %}" 
+                class="btn btn-outline-primary
+                {% is_active 'super_admin_functional_area_list' 'super_admin_update_functional_area' %}">
+                Functional Area List
+            </a>
+            <a href="{% url 'super_admin:super_admin_create_functional_area' %}" 
+                class="btn btn-outline-primary 
+                {% is_active 'super_admin_create_functional_area' %}">
+                Create Functional Area
+            </a>
+        </div>
+        <form id="industryForm" method="post" novalidate>
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+{% endblock dashboard_content %}
+
+{% block dashboard_extra_js %}
+{% endblock dashboard_extra_js %}

@@ -1,0 +1,94 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block dashboard_extra_css %}
+<style>
+    @media (max-width: 760px) {
+    .buttons {
+        display: flex;
+        padding: -10px;
+        margin: -10px;
+    }
+    .btn{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        }
+    }
+    .bio{
+        text-align: right;
+    }
+    .profile {
+        width: 100px; /* Adjust width */
+        height: 100px; /* Set height to be the same as width */
+        border-radius: 50%; /* Makes the image circular */
+        border: 2px solid red;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        object-fit: cover; /* Ensures the image covers the container */
+    }
+    .profile:hover {
+        transform: scale(1.05); /* Slightly enlarge the image */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+    }
+    
+
+</style>
+{% endblock dashboard_extra_css %}
+{% block dashboard_content %}
+<div class="card mx-auto">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px;">My Profile</h4>
+    </div>
+    <div class="card-body">
+        <div class="buttons">
+            <a class="btn btn-outline-secondary  {% if '/applicant-personal-profile/' in request.path %}active{% endif %}" href="{% url 'applicant:applicant_personal_profile' %}">Personal Info</a>
+            <a class="btn btn-outline-secondary" href="{% url 'applicant:applicant_professional_profile' %}">Professional Info</a>
+        </div>
+        <div class="bio">
+            <img class="profile" 
+                 src="{% if form.instance.profile_pic %}{{ form.instance.profile_pic.url }}{% else %}{% static 'images/profile.png' %}{% endif %}" 
+                 width="200" 
+                 alt="Not found" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#staticBackdrop"><br>
+        </div> 
+        <hr>
+        <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+        
+        <form method="post" novalidate enctype="multipart/form-data" class="needs-validation">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {{ resume_form|crispy }}
+            <input type="submit" class="btn btn-primary btn-sm w-25" value="Save and Continue">
+            <input type="submit" class="btn btn-primary btn-sm w-25" value="Personal Info" disabled>
+        </form>
+    </div>
+</div>  
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Profile Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img 
+                     src="{% if form.instance.profile_pic %}{{ form.instance.profile_pic.url }}{% else %}{% static 'images/profile.png' %}{% endif %}" 
+                     width="100%" 
+                     alt="Not found">
+            </div>
+            <form method="post" action="{% url 'applicant:applicant_profile_picture' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="profile_picture" required>
+                <input type="submit" value="Update" class="btn btn-secondary">
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock dashboard_content %}
+{% block dashboard_extra_js %}
+<script src="{% static 'dashboard/applicant/applicant_personal_profile.js' %}"></script>
+{% endblock dashboard_extra_js %}
