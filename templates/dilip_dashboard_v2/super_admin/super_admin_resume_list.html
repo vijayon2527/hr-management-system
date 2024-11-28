@@ -54,15 +54,27 @@
                   <tbody>
                   {% for applicant in applicants %}
                   <tr>
-                    <th >{{ forloop.counter }}</th>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ applicant.user.first_name }}</td>
                     <td>{{ applicant.user.last_name }}</td>
                     <td>{{ applicant.user.mobile }}</td>
                     <td>{{ applicant.user.city }}</td>
-                    <td>{% if applicant.resume %}<a href="{{ applicant.resume.url }}">View Resume</a>{% else %}Not uploaded{% endif %}</td>
+                    <td>
+                      {% if applicant.resume %}
+                        <a href="{{ applicant.resume.url }}" target="_blank">View Resume</a>
+                      {% else %}
+                        <span class="text-muted">Not uploaded</span>
+                      {% endif %}
+                    </td>
                     <td>{{ applicant.created_at }}</td>
-                    <th><a href="{% url 'super_admin:applicant_detail' applicant.id %}" class="btn btn-primary btn-sm w-100">Details</a></th>
+                    <td>
+                      <a href="{% url 'super_admin:applicant_detail' applicant.id %}" class="btn btn-primary btn-sm w-100">Details</a>
+                    </td>
                   </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="8" class="text-center">No applicants found.</td>
+                    </tr>
                   {% endfor %}
                   </tbody>
                   <tfoot>
@@ -95,7 +107,7 @@
 {% endblock %}
 
 {% block js %}
- <!-- DataTables  & Plugins -->
+ <!-- DataTables & Plugins -->
  <script src="{% static 'dashboard/plugins/datatables/jquery.dataTables.min.js' %}"></script>
  <script src="{% static 'dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
  <script src="{% static 'dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -108,21 +120,12 @@
  <script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
  <script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
  <script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-   <script>
-     $(function () {
-       $("#example1").DataTable({
-         "responsive": true, "lengthChange": false, "autoWidth": false,
-         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-       $('#example2').DataTable({
-         "paging": true,
-         "lengthChange": false,
-         "searching": false,
-         "ordering": true,
-         "info": true,
-         "autoWidth": false,
-         "responsive": true,
-       });
-     });
-   </script>
+ <script>
+   $(function () {
+     $("#example1").DataTable({
+       "responsive": true, "lengthChange": false, "autoWidth": false,
+       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+   });
+ </script>
 {% endblock %}
