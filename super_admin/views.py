@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -11,9 +12,10 @@ from applicant.models import Applicant
 from employer.models import Employer
 from django.utils import timezone
 from django.db import transaction
-import logging
 from .forms import IndustryForm, FunctionalAreaForm, RoleForm
 from .models import Industry, FunctionalArea, Role
+from .forms import UserForm, ApplicantForm
+from applicant.models import WorkflowLog
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_analytics_view(request):
@@ -37,9 +39,34 @@ def super_admin_applicant_list_view(request):
     return render(request, 'dilip_dashboard_v2/super_admin/super_admin_applicant_list.html', {'applicants': applicants})
 
 @allow_access_to([User.SUPER_ADMIN])
-def super_admin_applicant_detail_view(request):
-    pass
+def super_admin_applicant_detail_view(request, pk):
+    applicant = get_object_or_404(Applicant, id=pk)
+    user = applicant.user
 
+    # # Check if there's already an UNDER_REVIEW log, if not create one
+    # existing_workflow = WorkflowLog.objects.filter(
+    #     user=user, 
+    #     status=WorkflowLog.WorkflowStatus.UNDER_REVIEW
+    #     ).first()
+    # if not existing_workflow:
+    #     WorkflowLog.objects.create(
+    #         user=user,
+    #         updated_by=request.user,
+    #         status=WorkflowLog.WorkflowStatus.UNDER_REVIEW
+    #     )
+
+    # Fetch all workflow logs for the user
+    workflows = WorkflowLog.objects.filter(user=user).order_by("-timestamp")
+
+    context = {
+        "applicant": applicant,
+        "workflows": workflows
+    }
+    
+    return render(request, 'dilip_dashboard_v2/super_admin/super_admin_applicant_detail.html', context)
+
+
+    
 @method_decorator(allow_access_to([User.SUPER_ADMIN]), name="dispatch")
 class SuperAdminJobListView(ListView):
     template_name = 'dilip_dashboard_v2/super_admin/super_admin_job_list.html'
@@ -215,6 +242,7 @@ def super_admin_user_list_view(request):
     }
     return render(request, 'dashboard/super_admin/super_admin_user_list.html', context)
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_create_industry_view(request):
     if request.method == "POST":
         form = IndustryForm(request.POST)
@@ -228,6 +256,7 @@ def super_admin_create_industry_view(request):
         form = IndustryForm()
     return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_create_functional_area_view(request):
     if request.method == 'POST':
         form = FunctionalAreaForm(request.POST)
@@ -239,6 +268,7 @@ def super_admin_create_functional_area_view(request):
         form = FunctionalAreaForm()
     return render(request, 'dashboard/super_admin/super_admin_create_functional_area.html', {'form': form})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_create_role_view(request):
     if request.method == 'POST':
         form = RoleForm(request.POST)
@@ -250,18 +280,22 @@ def super_admin_create_role_view(request):
         form = RoleForm() 
     return render(request, 'dashboard/super_admin/super_admin_create_role.html', {'form': form})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_industry_list_view(request):
     industries = Industry.objects.all()
     return render(request, 'dashboard/super_admin/super_admin_industry_list.html', {'industries': industries})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_functional_area_list_view(request):
     functional_areas = FunctionalArea.objects.all()
     return render(request, 'dashboard/super_admin/super_admin_functional_area_list.html', {'functional_areas': functional_areas})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_role_list_view(request):
     roles = Role.objects.all()
     return render(request, 'dashboard/super_admin/super_admin_role_list.html', {'roles': roles})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_industry_view(request, pk):
     industry = get_object_or_404(Industry, pk=pk)
     if request.method == 'POST':
@@ -274,6 +308,7 @@ def super_admin_update_industry_view(request, pk):
         form = IndustryForm(instance=industry)
     return render(request, 'dashboard/super_admin/super_admin_update_industry.html', {'form': form, 'industry': industry})
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_functional_area_view(request, pk):
     functional_area = get_object_or_404(FunctionalArea, pk=pk)
     industries = Industry.objects.all()
@@ -297,6 +332,7 @@ def super_admin_update_functional_area_view(request, pk):
             }
     return render(request, 'dashboard/super_admin/super_admin_update_functional_area.html', context)
 
+allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_role_view(request, pk):
     role = get_object_or_404(Role, pk=pk)
     if request.method == 'POST':
@@ -322,3 +358,53 @@ def get_roles(request):
     roles = Role.objects.filter(functional_area_id=functional_area_id)
     data = [{"id": role.id, "name": role.name} for role in roles]
     return JsonResponse(data, safe=False)
+
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_add_resume_view(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        applicant_form = ApplicantForm(request.POST, request.FILES)
+        
+        if user_form.is_valid() and applicant_form.is_valid():
+            user = user_form.save()
+
+            applicant = applicant_form.save(commit=False)
+            
+            applicant.user = user
+            applicant.applicant_type = Applicant.APPLICANT_TYPE_WALKIN
+            
+            selected_industry = applicant_form.cleaned_data['industry']
+            
+            applicant.extra_fields['category'] = selected_industry.name
+            applicant.save()
+            messages.success(request, "Profile created and resume uploaded successfully.")
+            WorkflowLog.objects.create(
+                user=user,
+                updated_by=request.user
+            )
+            return redirect(".")
+        else:
+            context = {
+                "user_form": user_form,
+                "applicant_form": applicant_form,
+            }
+            messages.error(request, "An error occurred while submitting the form.")
+            return render(request, 'dashboard/super_admin/super_admin_add_resume.html', context)
+    else:
+        user_form = UserForm()
+        applicant_form = ApplicantForm()
+        industries = Industry.objects.all()
+        
+        context = {
+            "user_form": user_form,
+            "applicant_form": applicant_form,
+            "industries": industries
+        }
+        return render(request, 'dashboard/super_admin/super_admin_add_resume.html', context)
+
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_resume_list_view(request):
+    applicants = Applicant.objects.filter(applicant_type=Applicant.APPLICANT_TYPE_WALKIN).order_by('-created_at')
+    return render(request, 'dilip_dashboard_v2/super_admin/super_admin_resume_list.html', {'applicants': applicants})

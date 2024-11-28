@@ -1,0 +1,96 @@
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+{% load static %}
+{% block css %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+{% endblock %}
+
+{% block content %}
+   <!-- Content Wrapper. Contains page content -->
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Applicant Details</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">Home</a></li>
+              <li class="breadcrumb-item active">Applicant Lists</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-primary">
+                <h3 class="card-title">Applicant Detail</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                Applicant's details goes here
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div id="accordion">
+              <div class="card card-light">
+                <div class="card-header">
+                  <h4 class="card-title w-100">
+                    <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+                      Work Flow Log
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseOne" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Time</th>
+                          <th scope="col">Comment</th>
+                          <th scope="col">Updated by</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for workflow in workflows %}
+                        <tr>
+                          <th scope="row">{{forloop.counter}}</th>
+                          <td>{{workflow.status}}</td>
+                          <td>{{workflow.timestamp}}</td>
+                          <td>{{workflow.comment}}</td>
+                          <td>{{workflow.updated_by}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+{% block js %}
+{% endblock %}

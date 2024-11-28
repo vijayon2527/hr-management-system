@@ -1,0 +1,104 @@
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block css %}
+<style>
+  .error {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Add Resume</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Add Resume</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Add Resume</h3>
+            </div>
+            <div class="card-body">
+              <form id="resumeForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ user_form|crispy }}
+                {{ applicant_form|crispy }}
+                <input type="submit" class="btn btn-primary" value="Submit">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'dashboard/plugins/jquery-validation/jquery.validate.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/jquery-validation/additional-methods.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#resumeForm').validate({
+      rules: {
+        first_name: { required: true },
+        last_name: { required: true },
+        email: { required: true, email: true },
+        mobile: { required: true, digits: true, minlength: 10, maxlength: 10 },
+        resume: { required: true },
+        industry: { required: true }
+      },
+      messages: {
+        first_name: "Please enter your first name",
+        last_name: "Please enter your last name",
+        email: {
+          required: "Please enter an email address",
+          email: "Please enter a valid email address"
+        },
+        mobile: {
+          required: "Please enter a mobile number",
+          digits: "Please enter a valid 10-digit mobile number",
+          minlength: "Mobile number must be exactly 10 digits",
+          maxlength: "Mobile number must be exactly 10 digits"
+        },
+        resume: "Please upload a resume",
+        industry: "Please select a valid industry"
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        if (element.parent('.input-group').length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      },
+      highlight: function (element) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+  });
+</script>
+{% endblock %}

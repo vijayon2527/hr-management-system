@@ -14,6 +14,14 @@ def validate_file_size(file):
             raise ValidationError(f"File size should not exceed {limit / (1024 * 1024):.2f} MB. Current size: {file.size / (1024 * 1024):.2f} MB.")
  
 class Applicant(models.Model):
+    APPLICANT_TYPE_REGISTERED = "Registered"
+    APPLICANT_TYPE_WALKIN = "Walk-in"
+
+    APPLICANT_TYPE_CHOICES = [
+        (APPLICANT_TYPE_REGISTERED, APPLICANT_TYPE_REGISTERED),
+        (APPLICANT_TYPE_WALKIN, APPLICANT_TYPE_WALKIN),
+    ]
+
     EXPERIENCE_INTERN_LEVEL = "Intern"
     EXPERIENCE_ENTRY_LEVEL = "Entry Level"
     EXPERIENCE_MID_LEVEL = "Mid Level"
@@ -43,7 +51,11 @@ class Applicant(models.Model):
         (HIGHEST_EDUCATION_MASTERS_DEGREE, HIGHEST_EDUCATION_MASTERS_DEGREE),
         (HIGHEST_EDUCATION_DOCTORATE, HIGHEST_EDUCATION_DOCTORATE),
     )
-
+    applicant_type = models.CharField(
+        max_length=10, 
+        choices=APPLICANT_TYPE_CHOICES, 
+        default=APPLICANT_TYPE_REGISTERED
+        )
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -154,7 +166,9 @@ class Applicant(models.Model):
         auto_now=True
     )
 
-    def __str__(self):
+    extra_fields = models.JSONField(default=dict)
+    
+    def __str_(self):
         return f'{self.user} - Applicant'
     
     objects = ApplicantManager()
@@ -288,7 +302,7 @@ class Application(models.Model):
 
     objects = ApplicationManager()
 
-    def __str__(self):
+    def __str_(self):
         return f'{self.applicant.user.mobile} applied for {self.job.job_title}'
 
     @property
@@ -355,3 +369,63 @@ class Application(models.Model):
     def get_resume(self):
         return self.get_applicant.resume
     
+
+class WorkflowLog(models.Model):
+    class WorkflowStatus(models.TextChoices):
+        SUBMITTED = 'SUBMITTED', ('Submitted')
+        UNDER_REVIEW = 'UNDER_REVIEW', ('Under Review')
+        INTERVIEW_SCHEDULED = 'INTERVIEW_SCHEDULED', ('Interview Scheduled')
+        INTERVIEWED = 'INTERVIEWED', ('Interviewed')
+        OFFER_MADE = 'OFFER_MADE', ('Offer Made')
+        OFFER_ACCEPTED = 'OFFER_ACCEPTED', ('Offer Accepted')
+        OFFER_REJECTED = 'OFFER_REJECTED', ('Offer Rejected')
+        HIRED = 'HIRED', ('Hired')
+        REJECTED = 'REJECTED', ('Rejected')
+
+    # Applicant (User) related to this workflow log
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='workflow_logs',
+        help_text=('The applicant associated with this workflow log.')
+    )
+
+    # Current status of the workflow
+    status = models.CharField(
+        max_length=20,
+        choices=WorkflowStatus.choices,
+        default=WorkflowStatus.SUBMITTED,
+        help_text=('The current status of the applicant\'s application process.')
+    )
+
+    # Timestamp when this workflow log entry was created
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        help_text=('The date and time when this workflow log entry was created.')
+    )
+
+    # Optional comment about the workflow log entry
+    comment = HTMLField(
+        blank=True,
+        null=True,
+        validators=[MaxLengthValidator(500)],
+        help_text=('Optional comments regarding the current status of the application. Max length is 500 characters.'),
+        verbose_name=('Comment')
+    )
+
+    # User who made the update (if applicable)
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='workflow_log_updates',
+        help_text=('The user who made the update to the workflow log entry.')
+    )
+
+    def __str_(self):
+        return f'Workflow Log for {self.user.username} - Status: {self.get_status_display()}'
+
+    class Meta:
+        verbose_name = ('Workflow Log')
+        verbose_name_plural = ('Workflow Logs')
+        ordering = ['timestamp']

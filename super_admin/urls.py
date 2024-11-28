@@ -31,7 +31,11 @@ from .views import (super_admin_analytics_view,
                     super_admin_update_functional_area_view,
                     super_admin_update_role_view,
                     get_functional_areas,
-                    get_roles
+                    get_roles,
+
+                    super_admin_add_resume_view,
+                    super_admin_resume_list_view,
+                    super_admin_applicant_detail_view
                     )
 
 app_name='super_admin'
@@ -72,4 +76,7 @@ urlpatterns = [
 
     path('get-functional-areas/', get_functional_areas, name='get_functional_areas'),
     path('get-roles/', get_roles, name='get_roles'),
+    path('super_admin-add-resume/', super_admin_add_resume_view, name='add_resume'),
+    path('super_admin-resume-list/', super_admin_resume_list_view, name='resume_list'),
+    path('super_admin-applicant-detail/<int:pk>/', super_admin_applicant_detail_view, name='applicant_detail'),
 ]

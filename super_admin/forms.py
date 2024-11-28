@@ -1,5 +1,7 @@
 from django import forms
 from .models import Industry, FunctionalArea, Role
+from users.models import User
+from applicant.models import Applicant
 
 class IndustryForm(forms.ModelForm):
     class Meta:
@@ -46,3 +48,22 @@ class RoleForm(forms.ModelForm):
             raise forms.ValidationError(f"A role with the name '{name}' already exists in the selected functional area.")
 
         return cleaned_data
+
+class UserForm(forms.ModelForm):
+    
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email", "mobile")
+
+
+class ApplicantForm(forms.ModelForm):
+    industry = forms.ModelChoiceField(
+        queryset=Industry.objects.all(),
+        empty_label="Select an Industry",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text="Please select the relevant industry from the list."
+    )
+
+    class Meta:
+        model = Applicant
+        fields = ("industry", "resume")

@@ -13,6 +13,9 @@
   <link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
   <!-- font awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -198,6 +201,39 @@
 <script src="{% static 'dashboard/plugins/jquery/jquery.min.js' %}"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="{% static 'dashboard/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- jQuery and Toastr JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Toastr Options -->
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "extendedTimeOut": "2000",
+    };
+</script>
+
+<!-- Django Messages with Toastr -->
+{% if messages %}
+<script>
+    {% for message in messages %}
+        {% if message.tags == "success" %}
+            toastr.success("{{ message|escapejs }}", "Success");
+        {% elif message.tags == "error" %}
+            toastr.error("{{ message|escapejs }}", "Error");
+        {% elif message.tags == "warning" %}
+            toastr.warning("{{ message|escapejs }}", "Warning");
+        {% elif message.tags == "info" %}
+            toastr.info("{{ message|escapejs }}", "Info");
+        {% else %}
+            toastr.info("{{ message|escapejs }}");
+        {% endif %}
+    {% endfor %}
+</script>
+{% endif %}
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)

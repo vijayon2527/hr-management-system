@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     'hitcount',
     'crispy_forms',
     'crispy_bootstrap5',
+    'django_cleanup'
 ]
 
 LOCAL_APPS = [

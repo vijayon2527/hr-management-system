@@ -141,6 +141,39 @@
                 </a>
               </li>
             </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link
+            {% is_active 'resume_list' 'add_resume' 'applicant_detail' %}"
+            >
+              <i class="nav-icon fas fa-envelope"></i>
+              <p>
+                Resumes
+                <i class="right fas fa-angle-left"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'super_admin:add_resume' %}" 
+                class="nav-link
+                {% is_active 'add_resume' %}"
+                >
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Resume</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'super_admin:resume_list' %}" 
+                class="nav-link
+                {% is_active 'resume_list' 'applicant_detail' %}"
+                >
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Resume List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
