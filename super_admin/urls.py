@@ -35,7 +35,12 @@ from .views import (super_admin_analytics_view,
 
                     super_admin_add_resume_view,
                     super_admin_resume_list_view,
-                    super_admin_applicant_detail_view
+                    super_admin_applicant_detail_view,
+
+                    super_admin_create_question_view,
+                    super_admin_question_list_view,
+                    super_admin_update_question_view,
+                    super_admin_delete_question_choice_view
                     )
 
 app_name='super_admin'
@@ -79,4 +84,8 @@ urlpatterns = [
     path('super_admin-add-resume/', super_admin_add_resume_view, name='add_resume'),
     path('super_admin-resume-list/', super_admin_resume_list_view, name='resume_list'),
     path('super_admin-applicant-detail/<int:pk>/', super_admin_applicant_detail_view, name='applicant_detail'),
+    path('super_admin-create-question/', super_admin_create_question_view, name='super_admin_create_question'),
+    path('super_admin-question-list/', super_admin_question_list_view, name='super_admin_question_list'),
+    path('super_admin-update-question/<int:question_id>/', super_admin_update_question_view, name='super_admin_update_question'),
+    path('super_admin-delete-question-choice/<int:choice_id>/', super_admin_delete_question_choice_view, name='super_admin_delete_question_choice'),
 ]

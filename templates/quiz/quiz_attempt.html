@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block extra_css %}
+<style>
+    .card{
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 8px 7px 4px gray;
+        width: 75%;
+    }
+</style>
+{% endblock extra_css %}
+{% block content %}
+<div class="card">
+    <h1>{{ quiz.title }}</h1>
+    <p>{{ quiz.description }}</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+</div>
+{% endblock %}

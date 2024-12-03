@@ -13,6 +13,7 @@ urlpatterns = [
     path('employer/', include('employer.urls', namespace='employer')),
     path('applicant/', include('applicant.urls', namespace='applicant')),
     path('tinymce/', include('tinymce.urls')),
+    path('quiz/', include('quiz.urls', namespace='quiz')),
 ]
 
 if settings.DEBUG:

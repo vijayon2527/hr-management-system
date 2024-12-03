@@ -11,7 +11,8 @@ class ApplicantProfileForm(forms.ModelForm):
             'skills',
             'created_at',
             'updated_at',
-            'resume'
+            'resume',
+            'extra_fields'
         ]
     def clean_salary(self):
         salary = self.cleaned_data.get('salary')

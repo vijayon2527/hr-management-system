@@ -12,10 +12,12 @@ from applicant.models import Applicant
 from employer.models import Employer
 from django.utils import timezone
 from django.db import transaction
+from django.db import transaction, IntegrityError
 from .forms import IndustryForm, FunctionalAreaForm, RoleForm
 from .models import Industry, FunctionalArea, Role
 from .forms import UserForm, ApplicantForm
 from applicant.models import WorkflowLog
+from quiz.models import Quiz, Question, Option, Answer, Attempt
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_analytics_view(request):
@@ -408,3 +410,90 @@ def super_admin_add_resume_view(request):
 def super_admin_resume_list_view(request):
     applicants = Applicant.objects.filter(applicant_type=Applicant.APPLICANT_TYPE_WALKIN).order_by('-created_at')
     return render(request, 'dilip_dashboard_v2/super_admin/super_admin_resume_list.html', {'applicants': applicants})
+
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_create_question_view(request):
+    if request.method == 'POST':
+        quiz_id = request.POST.get('quiz')
+        try:
+            quiz = Quiz.objects.get(id=quiz_id)  # Fetch the selected quiz
+            
+            question_types = request.POST.getlist('question_type[]')
+            contents = request.POST.getlist('content[]')
+            points = request.POST.getlist('points[]')
+
+            # Validate that all lists are the same length
+            if not (len(question_types) == len(contents) == len(points)):
+                raise ValueError("Mismatched data lengths for questions.")
+
+            # Start a database transaction
+            with transaction.atomic():
+                # Initialize a list to collect new questions
+                questions_to_create = []
+                options_to_create = []
+
+                # Loop through all the questions to save them
+                for idx, content in enumerate(contents):
+                    question_type = question_types[idx]
+                    point = points[idx]
+
+                    # Ensure content and points are valid
+                    if not content or not point.isdigit():
+                        raise ValueError(f"Invalid content or points for question {idx+1}")
+
+                    # Create the question object
+                    question = Question(
+                        quiz=quiz,
+                        content=content,
+                        question_type=question_type,
+                        points=int(point)
+                    )
+                    questions_to_create.append(question)
+
+                    # Add options for the question if it's MCQ
+                    if question_type == 'mcq':
+                        options = request.POST.getlist(f'options[{idx+1}][]')
+                        if options:
+                            for option_text in options:
+                                if option_text:  # Ensure options aren't empty
+                                    options_to_create.append(Option(question=question, text=option_text))
+
+                # Bulk create questions and options
+                Question.objects.bulk_create(questions_to_create)
+                Option.objects.bulk_create(options_to_create)
+
+            messages.success(request, 'Questions added successfully!')
+            return redirect('.')
+
+        except Quiz.DoesNotExist:
+            messages.error(request, 'Quiz not found.')
+        except IntegrityError:
+            messages.error(request, 'An error occurred while saving the questions. Please try again.')
+        except ValueError as ve:
+            messages.error(request, str(ve))
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {e}")
+
+    quizzes = Quiz.objects.all()
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quizzes': quizzes})
+
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_update_question_view(request, question_id):
+    
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html')
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_delete_question_choice_view(request, choice_id):
+    choice = Option.objects.get(id=choice_id)
+    choice.delete()
+    messages.success(request, "Choice deleted successfully")
+    return redirect(".")
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_question_list_view(request):
+    questions = Question.objects.all().order_by("-id")
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_question_list.html', {
+        'questions': questions,
+    })

@@ -1,0 +1,227 @@
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block css %}
+<style>
+  .question-container {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  .option-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .option-actions button {
+    margin-left: 10px;
+  }
+
+  .remove-question {
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Add Questions</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Add Questions</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Create Questions</h3>
+            </div>
+            <form id="question-form" method="post">
+              {% csrf_token %}
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="quiz">Quiz:</label>
+                  <select id="quiz" name="quiz" class="form-control" required>
+                    {% for quiz in quizzes %}
+                    <option value="{{ quiz.id }}">{{ quiz.title }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div id="questions-container">
+                  <!-- Default Question -->
+                  <div class="question-container">
+                    <div class="form-group">
+                      <label for="question_type_1">Question Type:</label>
+                      <select id="question_type_1" name="question_type[]" class="form-control" required>
+                        <option value="mcq">MCQ</option>
+                        <option value="text">Text</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="content_1">Question Content:</label>
+                      <textarea id="content_1" name="content[]" class="form-control" rows="4" placeholder="Enter your question here" required></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="points_1">Points:</label>
+                      <input type="number" id="points_1" name="points[]" class="form-control" value="1" min="1" required>
+                    </div>
+                    <div id="options-container-1">
+                      <div class="form-group option-field">
+                        <div class="d-flex justify-content-between">
+                          <div class="w-75">
+                            <label for="option_1_1">Option 1:</label>
+                            <input type="text" id="option_1_1" name="options[1][]" class="form-control" placeholder="Enter option text" required>
+                          </div>
+                          <div class="option-actions d-flex align-items-center">
+                            <div class="form-check mr-2">
+                              <input type="checkbox" id="is_correct_1_1" name="is_correct[1][]" class="form-check-input">
+                              <label for="is_correct_1_1" class="form-check-label">Correct</label>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addOption(1)">Add Option</button>
+                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-question" onclick="removeQuestion(this)">Remove Question</button>
+                  </div>
+                </div>
+                <button type="button" id="add-question" class="btn btn-info mt-3">Add Question</button>
+                <button type="submit" class="btn btn-success mt-3">Save Questions</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  let questionCount = 1;
+
+  function updateQuestionCount() {
+    questionCount = $('#questions-container .question-container').length;
+    $('#question-count').text(`Total Questions: ${questionCount}`);
+  }
+
+  // Add a new question
+  $('#add-question').on('click', function () {
+    questionCount++;
+    const questionHtml = `
+      <div class="question-container">
+        <div class="form-group">
+          <label for="question_type_${questionCount}">Question Type:</label>
+          <select id="question_type_${questionCount}" name="question_type[]" class="form-control" required>
+            <option value="mcq">MCQ</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="content_${questionCount}">Question Content:</label>
+          <textarea id="content_${questionCount}" name="content[]" class="form-control" rows="4" placeholder="Enter your question here" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="points_${questionCount}">Points:</label>
+          <input type="number" id="points_${questionCount}" name="points[]" class="form-control" value="1" min="1" required>
+        </div>
+        <div id="options-container-${questionCount}">
+          <div class="form-group option-field">
+            <div class="d-flex justify-content-between">
+              <div class="w-75">
+                <label for="option_${questionCount}_1">Option 1:</label>
+                <input type="text" id="option_${questionCount}_1" name="options[${questionCount}][]" class="form-control" placeholder="Enter option text" required>
+              </div>
+              <div class="option-actions d-flex align-items-center">
+                <div class="form-check mr-2">
+                  <input type="checkbox" id="is_correct_${questionCount}_1" name="is_correct[${questionCount}][]" class="form-check-input">
+                  <label for="is_correct_${questionCount}_1" class="form-check-label">Correct</label>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addOption(${questionCount})">Add Option</button>
+        <button type="button" class="btn btn-danger btn-sm mt-2 remove-question" onclick="removeQuestion(this)">Remove Question</button>
+      </div>
+    `;
+    $('#questions-container').append(questionHtml);
+    updateQuestionCount(); // Update the question count after adding a question
+    toggleRemoveQuestionButtons();
+  });
+
+  // Remove question
+  function removeQuestion(button) {
+    $(button).closest('.question-container').remove();
+    updateQuestionCount(); // Update the question count after removing a question
+    toggleRemoveQuestionButtons();
+  }
+
+  // Add option
+  function addOption(questionId) {
+    const optionCount = $(`#options-container-${questionId} .option-field`).length + 1;
+    const optionHtml = `
+      <div class="form-group option-field">
+        <div class="d-flex justify-content-between">
+          <div class="w-75">
+            <label for="option_${questionId}_${optionCount}">Option ${optionCount}:</label>
+            <input type="text" id="option_${questionId}_${optionCount}" name="options[${questionId}][]" class="form-control" placeholder="Enter option text" required>
+          </div>
+          <div class="option-actions d-flex align-items-center">
+            <div class="form-check mr-2">
+              <input type="checkbox" id="is_correct_${questionId}_${optionCount}" name="is_correct[${questionId}][]" class="form-check-input">
+              <label for="is_correct_${questionId}_${optionCount}" class="form-check-label">Correct</label>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+    $(`#options-container-${questionId}`).append(optionHtml);
+    toggleRemoveOptionButtons(questionId); // Check option visibility logic
+  }
+
+  // Remove option
+  $(document).on('click', '.remove-option', function () {
+    const questionId = $(this).closest('.question-container').find('textarea').attr('id').split('_')[1];
+    $(this).closest('.option-field').remove();
+    toggleRemoveOptionButtons(questionId); // Adjust the visibility of remove buttons after option removal
+    updateQuestionCount(); // Update the question count after removing an option
+  });
+
+  // Toggle remove buttons visibility for options
+  function toggleRemoveOptionButtons(questionId) {
+    const options = $(`#options-container-${questionId} .option-field`);
+    // If there is only one option, hide the "Remove" button for that option
+    options.find('.remove-option').toggle(options.length > 1);
+  }
+
+  // Toggle remove buttons visibility for questions
+  function toggleRemoveQuestionButtons() {
+    $('.remove-question').toggle($('.question-container').length > 1);
+  }
+
+  // Optional: Display the count of questions
+  $('<p id="question-count">Total Questions: 1</p>').insertBefore('#add-question');
+</script>
+{% endblock %}

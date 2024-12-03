@@ -1,0 +1,63 @@
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+{% block css %}
+<style>
+  .error {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Create Question</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Create Question</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Create Question</h3>
+            </div>
+            <div class="card-body">
+                <form id="resumeForm" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{ question_form.as_p }}
+              
+                  {% if choice_formset.non_form_errors %}
+                      <div class="error">
+                          {{ choice_formset.non_form_errors }}
+                      </div>
+                  {% endif %}
+              
+                  {{ choice_formset.management_form }}
+                  {% for form in choice_formset %}
+                      {{ form.as_p }}
+                  {% endfor %}
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

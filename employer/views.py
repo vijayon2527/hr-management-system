@@ -60,12 +60,9 @@ def employer_profile_view(request):
     user = request.user
     employer, created = Employer.objects.get_or_create(user=user)
     if request.method == "POST":
-        print(user, employer.user.mobile, created)
         employer_profile_form = EmployerProfileForm(request.POST, request.FILES, instance=employer)
 
-        print("Valid")
         if employer_profile_form.is_valid():
-            print("Valid")
             employer_profile_form.save()
             messages.success(request, "Profile updated successfully")
             return redirect("employer:employer_profile")

@@ -609,6 +609,7 @@
 {% endblock %}
 
 {% block js %}
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{% static 'dashboard/dist/js/pages/dashboard.js' %}"></script>
+{% comment %} this added for testing purpose for js setup {% endcomment %}
+<script type="module" src="{% static 'js/dashboard/super_admin/quizList.js' %}"></script>
 {% endblock %}

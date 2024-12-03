@@ -45,7 +45,7 @@ THIRD_PARTY_APPS = [
     'hitcount',
     'crispy_forms',
     'crispy_bootstrap5',
-    'django_cleanup'
+    'django_cleanup',
 ]
 
 LOCAL_APPS = [
@@ -54,7 +54,8 @@ LOCAL_APPS = [
     'employer',
     'applicant',
     'job',
-    'common'
+    'common',
+    'quiz',
 ]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
