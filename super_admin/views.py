@@ -429,39 +429,44 @@ def super_admin_create_question_view(request):
 
             # Start a database transaction
             with transaction.atomic():
-                # Initialize a list to collect new questions
-                questions_to_create = []
-                options_to_create = []
-
                 # Loop through all the questions to save them
                 for idx, content in enumerate(contents):
                     question_type = question_types[idx]
                     point = points[idx]
-
+                    
                     # Ensure content and points are valid
                     if not content or not point.isdigit():
                         raise ValueError(f"Invalid content or points for question {idx+1}")
 
                     # Create the question object
-                    question = Question(
+                    question = Question.objects.create(
                         quiz=quiz,
                         content=content,
                         question_type=question_type,
                         points=int(point)
                     )
-                    questions_to_create.append(question)
 
                     # Add options for the question if it's MCQ
                     if question_type == 'mcq':
-                        options = request.POST.getlist(f'options[{idx+1}][]')
-                        if options:
-                            for option_text in options:
-                                if option_text:  # Ensure options aren't empty
-                                    options_to_create.append(Option(question=question, text=option_text))
+                        options = request.POST.getlist(f'options[{idx+1}][]')  # Get all options for the question
+                        correct_flags = request.POST.getlist(f'is_correct[{idx+1}][]')  # Get the correct flags
 
-                # Bulk create questions and options
-                Question.objects.bulk_create(questions_to_create)
-                Option.objects.bulk_create(options_to_create)
+                        # Verify that there are options
+                        if not options:
+                            raise ValueError(f"At least one option must be provided for question {idx+1}.")
+                        if not correct_flags:
+                            raise ValueError(f"At least one option must be marked as correct for question {idx+1}.")
+                        
+                        # Create options
+                        for option_idx, option_text in enumerate(options):
+                            if option_text:  # Ensure options aren't empty
+                                # Check if the current option is marked as correct
+                                is_correct = correct_flags[option_idx] == "on" if option_idx < len(correct_flags) else False
+                                Option.objects.create(
+                                    question=question,
+                                    text=option_text,
+                                    is_correct=is_correct
+                                )
 
             messages.success(request, 'Questions added successfully!')
             return redirect('.')
