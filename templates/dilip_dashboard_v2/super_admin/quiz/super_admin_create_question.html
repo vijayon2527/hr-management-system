@@ -224,4 +224,21 @@
   // Optional: Display the count of questions
   $('<p id="question-count">Total Questions: 1</p>').insertBefore('#add-question');
 </script>
+
+<script>
+  // Before form submission, update checkbox values to "on" or "off"
+  document.getElementById('question-form').addEventListener('submit', function () {
+    // Find all checkboxes within the form
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    
+    // Loop through each checkbox
+    checkboxes.forEach(function (checkbox) {
+      // If the checkbox is checked, set its value to "on", otherwise set it to "off"
+      checkbox.value = checkbox.checked ? 'on' : 'off';
+      // Ensure the checkbox is included in the form submission
+      checkbox.checked = true;
+    });
+  });
+</script>
+
 {% endblock %}

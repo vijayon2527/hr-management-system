@@ -75,7 +75,7 @@ class Attempt(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.username}'s attempt on {self.quiz.title}"
+        return f"{self.user}'s attempt on {self.quiz.title}"
 
 
 class Answer(models.Model):
@@ -90,4 +90,4 @@ class Answer(models.Model):
         ]
 
     def __str__(self):
-        return f"Answer to {self.question.content} by {self.attempt.user.username}"
+        return f"Answer to {self.question.content} by {self.attempt.user}"
