@@ -14,52 +14,44 @@ def validate_file_size(file):
             raise ValidationError(f"File size should not exceed {limit / (1024 * 1024):.2f} MB. Current size: {file.size / (1024 * 1024):.2f} MB.")
  
 class Applicant(models.Model):
-    APPLICANT_TYPE_REGISTERED = "Registered"
-    APPLICANT_TYPE_WALKIN = "Walk-in"
+    class ApplicantType(models.TextChoices):
+        REGISTERED = "Registered", "Registered"
+        WALKIN = "Walk-in", "Walk-in"
 
-    APPLICANT_TYPE_CHOICES = [
-        (APPLICANT_TYPE_REGISTERED, APPLICANT_TYPE_REGISTERED),
-        (APPLICANT_TYPE_WALKIN, APPLICANT_TYPE_WALKIN),
-    ]
+    class ExperienceLevel(models.TextChoices):
+        INTERN = "Intern", "Intern"
+        ENTRY = "Entry Level", "Entry Level"
+        MID = "Mid Level", "Mid Level"
+        SENIOR = "Senior Level", "Senior Level"
+        MANAGEMENT = "Management Level", "Management Level"
+        EXECUTIVE = "Executive Level", "Executive Level"
 
-    EXPERIENCE_INTERN_LEVEL = "Intern"
-    EXPERIENCE_ENTRY_LEVEL = "Entry Level"
-    EXPERIENCE_MID_LEVEL = "Mid Level"
-    EXPERIENCE_SENIOR_LEVEL = "Senior Level"
-    EXPERIENCE_MANAGEMENT_LEVEL = "Management Level"
-    EXPERIENCE_EXECUTIVE_LEVEL = "Executive Level"
+    class EducationLevel(models.TextChoices):
+        HIGH_SCHOOL = "High School", "High School"
+        ASSOCIATE = "Associate Degree", "Associate Degree"
+        BACHELORS = "Bachelor's Degree", "Bachelor's Degree"
+        MASTERS = "Master's Degree", "Master's Degree"
+        DOCTORATE = "Doctorate", "Doctorate"
 
-    EXPERIENCE_LEVEL_CHOICES = (
-        (EXPERIENCE_INTERN_LEVEL, EXPERIENCE_INTERN_LEVEL),
-        (EXPERIENCE_ENTRY_LEVEL, EXPERIENCE_ENTRY_LEVEL),
-        (EXPERIENCE_MID_LEVEL, EXPERIENCE_MID_LEVEL),
-        (EXPERIENCE_SENIOR_LEVEL, EXPERIENCE_SENIOR_LEVEL),
-        (EXPERIENCE_MANAGEMENT_LEVEL, EXPERIENCE_MANAGEMENT_LEVEL),
-        (EXPERIENCE_EXECUTIVE_LEVEL, EXPERIENCE_EXECUTIVE_LEVEL),
-    )
+    class NoticePeriod(models.TextChoices):
+        IMMEDIATE = "Immediate", "Immediate"
+        DAYS_15 = "15 Days", "15 Days"
+        DAYS_30 = "30 Days", "30 Days"
+        DAYS_45 = "45 Days", "45 Days"
+        DAYS_60 = "60 Days", "60 Days"
+        DAYS_90 = "90 Days", "90 Days"
+        MORE_THAN_90 = "More than 90 Days", "More than 90 Days"
 
-    HIGHEST_EDUCATION_HIGH_SCHOOL = "High School"
-    HIGHEST_EDUCATION_ASSOCIATE_DEGREE = "Associate Degree"
-    HIGHEST_EDUCATION_BACHELORS_DEGREE = "Bachelor's Degree"
-    HIGHEST_EDUCATION_MASTERS_DEGREE = "Master's Degree"
-    HIGHEST_EDUCATION_DOCTORATE = "Doctorate"
-
-    HIGHEST_EDUCATION_CHOICES = (
-        (HIGHEST_EDUCATION_HIGH_SCHOOL, HIGHEST_EDUCATION_HIGH_SCHOOL),
-        (HIGHEST_EDUCATION_ASSOCIATE_DEGREE, HIGHEST_EDUCATION_ASSOCIATE_DEGREE),
-        (HIGHEST_EDUCATION_BACHELORS_DEGREE, HIGHEST_EDUCATION_BACHELORS_DEGREE),
-        (HIGHEST_EDUCATION_MASTERS_DEGREE, HIGHEST_EDUCATION_MASTERS_DEGREE),
-        (HIGHEST_EDUCATION_DOCTORATE, HIGHEST_EDUCATION_DOCTORATE),
-    )
     applicant_type = models.CharField(
-        max_length=10, 
-        choices=APPLICANT_TYPE_CHOICES, 
-        default=APPLICANT_TYPE_REGISTERED
-        )
+        max_length=10,
+        choices=ApplicantType.choices,
+        default=ApplicantType.REGISTERED,
+        verbose_name="Applicant Type"
+    )
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='applicant',
+        related_name="applicant",
         verbose_name="User"
     )
     resume = models.FileField(
@@ -74,7 +66,7 @@ class Applicant(models.Model):
         blank=True,
         null=True,
         validators=[MaxLengthValidator(500)],
-        help_text="A brief summary about yourself and your career (max 500 characters).",
+        help_text="A brief summary about yourself (max 500 characters).",
         verbose_name="Bio"
     )
     current_job_title = models.CharField(
@@ -86,7 +78,7 @@ class Applicant(models.Model):
     )
     skills = models.ManyToManyField(
         Skill,
-        related_name='applicants',
+        related_name="applicants",
         blank=True,
         help_text="Select the skills you possess.",
         verbose_name="Skills"
@@ -114,25 +106,26 @@ class Applicant(models.Model):
     )
     experience_level = models.CharField(
         max_length=50,
-        choices=EXPERIENCE_LEVEL_CHOICES,
+        choices=ExperienceLevel.choices,
         blank=True,
         null=True,
         help_text="Select your overall experience level.",
         verbose_name="Experience Level"
     )
-    years_of_experience = models.PositiveIntegerField(
+    years_of_experience = models.PositiveSmallIntegerField(
+        choices=[(i, f"{i} years") for i in range(0, 31)],
         blank=True,
         null=True,
-        help_text="Enter the total years of professional experience.",
+        help_text="Enter your total years of professional experience.",
         verbose_name="Years of Experience"
     )
     highest_education = models.CharField(
-        max_length=100,
-        choices=HIGHEST_EDUCATION_CHOICES,
+        max_length=50,
+        choices=EducationLevel.choices,
         blank=True,
         null=True,
         help_text="Select your highest level of education.",
-        verbose_name="Your Highest Education"
+        verbose_name="Highest Education"
     )
     is_available_for_work = models.BooleanField(
         default=True,
@@ -144,33 +137,32 @@ class Applicant(models.Model):
         help_text="Are you willing to relocate for a job?",
         verbose_name="Willing to Relocate"
     )
-    desired_salary = models.DecimalField(
-        max_digits=10,        
-        decimal_places=2, 
+    desired_salary = models.PositiveIntegerField(
+        choices=[
+            (300000, "₹3,00,000 per year"),
+            (500000, "₹5,00,000 per year"),
+            (700000, "₹7,00,000 per year"),
+            (1000000, "₹10,00,000 per year"),
+            (1500000, "₹15,00,000 per year"),
+            (2000000, "₹20,00,000 per year or above"),
+        ],
         null=True,
         blank=True,
-        help_text="Enter your salary (up to 10 digits, with 2 decimal places allowed).",
-        verbose_name="Desired Salary"
+        help_text="Select your desired annual salary.",
+        verbose_name="Desired Annual Salary"
     )
     notice_period = models.CharField(
-        max_length=50,
+        max_length=20,
+        choices=NoticePeriod.choices,
         blank=True,
         null=True,
-        help_text="Duration of notice before leaving (e.g., '2 weeks').",
+        help_text="Duration of notice before leaving.",
         verbose_name="Notice Period"
     )
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     extra_fields = models.JSONField(default=dict)
-    
-    def __str_(self):
-        return f'{self.user} - Applicant'
-    
+
     objects = ApplicantManager()
 
     class Meta:
@@ -232,17 +224,42 @@ class Applicant(models.Model):
     @property
     def get_notice_period(self):
         return self.notice_period if self.notice_period else "Not available"
-    
+    @property
     def get_skills(self):
         return ', '.join(skill.name for skill in self.skills.all())
 
     def clean(self):
         super().clean()
         if self.resume:
-            valid_extensions = ['.pdf', '.doc', '.docx']
+            valid_extensions = [".pdf", ".doc", ".docx"]
             ext = os.path.splitext(self.resume.name)[1]
             if ext.lower() not in valid_extensions:
                 raise ValidationError("Only PDF and Word documents are allowed for the resume.")
+
+    @property
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    @property
+    def contact_info(self):
+        return {
+            "email": self.user.email,
+            "mobile": self.user.mobile,
+        }
+
+    @property
+    def address(self):
+        return {
+            "address_line_1": self.user.address_line_1,
+            "address_line_2": self.user.address_line_2,
+            "city": self.user.city,
+            "state": self.user.state,
+            "country": self.user.country,
+            "postal_code": self.user.postal_code,
+        }
+
+    def get_skills(self):
+        return ", ".join(skill.name for skill in self.skills.all())
 
 class Application(models.Model):
     APPLICATION_STATUS_PENDING = 'Pending'

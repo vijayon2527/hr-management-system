@@ -374,7 +374,7 @@ def super_admin_add_resume_view(request):
             applicant = applicant_form.save(commit=False)
             
             applicant.user = user
-            applicant.applicant_type = Applicant.APPLICANT_TYPE_WALKIN
+            applicant.applicant_type = Applicant.ApplicantType.WALKIN
             
             selected_industry = applicant_form.cleaned_data['industry']
             
@@ -408,7 +408,7 @@ def super_admin_add_resume_view(request):
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_resume_list_view(request):
-    applicants = Applicant.objects.filter(applicant_type=Applicant.APPLICANT_TYPE_WALKIN).order_by('-created_at')
+    applicants = Applicant.objects.filter(applicant_type=Applicant.ApplicantType.WALKIN).order_by('-created_at')
     return render(request, 'dilip_dashboard_v2/super_admin/super_admin_resume_list.html', {'applicants': applicants})
 
 

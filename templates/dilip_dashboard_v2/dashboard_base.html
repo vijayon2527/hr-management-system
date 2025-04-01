@@ -180,7 +180,12 @@
   </nav>
   <!-- /.navbar -->
 
-  {% include "dilip_dashboard_v2/partials/super_admin_sidebar.html" %}
+  {% if request.user.user_type == "Super Admin" %}
+    {% include "dilip_dashboard_v2/partials/super_admin_sidebar.html" %}
+  {% elif request.user.user_type == "Aplication Handler" %}
+    {% include "dilip_dashboard_v2/partials/application_handler_sidebar.html" %}
+  {% endif %}
+
   {% block content %}{% endblock %}
   <footer class="main-footer">
     <strong>© 2024 AGPHR | Empowering Jobseeker's Career</strong>

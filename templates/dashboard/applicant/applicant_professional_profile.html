@@ -1,21 +1,14 @@
 {% extends "dashboard/dashboard_base.html" %}
 {% load static crispy_forms_tags %}
 {% block dashboard_extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
 <style>
-    @media (max-width: 760px) {
-    .buttons {
-        display: flex;
-        padding: -10px;
-        margin: -10px;
+    .select2-container {
+        width: 100% !important;
     }
-    .btn{
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-}
 </style>
 {% endblock dashboard_extra_css %}
+
 {% block dashboard_content %}
 <div class="card mx-auto">
     <div class="card-header card-header-primary">
@@ -37,6 +30,15 @@
     </div>
 </div>
 {% endblock dashboard_content %}
+
 {% block dashboard_extra_js %}
-<script src="{% static 'dashboard/applicant/applicant_professional_profile.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#id_skills").select2({
+            placeholder: "Select skills...",
+            allowClear: true
+        });
+    });
+</script>
 {% endblock dashboard_extra_js %}

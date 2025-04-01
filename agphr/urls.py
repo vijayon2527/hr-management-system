@@ -10,6 +10,7 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('redirect/', RootView.as_view(), name='redirect_url'),
     path('super_admin/', include('super_admin.urls', namespace='super_admin')),
+    path('application_handler/', include('application_handler.urls', namespace='application_handler')),
     path('employer/', include('employer.urls', namespace='employer')),
     path('applicant/', include('applicant.urls', namespace='applicant')),
     path('tinymce/', include('tinymce.urls')),

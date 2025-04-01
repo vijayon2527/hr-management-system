@@ -12,7 +12,8 @@ class RootView(RedirectView):
         if user.is_authenticated:
             if user.user_type == User.SUPER_ADMIN:
                 next_url = 'super_admin:super_admin_analytics'
-
+            elif user.user_type == User.APPLICATION_HANDLER:
+                next_url = 'application_handler:applicant_list'
             elif user.user_type == User.EMPLOYER:
                 if not user.is_profile_completed:
                     next_url = 'employer:employer_profile'

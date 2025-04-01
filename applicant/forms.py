@@ -1,14 +1,22 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from users.models import User
+from django_select2.forms import Select2MultipleWidget
+from job.models import Skill
 from applicant.models import Applicant
 
+
 class ApplicantProfileForm(forms.ModelForm):
+
+    skills = forms.ModelMultipleChoiceField(
+        queryset=Skill.objects.all(),
+        widget=Select2MultipleWidget,
+        required=False
+    )
     class Meta:
         model = Applicant
         exclude = [
             'user',
-            'skills',
             'created_at',
             'updated_at',
             'resume',

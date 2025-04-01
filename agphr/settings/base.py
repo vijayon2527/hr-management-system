@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_cleanup',
+    'django_select2'
 ]
 
 LOCAL_APPS = [
@@ -53,6 +54,7 @@ LOCAL_APPS = [
     'super_admin',
     'employer',
     'applicant',
+    'application_handler',
     'job',
     'common',
     'quiz',

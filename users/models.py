@@ -40,11 +40,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     SUPER_ADMIN = "Super Admin"
     EMPLOYER = "Employer"
     APPLICANT_USER = "Applicant User"
+    APPLICATION_HANDLER ="Aplication Handler"
 
     USER_TYPE_CHOICES = (
         (SUPER_ADMIN, SUPER_ADMIN),
         (EMPLOYER, EMPLOYER),
         (APPLICANT_USER, APPLICANT_USER),
+        (APPLICATION_HANDLER, APPLICATION_HANDLER),
     )
 
     INDIA = 'India'
