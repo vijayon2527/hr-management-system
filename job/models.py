@@ -183,6 +183,8 @@ class Job(models.Model):
     min_experience = models.DecimalField(
         max_digits=4,
         decimal_places=2,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0.0)],
         verbose_name="Minimum Experience (Years)",
         help_text="Enter the minimum years of experience required (e.g., 2.5 for two and a half years)."
@@ -191,18 +193,24 @@ class Job(models.Model):
     max_experience = models.DecimalField(
         max_digits=4,
         decimal_places=2,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0.0), MaxValueValidator(50.0)],
         verbose_name="Maximum Experience (Years)",
         help_text="Enter the maximum years of experience required (e.g., 5.0 for five years)."
     )
 
     min_salary = models.PositiveIntegerField(
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0)],
         verbose_name="Minimum Salary (INR)",
         help_text="Enter the minimum monthly salary offered in INR (e.g., '50000' for 50,000)."
     )
 
     max_salary = models.PositiveIntegerField(
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0)],
         verbose_name="Maximum Salary (INR)",
         help_text="Enter the maximum monthly salary offered in INR (e.g., '70000' for 70,000)."
@@ -221,11 +229,15 @@ class Job(models.Model):
         help_text="Salary period, e.g., 'Per Year', 'Per Month'."
     )
     no_of_openings = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
         validators=[MinValueValidator(1)],
         help_text="Number of openings available for this position."
     )
     qualification = models.CharField(
         max_length=255,
+        null=True,
+        blank=True,
         help_text="Qualification required for the job (optional)."
     )
     employment_type = models.CharField(max_length=50, 
@@ -246,6 +258,8 @@ class Job(models.Model):
     )
     city = models.CharField(
         max_length=50,
+        null=True,
+        blank=True,
         help_text="City where the job is located."
     )
     address = models.CharField(
@@ -256,6 +270,8 @@ class Job(models.Model):
     )
     zipcode = models.CharField(
         max_length=6,
+        null=True,
+        blank=True,
         help_text="6-digit PIN code for the specific location."
     )
     remote_possible = models.BooleanField(
@@ -370,5 +386,9 @@ class Job(models.Model):
     
     @property
     def get_experience(self):
-        return f"{self.min_experience} to {self.max_experience} years" 
+        if self.min_experience is None or self.max_experience is None:
+            return None
+        return f"{self.min_experience} to {self.max_experience} years"
+
+ 
     
