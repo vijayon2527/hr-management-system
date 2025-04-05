@@ -382,8 +382,10 @@ class Job(models.Model):
     
     @property
     def get_salary(self):
-        return f"{self.min_salary} to {self.max_salary} {self.salary_currency} {self.salary_period}" 
-    
+        if not all([self.min_salary, self.max_salary, self.salary_currency, self.salary_period]):
+            return None
+        return f"{self.min_salary} to {self.max_salary} {self.salary_currency} {self.salary_period}"
+
     @property
     def get_experience(self):
         if self.min_experience is None or self.max_experience is None:

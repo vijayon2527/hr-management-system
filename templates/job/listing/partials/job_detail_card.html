@@ -1,22 +1,52 @@
 <div id="jobDetail">
     {% if job %}
     <div class="card">
-        <h5 class="card-header">{{ job.role }}</h5>
+        <h5 class="card-header">{{ job.job_title }}</h5>
         <div class="card-body job-detail-body">
-            <p class="card-text"><i class="fa-solid fa-house"></i> {{ job.get_company_name }}</p>
-            <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.get_experience }}</p>
-            <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.city }}</p>
-            <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
+            
+            {% if job.get_company_name %}
+            <p class="card-text">
+                <i class="fa-solid fa-house"></i> {{ job.get_company_name }}
+            </p>
+            {% endif %}
+
+            {% if job.get_experience %}
+            <p class="card-text">
+                <i class="fa-solid fa-bag-shopping"></i> {{ job.get_experience }}
+            </p>
+            {% endif %}
+
+            {% if job.city %}
+            <p class="card-text">
+                <i class="fa-solid fa-location-dot"></i> {{ job.city }}
+            </p>
+            {% endif %}
+
+            {% if job.salary %}
+            <p class="card-text">
+                <i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}
+            </p>
+            {% endif %}
+
+            {% if job.get_all_skills %}
             <p class="card-text">
                 <i class="fa-solid fa-book"></i>
                 {% for skill in job.get_all_skills %}
                     <small>{{ skill }}{% if not forloop.last %}, {% endif %}</small>
                 {% endfor %}
             </p>
-            <div class="card-text">{{ job.job_description|safe }}</div>
-            <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
+            {% endif %}
+
+            <div class="card-text">
+                {{ job.job_description|safe }}
+            </div>
+
+            <p class="card-text">
+                <i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago
+            </p>
+
             <form id="applyJobForm" onsubmit="applyJob(event, '{{ job.slug }}')">
-                <button type="submit" class="btn btn-light w-100"id="applyJobButton">Apply Job</button>
+                <button type="submit" class="btn btn-light w-100" id="applyJobButton">Apply Job</button>
             </form>
         </div>
     </div>

@@ -1,32 +1,58 @@
 {% load humanize %}
-{% block extra_css %}
-<style>
-    
-</style>
-{% endblock extra_css %}
-
 {% for job in jobs %}
 <div class="card mb-3">
     <div class="card-header">
-        <h4>{{ job.role.name }}</h4>
+        <h4>{{ job.job_title }}</h4>
     </div>
     <div class="card-body">
-        <p class="card-text"><i class="fa-solid fa-bag-shopping"></i> {{ job.get_experience }}</p>
-        <p class="card-text"><i class="fa-solid fa-location-dot"></i> {{ job.city }}</p>
-        <p class="card-text"><i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}</p>
+
+        {% if job.get_experience %}
+        <p class="card-text">
+            <i class="fa-solid fa-bag-shopping"></i> {{ job.get_experience }}
+        </p>
+        {% endif %}
+
+        {% if job.city %}
+        <p class="card-text">
+            <i class="fa-solid fa-location-dot"></i> {{ job.city }}
+        </p>
+        {% endif %}
+
+        {% if job.get_salary %}
+        <p class="card-text">
+            <i class="fa-solid fa-money-bill"></i> {{ job.get_salary }}
+        </p>
+        {% endif %}
+
+        {% if job.get_all_skills %}
         <p class="card-text">
             <i class="fa-solid fa-book"></i>
             {% for skill in job.get_all_skills %}
-            <small>{{ skill }}{% if not forloop.last %}, {% endif %}</small>
+                <small>{{ skill }}{% if not forloop.last %}, {% endif %}</small>
             {% endfor %}
         </p>
-        <p class="card-text"><i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago</p>
-        
+        {% endif %}
+
+        <p class="card-text">
+            <i class="fa-solid fa-clock"></i> {{ job.uploaded_at|timesince }} ago
+        </p>
+
         <!-- Button for larger screens -->
-        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100 jobLargerScreenButton" data-slug="{{ job.slug }}" onclick="loadJobDetails('{{ job.slug }}')">Details</a>
-        
+        <a href="javascript:void(0);"
+           class="btn btn-light btn-sm w-100 jobLargerScreenButton"
+           data-slug="{{ job.slug }}"
+           onclick="loadJobDetails('{{ job.slug }}')">
+           Details
+        </a>
+
         <!-- Button for mobile screens -->
-        <a href="javascript:void(0);" class="btn btn-light btn-sm w-100 jobMobileScreenButton" data-slug="{{ job.slug }}" onclick="loadJobDetails('{{ job.slug }}', true)">Details</a>
+        <a href="javascript:void(0);"
+           class="btn btn-light btn-sm w-100 jobMobileScreenButton"
+           data-slug="{{ job.slug }}"
+           onclick="loadJobDetails('{{ job.slug }}', true)">
+           Details
+        </a>
+
     </div>
 </div>
 {% empty %}
