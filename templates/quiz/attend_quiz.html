@@ -49,10 +49,10 @@
 <div>
     <div class="header h4">
         <div>
-            {{ quiz.title }}
+            {{ quiz.title }}  
         </div>
         <div>
-            <span id="timer">25:00</span>
+            <span id="timer">{{quiz.duration}}</span>
         </div>
     </div>
 
@@ -69,7 +69,7 @@
                 {% for option in question.options.all %}
                     <li class="list-group-item">
                         <input 
-                            type="checkbox" 
+                            type="radio" 
                             name="answers_{{ question.id }}" 
                             value="{{ option.id }}" 
                             id="option_{{ question.id }}_{{ option.id }}">
@@ -91,103 +91,79 @@
 {% endblock %}
 
 {% block extra_js %}
-<div id="timer"></div>
 
 <script>
-let timeRemaining = {{ time_remaining }}; // Time from the backend
-
-function startTimer() {
-    const timerElement = document.getElementById('timer');
-    function updateTimer() {
-        if (timeRemaining <= 0) {
-            alert("Time's up!");
-            document.getElementById('quiz-form').submit(); // Auto-submit the form
-        } else {
-            let minutes = Math.floor(timeRemaining / 60);
-            let seconds = timeRemaining % 60;
-            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timeRemaining--;
+    let timeRemaining = {{ time_remaining }};
+    let autoSubmitted = false;  // Track whether it was an auto-submit
+    
+    function startTimer() {
+        const timerElement = document.getElementById('timer');
+    
+        function updateTimer() {
+            if (timeRemaining <= 0) {
+                autoSubmitted = true;
+                document.getElementById('quiz-form').submit();  // Auto-submit without validation
+            } else {
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = timeRemaining % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeRemaining--;
+            }
         }
+    
+        updateTimer();
+        setInterval(updateTimer, 1000);
     }
-    updateTimer(); // Display initial time
-    setInterval(updateTimer, 1000); // Update every second
-}
-
-// Initialize the timer
-document.addEventListener('DOMContentLoaded', startTimer);
-
-</script>
-
-<script>
-// Timer Functionality
-let timerDuration = 25 * 60; // 25 minutes in seconds
-let timerElement = document.getElementById('timer');
-
-function updateTimer() {
-    let minutes = Math.floor(timerDuration / 60);
-    let seconds = timerDuration % 60;
-    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-    if (timerDuration > 0) {
-        timerDuration--;
-    } else {
-        // Timer finished, alert or take action
-        alert("Time's up!");
-        document.getElementById('quiz-form').submit(); // Auto-submit form when time is up
-    }
-}
-
-// Update the timer every second
-setInterval(updateTimer, 1000);
-
-// Event listener for form submission (existing code)
-document.getElementById('quiz-form').addEventListener('submit', function(event) {
-    var valid = true;
-    var firstInvalidQuestion = null;  // To store the first invalid question for scrolling
-
+    
+    document.addEventListener('DOMContentLoaded', startTimer);
+    </script>
+    
+    <script>
+    document.getElementById('quiz-form').addEventListener('submit', function(event) {
+        if (autoSubmitted) {
+            return;  // Skip validation if auto-submitted
+        }
+    
+        let valid = true;
+        let firstInvalidQuestion = null;
+    
+        {% for question in questions %}
+            let inputs = document.querySelectorAll('input[name="answers_{{ question.id }}"]:checked');
+            let errorElement = document.getElementById('error_{{ question.id }}');
+            let cardElement = document.getElementById('card_{{ question.id }}');
+    
+            if (inputs.length === 0) {
+                valid = false;
+                errorElement.style.display = 'block';
+                cardElement.classList.add('red-border');
+                if (!firstInvalidQuestion) {
+                    firstInvalidQuestion = cardElement;
+                }
+            } else {
+                errorElement.style.display = 'none';
+                cardElement.classList.remove('red-border');
+            }
+        {% endfor %}
+    
+        if (!valid) {
+            event.preventDefault();
+            if (firstInvalidQuestion) {
+                firstInvalidQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+    
+    // Listen for changes to clear validation errors dynamically
     {% for question in questions %}
-        var checkboxes = document.querySelectorAll('input[name="answers_{{ question.id }}"]:checked');
-        var errorElement = document.getElementById('error_{{ question.id }}');
-        var cardElement = document.getElementById('card_{{ question.id }}');
-        
-        if (checkboxes.length === 0) {
-            valid = false;
-            errorElement.style.display = 'block'; // Show error message
-            cardElement.classList.add('red-border'); // Add red border to the card
-
-            // If this is the first invalid question, store it
-            if (!firstInvalidQuestion) {
-                firstInvalidQuestion = cardElement;
-            }
-        } else {
-            errorElement.style.display = 'none'; // Hide error message if checkboxes are selected
-            cardElement.classList.remove('red-border'); // Remove red border if checkboxes are selected
-        }
-    {% endfor %}
-
-    if (!valid) {
-        event.preventDefault(); // Prevent form submission if validation fails
-        
-        // Scroll to the first invalid question to make it visible
-        if (firstInvalidQuestion) {
-            firstInvalidQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
-});
-
-// Event listener for checkbox changes to dynamically hide error message and remove red border
-{% for question in questions %}
-    document.querySelectorAll('input[name="answers_{{ question.id }}"]').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var checkboxes = document.querySelectorAll('input[name="answers_{{ question.id }}"]:checked');
-            var errorElement = document.getElementById('error_{{ question.id }}');
-            var cardElement = document.getElementById('card_{{ question.id }}');
-            if (checkboxes.length > 0) {
-                errorElement.style.display = 'none'; // Hide error message if at least one checkbox is selected
-                cardElement.classList.remove('red-border'); // Remove red border if at least one checkbox is selected
-            }
+    document.querySelectorAll('input[name="answers_{{ question.id }}"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+            let errorElement = document.getElementById('error_{{ question.id }}');
+            let cardElement = document.getElementById('card_{{ question.id }}');
+            errorElement.style.display = 'none';
+            cardElement.classList.remove('red-border');
         });
     });
-{% endfor %}
-</script>
+    {% endfor %}
+    </script>
+    
 {% endblock extra_js %}

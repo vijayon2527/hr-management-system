@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+.result-message {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #f4f8ff;
+    border: 2px solid #007bff;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.result-message h2 {
+    color: #007bff;
+    font-weight: bold;
+}
+.result-message p {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    color: #333;
+}
+.result-message .btn {
+    margin-top: 25px;
+}
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="result-message">
+    <h2>✅ Your Quiz Has Been Submitted!</h2>
+    <p>Thank you for your responses. Your answers have been recorded successfully.</p>
+</div>
+{% endblock content %}
