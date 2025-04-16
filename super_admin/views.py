@@ -483,12 +483,67 @@ def super_admin_create_question_view(request):
     quizzes = Quiz.objects.all()
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quizzes': quizzes})
 
+from django.http import HttpResponse
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_question_view(request, question_id):
-    
-    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html')
+    question = get_object_or_404(Question, id=question_id)
+    options = Option.objects.filter(question=question)
+    quizzes = Quiz.objects.all()
 
+    if request.method == 'POST':
+        question_type = request.POST.get('question_type')
+        content = request.POST.get('content')
+        points = request.POST.get('points')
+        quiz_id = request.POST.get('quiz')
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+
+        # Update question fields
+        question.question_type = question_type
+        question.content = content
+        question.points = points
+        question.quiz = quiz
+        question.save()
+
+        # Log the POST data for debugging
+        print("POST data:", request.POST)
+
+        # Clear old options
+        Option.objects.filter(question=question).delete()
+
+        # Get options and checkbox states from POST data
+        options_list = request.POST.getlist('options[]')
+        for index, text in enumerate(options_list):
+            checkbox_name = f'is_correct_{index}'
+            is_correct = request.POST.get(checkbox_name) == 'on'
+
+            if text.strip():  # Ensure no empty options are saved
+                Option.objects.create(
+                    question=question,
+                    text=text.strip(),
+                    is_correct=is_correct
+                )
+
+        messages.success(request, 'Question updated successfully.')
+        return redirect('super_admin:super_admin_question_list')
+
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_update_question.html', {
+        'question': question,
+        'options': options,
+        'quizzes': quizzes,
+    })
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_delete_question_view(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+
+    if request.method == 'POST':
+        question.delete()
+
+        messages.success(request, 'Question deleted successfully.')
+
+        return redirect('super_admin:super_admin_question_list')
+    
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_delete_question_choice_view(request, choice_id):
     choice = Option.objects.get(id=choice_id)
