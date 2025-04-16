@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .expired-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        text-align: center;
+        color: #ff0000;
+    }
+
+    .expired-container h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .expired-container p {
+        font-size: 1.25rem;
+    }
+
+    .expired-container a {
+        margin-top: 2rem;
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .expired-container a:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="expired-container">
+    <h1>Time’s Up!</h1>
+    <p>Your time to complete the quiz has expired. You can no longer submit your answers.</p>
+</div>
+{% endblock %}
