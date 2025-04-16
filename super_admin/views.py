@@ -502,3 +502,11 @@ def super_admin_question_list_view(request):
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_question_list.html', {
         'questions': questions,
     })
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_quiz_result_list_view(request):
+    quizes = Quiz.objects.all().prefetch_related('questions')  # Fetch related questions for each quiz efficiently
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_result_list.html', {
+        'quizes': quizes,
+    })
+
