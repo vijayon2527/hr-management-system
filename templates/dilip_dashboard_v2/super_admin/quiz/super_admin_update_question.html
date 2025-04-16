@@ -1,11 +1,19 @@
+
 {% extends "dilip_dashboard_v2/dashboard_base.html" %}
 {% load static crispy_forms_tags %}
+
 {% block css %}
 <style>
-  .error {
-    color: red;
-    font-size: 0.875em;
-    margin-top: 5px;
+  .option-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .option-actions button {
+    margin-left: 10px;
+  }
+  .remove-option {
+    display: none;
   }
 </style>
 {% endblock %}
@@ -16,48 +24,172 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Create Question</h1>
+          <h1>Update Question</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Create Question</li>
+            <li class="breadcrumb-item active">Update Question</li>
           </ol>
         </div>
       </div>
     </div>
   </section>
 
+  {% if messages %}
+  <div class="mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   <section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Create Question</h3>
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">Edit Question</h3>
+        </div>
+        <div class="card-body">
+          <form id="question-form" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="content">Question Text</label>
+              <input type="text" name="content" class="form-control" value="{{ question.content }}" required>
             </div>
-            <div class="card-body">
-                <form id="resumeForm" method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  {{ question_form.as_p }}
-              
-                  {% if choice_formset.non_form_errors %}
-                      <div class="error">
-                          {{ choice_formset.non_form_errors }}
-                      </div>
-                  {% endif %}
-              
-                  {{ choice_formset.management_form }}
-                  {% for form in choice_formset %}
-                      {{ form.as_p }}
-                  {% endfor %}
-                    <input type="submit" class="btn btn-primary" value="Submit">
-                  </form>
+
+            <div class="form-group">
+              <label for="points">Points</label>
+              <input type="number" name="points" class="form-control" value="{{ question.points }}" required>
             </div>
-          </div>
+
+            <div class="form-group">
+              <label for="question_type">Question Type</label>
+              <select name="question_type" class="form-control" required>
+                <option value="MCQ" {% if question.question_type == 'MCQ' %}selected{% endif %}>MCQ</option>
+                <option value="TEXT" {% if question.question_type == 'TEXT' %}selected{% endif %}>Text</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="quiz">Quiz</label>
+              <select name="quiz" class="form-control" required>
+                {% for quiz in quizzes %}
+                  <option value="{{ quiz.id }}" {% if quiz.id == question.quiz.id %}selected{% endif %}>{{ quiz.title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <hr>
+            <h5>Options</h5>
+            <div id="option-container">
+              {% for option in options %}
+                <div class="form-row mb-2 option-row">
+                  <div class="col-md-8">
+                    <input type="text" name="options[]" class="form-control" value="{{ option.text }}" required>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-check mt-2">
+                      <input class="form-check-input" type="checkbox" name="is_correct_{{ forloop.counter0 }}" {% if option.is_correct %}checked{% endif %}>
+                      <label class="form-check-label">Correct</label>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm remove-option">Remove</button>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-10">
+                <button type="button" class="btn btn-primary btn-sm" id="add-option-button">Add Option</button>
+              </div>
+            </div>
+
+            <div class="text-right mt-4">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-pencil-alt"></i> Update Question
+              </button>
+              <a href="{% url 'super_admin:super_admin_question_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+
+          </form>
         </div>
       </div>
     </div>
   </section>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+  function updateRemoveButtons() {
+    const optionRows = $('#option-container .option-row');
+    if (optionRows.length > 1) {
+      optionRows.find('.remove-option').show();
+    } else {
+      optionRows.find('.remove-option').hide();
+    }
+  }
+
+  function addOption() {
+    const index = $('#option-container .option-row').length;
+    const newOptionHtml = `
+      <div class="form-row mb-2 option-row">
+        <div class="col-md-8">
+          <input type="text" name="options[]" class="form-control" placeholder="Enter option text" required>
+        </div>
+        <div class="col-md-2">
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" name="is_correct_${index}">
+            <label class="form-check-label">Correct</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-danger btn-sm remove-option">Remove</button>
+        </div>
+      </div>
+    `;
+    $('#option-container').append(newOptionHtml);
+    updateRemoveButtons();
+  }
+
+  $(document).ready(function() {
+    updateRemoveButtons();
+
+    $('#add-option-button').on('click', function () {
+      addOption();
+    });
+
+    $('#option-container').on('click', '.remove-option', function () {
+      $(this).closest('.option-row').remove();
+      updateRemoveButtons();
+    });
+
+    // Ensure only one checkbox is checked at a time
+    $('#option-container').on('change', 'input[type="checkbox"]', function() {
+      const checkboxes = $(this).closest('.option-row').siblings().find('input[type="checkbox"]');
+      checkboxes.prop('checked', false);
+      $(this).prop('checked', true);
+    });
+
+    // Ensure all checkboxes are submitted with a value
+    $('#question-form').on('submit', function () {
+      $(this).find('input[type="checkbox"]').each(function () {
+        if (!$(this).is(':checked')) {
+          $('<input>').attr({
+            type: 'hidden',
+            name: $(this).attr('name'),
+            value: 'off'
+          }).appendTo('#question-form');
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}
