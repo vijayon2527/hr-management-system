@@ -1,14 +1,22 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseBadRequest
-from quiz.models import Quiz, Question, Attempt, Answer, Option
+from django.http import HttpResponseBadRequest
+from quiz.models import Quiz, Attempt, Answer, Option
 from django.utils.timezone import now
-import datetime
+from django.http import Http404
+
+
 
 def answer_question_view(request, quiz_id):
-    quiz = get_object_or_404(Quiz, id=quiz_id)
-    questions = quiz.questions.prefetch_related('options').all()
+    quiz = get_object_or_404(Quiz, id=quiz_id, is_active=True)
 
+    questions = quiz.questions.prefetch_related('options').all()
+    if not questions.exists():
+        raise Http404("No questions found for this quiz.")
+    
     quiz_duration = quiz.duration
+    if not quiz_duration:
+        raise Http404("No time duration mentioned to this quiz")
+    
     user_attempt, created = Attempt.objects.get_or_create(user=request.user, quiz=quiz)
 
     if not created and user_attempt.completed_at:
@@ -55,12 +63,15 @@ def answer_question_view(request, quiz_id):
             if selected_option_id:
                 try:
                     option = Option.objects.get(id=selected_option_id, question=question)
-                    Answer.objects.create(
+                    answer = Answer.objects.create(
                         attempt=user_attempt,
                         question=question,
                         selected_option=option
                     )
                     if option.is_correct:
+                        user_attempt.score+=1
+                        user_attempt.save()
+                        
                         result['correct'] += 1
                     else:
                         result['incorrect'] += 1
