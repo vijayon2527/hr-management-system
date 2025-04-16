@@ -559,6 +559,12 @@ def super_admin_question_list_view(request):
     })
 
 @allow_access_to([User.SUPER_ADMIN])
+def super_admin_quiz_result_list_view(request):
+    quizes = Quiz.objects.all().prefetch_related('questions')  # Fetch related questions for each quiz efficiently
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_result_list.html', {
+        'quizes': quizes,
+    })
+
 def super_admin_quiz_attended_list_view(request):
     attempts = Attempt.objects.select_related('user', 'quiz').order_by('-started_at')
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_attended_list.html', {

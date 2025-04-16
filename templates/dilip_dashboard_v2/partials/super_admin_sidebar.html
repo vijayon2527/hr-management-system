@@ -180,30 +180,31 @@
             >
               <i class="nav-icon fas fa-envelope"></i>
               <p>
-                Questions
+                Quizzes
                 <i class="right fas fa-angle-left"></i>
                 <span class="badge badge-info right">2</span>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'super_admin:super_admin_create_question' %}" 
-                class="nav-link
-                {% is_active 'super_admin_create_question' %}"
-                >
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Create Question</p>
-                </a>
-              </li>
-              <li class="nav-item">
                 <a href="{% url 'super_admin:super_admin_question_list' %}" 
                 class="nav-link
                 {% is_active 'super_admin_question_list' 'super_admin_update_question' %}"
                 >
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Question List</p>
+                  <p>Quiz List</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{% url 'super_admin:super_admin_quiz_result_list' %}" 
+                class="nav-link
+                {% is_active 'super_admin_quiz_result_list' 'super_admin_update_question' %}"
+                >
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Result List</p>
+                </a>
+              </li>
+              
             </ul>
           </li>
         </ul>
