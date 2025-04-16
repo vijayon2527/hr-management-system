@@ -40,7 +40,8 @@ from .views import (super_admin_analytics_view,
                     super_admin_create_question_view,
                     super_admin_question_list_view,
                     super_admin_update_question_view,
-                    super_admin_delete_question_choice_view
+                    super_admin_delete_question_choice_view,
+                    super_admin_quiz_attended_list_view
                     )
 
 app_name='super_admin'
@@ -88,4 +89,6 @@ urlpatterns = [
     path('super_admin-question-list/', super_admin_question_list_view, name='super_admin_question_list'),
     path('super_admin-update-question/<int:question_id>/', super_admin_update_question_view, name='super_admin_update_question'),
     path('super_admin-delete-question-choice/<int:choice_id>/', super_admin_delete_question_choice_view, name='super_admin_delete_question_choice'),
+    path('super_admin-quiz-attended-list/', super_admin_quiz_attended_list_view, name='super_admin_quiz_attended_list'),
+
 ]
