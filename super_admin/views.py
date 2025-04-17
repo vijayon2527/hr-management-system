@@ -565,8 +565,9 @@ def super_admin_quiz_result_list_view(request):
         'quizes': quizes,
     })
 
-def super_admin_quiz_attended_list_view(request):
-    attempts = Attempt.objects.select_related('user', 'quiz').order_by('-started_at')
+def super_admin_quiz_attended_list_view(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    attempts = Attempt.objects.filter(quiz=quiz)
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_attended_list.html', {
         'attempts': attempts,
     })

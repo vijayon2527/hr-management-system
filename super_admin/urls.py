@@ -93,6 +93,6 @@ urlpatterns = [
      path('question/<int:question_id>/delete/', super_admin_delete_question_view, name='super_admin_delete_question'),
     path('super_admin-delete-question-choice/<int:choice_id>/', super_admin_delete_question_choice_view, name='super_admin_delete_question_choice'),
     path('super_admin-quiz-list/', super_admin_quiz_result_list_view, name='super_admin_quiz_result_list'),
-    path('super_admin-quiz-attended-list/', super_admin_quiz_attended_list_view, name='super_admin_quiz_attended_list'),
+    path('super_admin-quiz-attended-list/<int:quiz_id>/', super_admin_quiz_attended_list_view, name='super_admin_quiz_attended_list'),
 
 ]
