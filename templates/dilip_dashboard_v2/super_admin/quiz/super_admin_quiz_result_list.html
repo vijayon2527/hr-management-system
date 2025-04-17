@@ -49,7 +49,7 @@
                   {% for quiz in quizes %}
                     <tr>
                       <th>{{ forloop.counter }}</th>
-                      <td>{{ quiz.title }}</td>
+                      <td><a href="{% url 'super_admin:super_admin_quiz_attended_list' quiz.id %}">{{ quiz.title }}</a></td>
                       
                     </tr>
                   {% empty %}
