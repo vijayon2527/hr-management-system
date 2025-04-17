@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const validationMessages = {
             firstName: { empty: "Please enter your first name", invalid: "First name must contain at least one letter." },
             lastName: "Please enter your last name",
-            dob: { empty: "Please enter your date of birth", invalid: "You must be at least 20 years old" },
+            dob: { empty: "Please enter your date of birth", invalid: "You must be at least 18 years old" },
             address: "Please enter your address",
             city: { empty: "Please enter a valid city name (not a number)", invalid: "City must not contain numbers" },
             state: "Please select your state",
@@ -60,16 +60,28 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             let today = new Date();
             let dob = new Date(dobField.value);
-            let age = today.getFullYear() - dob.getFullYear();
-            let monthDifference = today.getMonth() - dob.getMonth();
-            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
-                age--;
-            }
-            if (age < 20) {
-                isValid = showError(dobField, validationMessages.dob.invalid);
+        
+            // Strip the time part
+            dob.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+        
+            if (dob > today) {
+                isValid = showError(dobField, "Date of birth cannot be in the future.");
                 if (!firstInvalidField) firstInvalidField = dobField;
+            } else {
+                // Calculate age
+                let age = today.getFullYear() - dob.getFullYear();
+                let monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+        
+                if (age < 18) {
+                    isValid = showError(dobField, "You must be at least 18 years old.");
+                    if (!firstInvalidField) firstInvalidField = dobField;
+                }
             }
-        }
+        }    
 
         // Address validation
         var addressField1 = document.getElementById("id_address_line_1");

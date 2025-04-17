@@ -226,19 +226,38 @@
 </script>
 
 <script>
-  // Before form submission, update checkbox values to "on" or "off"
-  document.getElementById('question-form').addEventListener('submit', function () {
-    // Find all checkboxes within the form
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    
-    // Loop through each checkbox
-    checkboxes.forEach(function (checkbox) {
-      // If the checkbox is checked, set its value to "on", otherwise set it to "off"
-      checkbox.value = checkbox.checked ? 'on' : 'off';
-      // Ensure the checkbox is included in the form submission
-      checkbox.checked = true;
+  document.getElementById('question-form').addEventListener('submit', function (event) {
+    let isValid = true;
+  
+    // Loop through each question container
+    document.querySelectorAll('.question-container').forEach((container, index) => {
+      const questionType = container.querySelector(`select[name="question_type[]"]`).value;
+  
+      // Only validate MCQ questions
+      if (questionType === 'mcq') {
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        const atLeastOneChecked = Array.from(checkboxes).some(cb => cb.checked);
+  
+        if (!atLeastOneChecked) {
+          isValid = false;
+          container.scrollIntoView({ behavior: "smooth" });
+          alert(`Please mark at least one correct option for question ${index + 1}.`);
+          return false; // Exit early
+        }
+      }
     });
-  });
+  
+    // Prevent submission if invalid
+    if (!isValid) {
+      event.preventDefault();
+    } else {
+      // Set all checkbox values
+      document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+        checkbox.value = checkbox.checked ? 'on' : 'off';
+        checkbox.checked = true; // Ensure it's submitted
+      });
+    }
+  }); 
 </script>
 
 {% endblock %}
