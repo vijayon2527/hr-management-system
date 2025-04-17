@@ -5,7 +5,7 @@
   <p>Are you sure you want to delete <strong>{{ quiz.title }}</strong>?</p>
   <form method="post">
     {% csrf_token %}
-    <a href="{% url 'quiz:quiz_list' %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'super_admin:super_admin_quiz_list' %}" class="btn btn-secondary">Cancel</a>
     <button type="submit" class="btn btn-danger">Delete</button>
   </form>
 </div>

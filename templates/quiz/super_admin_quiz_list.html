@@ -9,7 +9,7 @@
     {% endfor %}
   {% endif %}
 
-  <a href="{% url 'quiz:create_quiz' %}" class="btn btn-primary mb-3">+ Create Quiz</a>
+  <a href="{% url 'super_admin:super_admin_create_quiz' %}" class="btn btn-primary mb-3">+ Create Quiz</a>
 
   {% if quizzes %}
     <table class="table table-bordered table-striped">
@@ -40,8 +40,8 @@
             </td>
             <td>{{ quiz.created_at|date:"Y-m-d H:i" }}</td>
             <td>
-              <a href="{% url 'quiz:edit_quiz' quiz.id %}" class="btn btn-sm btn-warning">Edit</a>
-              <a href="{% url 'quiz:delete_quiz' quiz.id %}" class="btn btn-sm btn-danger">Delete</a>
+              <a href="{% url 'super_admin:super_admin_edit_quiz' quiz.id %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'super_admin:super_admin_delete_quiz' quiz.id %}" class="btn btn-sm btn-danger">Delete</a>
             </td>
           </tr>
         {% endfor %}
