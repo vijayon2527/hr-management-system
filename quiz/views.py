@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseBadRequest
-from quiz.models import Quiz, Attempt, Answer, Option
+from django.shortcuts import render,redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponseBadRequest
+from quiz.models import Quiz, Question, Attempt, Answer, Option
 from django.utils.timezone import now
 from django.http import Http404
 
@@ -91,3 +91,8 @@ def answer_question_view(request, quiz_id):
         'quiz': quiz,
         'time_remaining': int(time_remaining.total_seconds()),
     })
+
+
+
+
+

@@ -1,0 +1,98 @@
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block css %}
+<style>
+  .card-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Create Quiz</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Create Quiz</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">New Quiz Details</h3>
+            </div>
+            <form method="post" novalidate>
+              {% csrf_token %}
+              <div class="card-body">
+
+                <!-- ✅ Add messages here -->
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                  {% endfor %}
+                {% endif %}
+
+                <!-- Quiz Title -->
+                <div class="form-group">
+                  <label for="title">Quiz Title:</label>
+                  <input type="text" name="title" id="title" class="form-control" placeholder="Enter quiz title" value="{{ request.POST.title }}" required>
+                  {% if form.title.errors %}
+                    <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                  <label for="description">Description:</label>
+                  <textarea name="description" id="description" rows="4" class="form-control" placeholder="Enter quiz description" required>{{ request.POST.description }}</textarea>
+                  {% if form.description.errors %}
+                    <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Duration -->
+                <div class="form-group">
+                  <label for="duration">Duration (in minutes):</label>
+                  <input type="number" name="duration" id="duration" class="form-control" min="1" value="{{ request.POST.duration }}" required>
+                  {% if form.duration.errors %}
+                    <div class="text-danger small">{{ form.duration.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Total Marks -->
+                <div class="form-group">
+                  <label for="total_marks">Total Marks:</label>
+                  <input type="number" name="total_marks" id="total_marks" class="form-control" min="1" value="{{ request.POST.total_marks }}" required>
+                  {% if form.total_marks.errors %}
+                    <div class="text-danger small">{{ form.total_marks.errors.0 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-success">Create Quiz</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

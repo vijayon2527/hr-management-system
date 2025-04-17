@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Quiz</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" class="form-control" value="{{ title|default:quiz.title }}" required>
+      {% if errors.title %}
+        <div class="text-danger">{{ errors.title }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label for="description">Description</label>
+      <textarea name="description" id="description" class="form-control" required>{{ description|default:quiz.description }}</textarea>
+      {% if errors.description %}
+        <div class="text-danger">{{ errors.description }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label for="duration">Duration (minutes)</label>
+      <input type="number" name="duration" id="duration" class="form-control" min="1" value="{{ duration|default:quiz.duration.total_seconds|divisibleby:60 }}">
+      {% if errors.duration %}
+        <div class="text-danger">{{ errors.duration }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</div>
+{% endblock %}
