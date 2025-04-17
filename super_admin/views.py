@@ -18,6 +18,11 @@ from .models import Industry, FunctionalArea, Role
 from .forms import UserForm, ApplicantForm
 from applicant.models import WorkflowLog
 from quiz.models import Quiz, Question, Option, Answer, Attempt
+from django.contrib.auth.decorators import login_required
+from .forms import QuizForm
+from datetime import timedelta
+from django.contrib import messages
+from django.utils.timezone import now
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_analytics_view(request):
@@ -417,28 +422,23 @@ def super_admin_create_question_view(request):
     if request.method == 'POST':
         quiz_id = request.POST.get('quiz')
         try:
-            quiz = Quiz.objects.get(id=quiz_id)  # Fetch the selected quiz
+            quiz = Quiz.objects.get(id=quiz_id)  
             
             question_types = request.POST.getlist('question_type[]')
             contents = request.POST.getlist('content[]')
             points = request.POST.getlist('points[]')
 
-            # Validate that all lists are the same length
             if not (len(question_types) == len(contents) == len(points)):
                 raise ValueError("Mismatched data lengths for questions.")
 
-            # Start a database transaction
             with transaction.atomic():
-                # Loop through all the questions to save them
                 for idx, content in enumerate(contents):
                     question_type = question_types[idx]
                     point = points[idx]
                     
-                    # Ensure content and points are valid
                     if not content or not point.isdigit():
                         raise ValueError(f"Invalid content or points for question {idx+1}")
 
-                    # Create the question object
                     question = Question.objects.create(
                         quiz=quiz,
                         content=content,
@@ -446,18 +446,15 @@ def super_admin_create_question_view(request):
                         points=int(point)
                     )
 
-                    # Add options for the question if it's MCQ
                     if question_type == 'mcq':
                         options = request.POST.getlist(f'options[{idx+1}][]')  # Get all options for the question
                         correct_flags = request.POST.getlist(f'is_correct[{idx+1}][]')  # Get the correct flags
 
-                        # Verify that there are options
                         if not options:
                             raise ValueError(f"At least one option must be provided for question {idx+1}.")
                         if not correct_flags:
                             raise ValueError(f"At least one option must be marked as correct for question {idx+1}.")
                         
-                        # Create options
                         for option_idx, option_text in enumerate(options):
                             if option_text:  # Ensure options aren't empty
                                 # Check if the current option is marked as correct
@@ -568,8 +565,121 @@ def super_admin_quiz_result_list_view(request):
         'quizes': quizes,
     })
 
-def super_admin_quiz_attended_list_view(request):
-    attempts = Attempt.objects.select_related('user', 'quiz').order_by('-started_at')
+def super_admin_quiz_attended_list_view(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    attempts = Attempt.objects.filter(quiz=quiz)
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_attended_list.html', {
         'attempts': attempts,
     })
+
+
+
+@login_required
+def super_admin_quiz_list(request):
+    quizzes = Quiz.objects.filter(created_by=request.user)
+    return render(request, 'quiz/super_admin_quiz_list.html', {'quizzes': quizzes})
+
+@login_required
+def super_admin_create_quiz(request):
+    if request.method == 'POST':
+        form = QuizForm(request.POST)
+        
+        # Handling validation for required fields manually
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        duration = request.POST.get('duration')
+
+        # Basic validation for required fields
+        if not title or not description or not duration:
+            messages.error(request, "All fields are required.")
+            return render(request, 'quiz/super_admin_create_quiz.html', {'form': form})
+
+        try:
+            # Try to convert duration into minutes
+            duration_minutes = int(duration) if duration else 0
+            duration_obj = timedelta(minutes=duration_minutes) if duration_minutes else None
+        except ValueError:
+            duration_obj = None
+
+        # Check if quiz with the same title already exists
+        if Quiz.objects.filter(title=title).exists():
+            messages.error(request, "Quiz with this title already exists.")
+            return render(request, 'quiz/super_admin_create_quiz.html', {'form': form})
+
+        # Create the quiz object
+        quiz = Quiz.objects.create(
+            title=title,
+            description=description,
+            created_by=request.user,
+            is_timed=True if duration_obj else False,
+            duration=duration_obj
+        )
+        messages.success(request, "Quiz created successfully!")
+        return redirect('super_admin:super_admin_quiz_list')
+
+    else:
+        form = QuizForm()  # Show an empty form for GET request
+
+    return render(request, 'quiz/super_admin_create_quiz.html', {'form': form})
+
+
+@login_required
+def super_admin_edit_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id, created_by=request.user)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        duration = request.POST.get('duration')
+
+        errors = {}
+
+        if not title:
+            errors['title'] = "This field is required."
+        if not duration:
+            errors['duration'] = "This field is required."
+
+        if Quiz.objects.exclude(id=quiz.id).filter(title=title, created_by=request.user).exists():
+            messages.error(request, "Another quiz with this title already exists.")
+            return render(request, 'quiz/super_admin_edit_quiz.html', {
+                'quiz': quiz,
+                'title': title,
+                'description': description,
+                'duration': duration,
+                'errors': errors
+            })
+
+        if errors:
+            return render(request, 'quiz/super_admin_edit_quiz.html', {
+                'quiz': quiz,
+                'title': title,
+                'description': description,
+                'duration': duration,
+                'errors': errors
+            })
+
+        try:
+            duration_minutes = int(duration)
+            quiz.duration = timedelta(minutes=duration_minutes)
+            quiz.is_timed = True
+        except ValueError:
+            quiz.duration = None
+            quiz.is_timed = False
+
+        quiz.title = title
+        quiz.description = description
+        quiz.save()
+        messages.success(request, "Quiz updated successfully!")
+        return redirect('super_admin:super_admin_quiz_list')
+
+    return render(request, 'quiz/super_admin_edit_quiz.html', {'quiz': quiz})
+
+@login_required
+def super_admin_delete_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id, created_by=request.user)
+    if request.method == 'POST':
+        quiz.delete()
+        messages.success(request, "Quiz deleted successfully!")
+        return redirect('super_admin:super_admin_quiz_list')
+    return render(request, 'quiz/super_admin_delete_quiz.html', {'quiz': quiz})
+

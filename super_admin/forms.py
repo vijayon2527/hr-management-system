@@ -2,6 +2,7 @@ from django import forms
 from .models import Industry, FunctionalArea, Role
 from users.models import User
 from applicant.models import Applicant
+from quiz.models import Quiz
 
 class IndustryForm(forms.ModelForm):
     class Meta:
@@ -67,3 +68,17 @@ class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
         fields = ("industry", "resume")
+
+
+
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['title', 'description', 'is_active', 'is_timed', 'duration']
+
+    # You can set custom validation or messages if needed
+    def clean_duration(self):
+        duration = self.cleaned_data.get('duration')
+        if not duration:
+            raise forms.ValidationError("This field is required.")
+        return duration
