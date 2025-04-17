@@ -554,8 +554,11 @@ def super_admin_delete_question_choice_view(request, choice_id):
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_question_list_view(request):
     questions = Question.objects.all().order_by("-id")
+    quizes = Quiz.objects.all().prefetch_related('questions')
+
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_question_list.html', {
         'questions': questions,
+        'quizes': quizes,
     })
 
 @allow_access_to([User.SUPER_ADMIN])
