@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Your Quizzes</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <a href="{% url 'quiz:create_quiz' %}" class="btn btn-primary mb-3">+ Create Quiz</a>
+
+  {% if quizzes %}
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Is Timed</th>
+          <th>Duration</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quiz in quizzes %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ quiz.title }}</td>
+            <td>{{ quiz.description|default:"-" }}</td>
+            <td>{{ quiz.is_timed|yesno:"Yes,No" }}</td>
+            <td>
+              {% if quiz.duration %}
+                {{ quiz.duration }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td>{{ quiz.created_at|date:"Y-m-d H:i" }}</td>
+            <td>
+              <a href="{% url 'quiz:edit_quiz' quiz.id %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'quiz:delete_quiz' quiz.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No quizzes yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
