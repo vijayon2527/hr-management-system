@@ -29,22 +29,47 @@
 
 {% block content %}
 <div class="content-wrapper">
+  <!-- Header -->
   <section class="content-header">
-    <div class="container-fluid">
-      <h1>Quiz List & Questions</h1>
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <!-- LEFT HEADER: dynamically updated -->
+      <h1 id="page-title">Quiz List</h1>
+
+      <!-- RIGHT BUTTONS -->
+      <div id="quiz-buttons" class="d-flex gap-2">
+        <a id="create-quiz-btn" href="{% url 'super_admin:super_admin_create_quiz' %}" class="btn btn-info">
+          + Create Quiz
+        </a>
+        <a id="create-question-btn" href="{% url 'super_admin:super_admin_create_question' %}" class="btn btn-success" style="display:none;">
+          + Create Question
+        </a>
+        <button id="back-to-quiz-list-btn" class="btn btn-secondary" style="display:none;" onclick="goBackToList()">
+          Back to Quiz List
+        </button>
+      </div>
     </div>
   </section>
 
+  <!-- Content -->
   <section class="content">
     <div class="container-fluid">
 
       <!-- Quiz List Section -->
       <div id="quiz-list-section">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
         <table id="quizTable" class="table table-bordered table-striped">
-          <thead>
+          <thead class="table-dark">
             <tr>
               <th>#</th>
               <th>Quiz Title</th>
+              <th>Description</th>
+              <th>Duration</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +78,19 @@
               <td>{{ forloop.counter }}</td>
               <td>
                 <a href="javascript:void(0);" onclick="showQuizDetail({{ quiz.id }})">{{ quiz.title }}</a>
+              </td>
+              <td>{{ quiz.description|default:"-" }}</td>
+              <td>{{ quiz.duration }}</td>
+              <td>
+                <a href="{% url 'super_admin:super_admin_edit_quiz' quiz.id %}" class="btn btn-sm btn-warning update-btn">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <form method="post" action="{% url 'super_admin:super_admin_delete_quiz' quiz.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger delete-btn" onclick="return confirm('Are you sure you want to delete this quiz?')">
+                    <i class="fas fa-trash-alt"></i> Delete
+                  </button>
+                </form>
               </td>
             </tr>
             {% endfor %}
@@ -64,7 +102,6 @@
       <div id="quiz-detail-section" style="display:none;">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 id="quiz-title">Quiz Title</h4>
-          <button class="btn btn-secondary" onclick="goBackToList()">Back to Quiz List</button>
         </div>
 
         <div id="questions-container">
@@ -73,7 +110,7 @@
               {% for question in quiz.questions.all %}
               <div class="question-card">
                 <div class="button-container">
-                  <a href="{% url 'super_admin:super_admin_update_question' question.id %}" class="btn btn-sm btn-primary update-btn">
+                  <a href="{% url 'super_admin:super_admin_update_question' question.id %}" class="btn btn-sm btn-warning update-btn">
                     <i class="fas fa-edit"></i> Update
                   </a>
                   <form method="post" action="{% url 'super_admin:super_admin_delete_question' question.id %}" style="display:inline;">
@@ -119,21 +156,36 @@
   function showQuizDetail(quizId) {
     document.getElementById('quiz-list-section').style.display = 'none';
     document.getElementById('quiz-detail-section').style.display = 'block';
-
-    // Hide all quizzes
     document.querySelectorAll('.quiz-questions').forEach(div => div.style.display = 'none');
+    const selectedQuiz = document.getElementById('quiz-' + quizId);
+    if (selectedQuiz) selectedQuiz.style.display = 'block';
 
-    // Show only selected quiz
-    document.getElementById('quiz-' + quizId).style.display = 'block';
+    const quizLink = document.querySelector(`a[onclick='showQuizDetail(${quizId})']`);
+    const row = quizLink.closest('tr');
+    const title = row.children[1].innerText;
+    document.getElementById('quiz-title').innerText = title;
 
-    // Set quiz title
-    const row = document.querySelector(`a[onclick='showQuizDetail(${quizId})']`).closest('tr');
-    document.getElementById('quiz-title').innerText = row.children[1].innerText;
+    // Show/hide appropriate buttons
+    document.getElementById('create-question-btn').style.display = 'inline-block';
+    document.getElementById('create-question-btn').href = "{% url 'super_admin:super_admin_create_question' %}?quiz_id=" + quizId;
+    document.getElementById('back-to-quiz-list-btn').style.display = 'inline-block';
+    document.getElementById('create-quiz-btn').style.display = 'none';
+
+    // Change title
+    document.getElementById('page-title').innerText = "Questions";
   }
 
   function goBackToList() {
     document.getElementById('quiz-detail-section').style.display = 'none';
     document.getElementById('quiz-list-section').style.display = 'block';
+
+    // Reset buttons
+    document.getElementById('create-question-btn').style.display = 'none';
+    document.getElementById('back-to-quiz-list-btn').style.display = 'none';
+    document.getElementById('create-quiz-btn').style.display = 'inline-block';
+
+    // Reset title
+    document.getElementById('page-title').innerText = "Quiz List";
   }
 </script>
 {% endblock %}

@@ -32,7 +32,7 @@
 
     <div class="mb-3">
       <label for="duration">Duration (minutes)</label>
-      <input type="number" name="duration" id="duration" class="form-control" min="1" value="{{ duration|default:quiz.duration.total_seconds|divisibleby:60 }}">
+      <input type="number" name="duration" id="duration" class="form-control" min="1" value="{{ duration|default:quiz.duration }}">
       {% if errors.duration %}
         <div class="text-danger">{{ errors.duration }}</div>
       {% endif %}

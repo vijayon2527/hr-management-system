@@ -466,7 +466,7 @@ def super_admin_create_question_view(request):
                                 )
 
             messages.success(request, 'Questions added successfully!')
-            return redirect('.')
+            return redirect('super_admin:super_admin_question_list')
 
         except Quiz.DoesNotExist:
             messages.error(request, 'Quiz not found.')
@@ -564,15 +564,63 @@ def super_admin_quiz_result_list_view(request):
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_result_list.html', {
         'quizes': quizes,
     })
+from datetime import datetime
+from django.utils import timezone
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_quiz_attended_list_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
-    attempts = Attempt.objects.filter(quiz=quiz)
+
+    selected_date_str = request.GET.get('date')
+    today = timezone.localdate()
+
+    if selected_date_str:
+        try:
+            selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, "Invalid date format. Use YYYY-MM-DD.")
+            selected_date = today
+    else:
+        selected_date = today
+
+    # Get initial attempt queryset
+    attempts_qs = Attempt.objects.filter(quiz=quiz, completed_at__date=selected_date)
+
+    # If no data for selected date, fallback to latest available date with attempts
+    if not attempts_qs.exists() and not selected_date_str:
+        latest_attempt = (
+            Attempt.objects.filter(quiz=quiz)
+            .annotate(date=TruncDate('completed_at'))
+            .order_by('-date')
+            .values_list('date', flat=True)
+            .first()
+        )
+        if latest_attempt:
+            selected_date = latest_attempt
+            attempts_qs = Attempt.objects.filter(quiz=quiz, completed_at__date=selected_date)
+        else:
+            messages.info(request, "No attempts found for this quiz.")
+
+    # Get all available dates with attempt counts
+    attempts_by_date = (
+        Attempt.objects.filter(quiz=quiz)
+        .annotate(date=TruncDate('completed_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('-date')
+    )
+
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_attended_list.html', {
-        'attempts': attempts,
+        'quiz': quiz,
+        'attempts': attempts_qs.select_related('user'),
+        'attempts_by_date': attempts_by_date,
+        'selected_date': selected_date,
+        'today': today,
     })
-
-
 
 @login_required
 def super_admin_quiz_list(request):
@@ -615,7 +663,7 @@ def super_admin_create_quiz(request):
             duration=duration_obj
         )
         messages.success(request, "Quiz created successfully!")
-        return redirect('super_admin:super_admin_quiz_list')
+        return redirect('super_admin:super_admin_question_list')
 
     else:
         form = QuizForm()  # Show an empty form for GET request
@@ -670,7 +718,7 @@ def super_admin_edit_quiz(request, quiz_id):
         quiz.description = description
         quiz.save()
         messages.success(request, "Quiz updated successfully!")
-        return redirect('super_admin:super_admin_quiz_list')
+        return redirect('super_admin:super_admin_question_list')
 
     return render(request, 'quiz/super_admin_edit_quiz.html', {'quiz': quiz})
 
@@ -680,6 +728,6 @@ def super_admin_delete_quiz(request, quiz_id):
     if request.method == 'POST':
         quiz.delete()
         messages.success(request, "Quiz deleted successfully!")
-        return redirect('super_admin:super_admin_quiz_list')
+        return redirect('super_admin:super_admin_question_list')
     return render(request, 'quiz/super_admin_delete_quiz.html', {'quiz': quiz})
 

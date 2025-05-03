@@ -1,53 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-4 offset-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <img src="{% static 'images/brand_logo.png' %}" width=100>
-                        </div>
-                        <h2 class="text-center">Login</h2>
-                        <form method="post" class="needs-validation" novalidate>
-                            {% csrf_token %}
-                            <!-- Mobile Number Field -->
-                            <div class="mb-3">
-                                <label for="id_username" class="form-label">Mobile Number</label>
-                                <input type="text" class="form-control {% if form.username.errors %} is-invalid{% endif %}" 
-                                       id="id_username" name="username" value="{{ form.username.value|default_if_none:''  }}">
-                                {% for error in form.username.errors %}
-                                    <div class="invalid-feedback">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                                <small class="text-muted">{{ form.username.help_text }}</small>
-                            </div>
-
-                            <!-- Password Field -->
-                            <div class="mb-3">
-                                <label for="id_password" class="form-label">Password</label>
-                                <input type="password" class="form-control {% if form.password.errors %} is-invalid{% endif %}" 
-                                       id="id_password" name="password">
-                                {% for error in form.password.errors %}
-                                    <div class="invalid-feedback">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                                <small class="text-muted">{{ form.password.help_text }}</small>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
-                            <p class="text-center mt-1">
-                                Don't have an account? <a href="{% url 'users:register' %}">Register</a>
-                            </p>
-                        </form>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <img src="{% static 'images/brand_logo.png' %}" width="100">
                     </div>
+                    <h2 class="text-center">Login</h2>
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <!-- Mobile Number Field -->
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control {% if form.username.errors %} is-invalid{% endif %}" 
+                                   id="id_username" name="username" value="{{ form.username.value|default_if_none:'' }}">
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                            <small class="text-muted">{{ form.username.help_text }}</small>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" class="form-control {% if form.password.errors %} is-invalid{% endif %}" 
+                                   id="id_password" name="password">
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                            <small class="text-muted">{{ form.password.help_text }}</small>
+                        </div>
+                        <!-- Login Button with Spinner -->
+                        <button type="submit" class="btn btn-primary w-100 mt-2" id="loginBtn">
+                            <span id="loginBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span id="loginBtnText">Login</span>
+                        </button>
+                        <p class="text-center mt-1">
+                            Don't have an account? <a href="{% url 'users:register' %}">Register</a>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
+
 {% block extra_js %}
-    <script src="{% static 'validate_login.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const loginBtn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loginBtnSpinner');
+            const btnText = document.getElementById('loginBtnText');
+
+            form.addEventListener('submit', function () {
+                loginBtn.disabled = true;
+                spinner.classList.remove('d-none');
+                btnText.textContent = 'Logging in...';
+            });
+        });
+    </script>
 {% endblock %}

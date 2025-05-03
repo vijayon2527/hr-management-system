@@ -5,7 +5,6 @@ from django.utils.timezone import now
 from django.http import Http404
 
 
-
 def answer_question_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, is_active=True)
 
