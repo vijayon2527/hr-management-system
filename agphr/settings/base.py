@@ -171,3 +171,12 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR: 'error',
 }
+
+def calculate_percentage(obtained, total):
+    """
+    Calculate percentage from obtained and total marks.
+    Returns a float rounded to 2 decimal places.
+    """
+    if total == 0:
+        return 0.0
+    return round((obtained / total) * 100, 2)

@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block css %}
-<!-- DataTables -->
 <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
 <link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
@@ -10,13 +9,10 @@
 
 {% block content %}
 <div class="content-wrapper">
-  <!-- Content Header -->
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Quiz Participant List</h1>
-        </div>
+        <div class="col-sm-6"><h1>Quiz Participants</h1></div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -27,72 +23,103 @@
     </div>
   </section>
 
-  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">List of All Students Who Attempted Quizzes</h3>
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+              <div>
+                <h3 class="card-title mb-0"><strong>{{ quiz.title }}</strong></h3>
+              </div>
+              <div class="d-flex align-items-center" style="gap: 1.5rem;">
+                {% if quiz.duration %}
+                  <span><strong>Duration:</strong> {{ quiz.duration }}</span>
+                {% endif %}
+                <span><strong>Total Marks:</strong> {{ quiz.total_marks }}</span>
+                <span><strong>Date:</strong> 
+                  {% if selected_date == today %}
+                    Today
+                  {% elif selected_date == today|add:"-1 day" %}
+                    Yesterday
+                  {% else %}
+                    {{ selected_date }}
+                  {% endif %}
+                </span>
+              </div>
             </div>
             <div class="card-body">
+              <form method="get" class="form-inline mb-4">
+                <label for="date" class="mr-2">Filter by Date:</label>
+                <input type="date" name="date" id="date" class="form-control mr-2" value="{{ selected_date|date:'Y-m-d' }}">
+                <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                {% if request.GET.date %}
+                  <a href="{% url 'super_admin:super_admin_quiz_attended_list' quiz.id %}" class="btn btn-danger">Clear</a>
+                {% endif %}
+              </form>
+              
+            
               <table id="attemptedStudentsTable" class="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
                     <th>Mobile</th>
-                    <th>Quiz Title</th>
-                    <th>Started At</th>
-                    <th>Completed At</th>
                     <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Result</th>
+                    <th>Time Taken</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for attempt in attempts %}
-                  <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ attempt.user.mobile }}</td>
-                    <td>{{ attempt.quiz.title }}</td>
-                    <td>{{ attempt.started_at }}</td>
-                    <td>{{ attempt.completed_at|default:"In Progress" }}</td>
-                    <td>{{ attempt.score }}</td>
-                  </tr>
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ attempt.user.first_name }} {{ attempt.user.last_name }}</td>
+                      <td>{{ attempt.user.email }}</td>
+                      <td>{{ attempt.user.mobile }}</td>
+                      <td>{{ attempt.score }}</td>
+                      <td>{{ attempt.percentage }}%</td>
+                      <td>
+                        {% if attempt.result == "Pass" %}
+                          <span class="badge badge-success">Pass</span>
+                        {% else %}
+                          <span class="badge badge-danger">Fail</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ attempt.time_taken }}</td>
+                    </tr>
                   {% empty %}
-                  <tr>
-                    <td colspan="6" class="text-center">No attempts found.</td>
-                  </tr>
+                    <tr>
+                      <td colspan="8" class="text-center">No attempts found for the selected date.</td>
+                    </tr>
                   {% endfor %}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th>S.No</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
                     <th>Mobile</th>
-                    <th>Quiz Title</th>
-                    <th>Started At</th>
-                    <th>Completed At</th>
                     <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Result</th>
+                    <th>Time Taken</th>
                   </tr>
                 </tfoot>
               </table>
             </div>
-            <!-- /.card-body -->
+            
           </div>
-          <!-- /.card -->
         </div>
-        <!-- /.col -->
       </div>
-      <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
   </section>
-  <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 {% endblock %}
 
 {% block js %}
-<!-- DataTables & Plugins -->
 <script src="{% static 'dashboard/plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -110,7 +137,7 @@
   $(function () {
     $("#attemptedStudentsTable").DataTable({
       "responsive": true,
-      "lengthChange": false,  // ✅ disables “Show entries” dropdown
+      "lengthChange": false,
       "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#attemptedStudentsTable_wrapper .col-md-6:eq(0)');

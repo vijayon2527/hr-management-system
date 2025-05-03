@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import User
-
+from django.db.models import Sum
 
 class Quiz(models.Model):
     title = models.CharField(max_length=255, unique=True)
@@ -20,6 +20,10 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def total_marks(self):
+        return self.questions.aggregate(total=Sum('points'))['total'] or 0
 
 
 class Question(models.Model):
@@ -61,7 +65,6 @@ class Option(models.Model):
     def __str__(self):
         return self.text
 
-
 class Attempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attempts')
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='attempts')
@@ -73,6 +76,29 @@ class Attempt(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'quiz'], name='unique_quiz_attempt')
         ]
+
+    @property
+    def total_questions(self):
+        return self.quiz.questions.count()
+
+    @property
+    def percentage(self):
+        total = self.total_questions
+        if total > 0:
+            return round((self.score / total) * 100, 2)
+        return 0
+
+    @property
+    def result(self):
+        return "Pass" if self.percentage >= 70 else "Fail"
+
+    @property
+    def time_taken(self):
+        if self.started_at and self.completed_at:
+            duration = self.completed_at - self.started_at
+            return str(duration).split('.')[0]
+        return "N/A"
+
 
     def __str__(self):
         return f"{self.user}'s attempt on {self.quiz.title}"
