@@ -1,0 +1,1202 @@
+[
+    {
+        "content": "What is Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A high-level, interpreted programming language known for its readability and simplicity", "is_correct": true},
+            {"text": "A low-level, compiled programming language", "is_correct": false},
+            {"text": "A database management system", "is_correct": false},
+            {"text": "A web browser", "is_correct": false},
+            {"text": "A hardware programming tool", "is_correct": false}
+        ]
+    },
+    {
+        "content": "Is Python interpreted or compiled?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Python is purely compiled", "is_correct": false},
+            {"text": "Python is both compiled and interpreted", "is_correct": false},
+            {"text": "Python is neither compiled nor interpreted", "is_correct": false},
+            {"text": "Python is compiled to bytecode first, then interpreted", "is_correct": true},
+            {"text": "Python is only interpreted without any compilation", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are the key features of Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Fast execution speed and low memory usage", "is_correct": false},
+            {"text": "Readability, simplicity, portability, dynamic typing, extensive libraries, and support for OOP", "is_correct": true},
+            {"text": "Strict typing and complex syntax", "is_correct": false},
+            {"text": "Only procedural programming support", "is_correct": false},
+            {"text": "Limited standard library and platform dependence", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is PEP 8?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Python Enhancement Proposal number 8", "is_correct": false},
+            {"text": "A Python package for web development", "is_correct": false},
+            {"text": "Python's style guide for writing clean and readable code", "is_correct": true},
+            {"text": "The 8th version of Python", "is_correct": false},
+            {"text": "A Python compiler optimization", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are Python identifiers?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Special characters used in Python syntax", "is_correct": false},
+            {"text": "Names used to identify variables, functions, classes, etc.", "is_correct": true},
+            {"text": "Python's built-in functions", "is_correct": false},
+            {"text": "Comments in Python code", "is_correct": false},
+            {"text": "Python's version numbers", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are reserved keywords?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Words that are highlighted in IDE", "is_correct": false},
+            {"text": "Words that can be redefined by the user", "is_correct": false},
+            {"text": "Words with special meaning like if, else, class, def, etc., which cannot be used as identifiers", "is_correct": true},
+            {"text": "Words that are only used in comments", "is_correct": false},
+            {"text": "Words that are deprecated in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between Python 2 and Python 3?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Python 3 is slower than Python 2", "is_correct": false},
+            {"text": "Python 2 uses Unicode by default while Python 3 doesn't", "is_correct": false},
+            {"text": "Python 3 uses Unicode by default, has different syntax for print, integer division, etc.", "is_correct": true},
+            {"text": "There are no significant differences", "is_correct": false},
+            {"text": "Python 2 has more features than Python 3", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the use of indentation in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "It makes code look pretty", "is_correct": false},
+            {"text": "It's optional and only for readability", "is_correct": false},
+            {"text": "It defines code blocks; no curly braces are used", "is_correct": true},
+            {"text": "It indicates comments", "is_correct": false},
+            {"text": "It shows deprecated code", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are comments in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Lines that are ignored by the interpreter", "is_correct": false},
+            {"text": "Lines starting with # or enclosed in triple quotes for documentation", "is_correct": true},
+            {"text": "Only lines starting with //", "is_correct": false},
+            {"text": "Text after semicolons", "is_correct": false},
+            {"text": "Special keywords that don't execute", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a variable in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A constant value that cannot be changed", "is_correct": false},
+            {"text": "A function that stores data", "is_correct": false},
+            {"text": "A container for storing data values", "is_correct": true},
+            {"text": "A Python keyword", "is_correct": false},
+            {"text": "A type of loop", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are Python's standard data types?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Only int, float, and str", "is_correct": false},
+            {"text": "int, float, bool, str, list, tuple, set, dict", "is_correct": true},
+            {"text": "number, text, boolean, array", "is_correct": false},
+            {"text": "integer, decimal, character, text, truefalse", "is_correct": false},
+            {"text": "var, let, const, string, number", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between mutable and immutable types?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Mutable types are faster than immutable types", "is_correct": false},
+            {"text": "Immutable types can be changed after creation", "is_correct": false},
+            {"text": "Mutable types cannot be changed after creation", "is_correct": false},
+            {"text": "There is no difference in Python", "is_correct": false},
+            {"text": "Mutable types can change (like lists); immutable cannot (like tuples, strings)", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What is the difference between 'is' and '=='?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "'is' checks value equality; '==' checks identity", "is_correct": false},
+            {"text": "They are identical in Python", "is_correct": false},
+            {"text": "'is' is for numbers; '==' is for strings", "is_correct": false},
+            {"text": "'is' checks identity; '==' checks value equality", "is_correct": true},
+            {"text": "'is' is deprecated in Python 3", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are type conversion functions in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Only int() and str()", "is_correct": false},
+            {"text": "convert(), change(), alter()", "is_correct": false},
+            {"text": "int(), float(), str(), list(), etc.", "is_correct": true},
+            {"text": "Functions that change variable names", "is_correct": false},
+            {"text": "Python doesn't have type conversion", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between float and int?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "int is signed; float is unsigned", "is_correct": false},
+            {"text": "float is larger than int", "is_correct": false},
+            {"text": "int holds whole numbers, float holds decimal numbers", "is_correct": true},
+            {"text": "float is faster than int", "is_correct": false},
+            {"text": "There is no difference", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the bool type?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A type that can be either 1 or 0", "is_correct": false},
+            {"text": "Represents True or False", "is_correct": true},
+            {"text": "A binary number type", "is_correct": false},
+            {"text": "A special string type", "is_correct": false},
+            {"text": "A floating-point number", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to check the type of a variable?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using checktype()", "is_correct": false},
+            {"text": "Using typeof()", "is_correct": false},
+            {"text": "Using var_type()", "is_correct": false},
+            {"text": "Using the type() function", "is_correct": true},
+            {"text": "Python cannot check variable types", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are logical operators?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "+, -, *, /", "is_correct": false},
+            {"text": "and, or, not", "is_correct": true},
+            {"text": "==, !=, >, <", "is_correct": false},
+            {"text": "in, not in", "is_correct": false},
+            {"text": "is, is not", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are identity operators?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "==, !=", "is_correct": false},
+            {"text": "and, or, not", "is_correct": false},
+            {"text": "is, is not", "is_correct": true},
+            {"text": "in, not in", "is_correct": false},
+            {"text": "+, -, *, /", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are membership operators?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "==, !=", "is_correct": false},
+            {"text": "and, or, not", "is_correct": false},
+            {"text": "is, is not", "is_correct": false},
+            {"text": "in, not in", "is_correct": true},
+            {"text": "+, -, *, /", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How are strings defined in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Only with double quotes", "is_correct": false},
+            {"text": "Only with single quotes", "is_correct": false},
+            {"text": "With curly braces {}", "is_correct": false},
+            {"text": "With angle brackets <>", "is_correct": false},
+            {"text": "Using single ' or double \" quotes", "is_correct": true}
+        ]
+    },
+    {
+        "content": "Are strings mutable in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Yes, they are always mutable", "is_correct": false},
+            {"text": "Only if declared with the 'mutable' keyword", "is_correct": false},
+            {"text": "Only when using triple quotes", "is_correct": false},
+            {"text": "It depends on the Python version", "is_correct": false},
+            {"text": "No, they are immutable", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to concatenate strings?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using the & operator", "is_correct": false},
+            {"text": "Using the concat() method", "is_correct": false},
+            {"text": "Using + operator or join() method", "is_correct": true},
+            {"text": "Using the merge() function", "is_correct": false},
+            {"text": "Strings cannot be concatenated in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to get the length of a string?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using length() method", "is_correct": false},
+            {"text": "Using count() function", "is_correct": false},
+            {"text": "Using size() attribute", "is_correct": false},
+            {"text": "Using the len() function", "is_correct": true},
+            {"text": "Using str.length property", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to access individual characters in a string?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using dot notation (s.first)", "is_correct": false},
+            {"text": "Using get_char() method", "is_correct": false},
+            {"text": "Using indexing, e.g., s[0]", "is_correct": true},
+            {"text": "Using character() function", "is_correct": false},
+            {"text": "Strings don't support character access", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is string slicing?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Cutting a string into equal parts", "is_correct": false},
+            {"text": "Removing whitespace from strings", "is_correct": false},
+            {"text": "Accessing substrings using s[start:end]", "is_correct": true},
+            {"text": "A method to concatenate strings", "is_correct": false},
+            {"text": "A way to mutate strings", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to format strings in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Only using % formatting", "is_correct": false},
+            {"text": "Only with format() method", "is_correct": false},
+            {"text": "Using f-strings, format(), or % formatting", "is_correct": true},
+            {"text": "Python doesn't support string formatting", "is_correct": false},
+            {"text": "Only with template strings", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to convert a string to uppercase/lowercase?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "upper_case() and lower_case()", "is_correct": false},
+            {"text": "toUpper() and toLower()", "is_correct": false},
+            {"text": "uppercase() and lowercase()", "is_correct": false},
+            {"text": "s.upper() and s.lower()", "is_correct": true},
+            {"text": "strtoupper() and strtolower()", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to split and join strings?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "divide() and combine()", "is_correct": false},
+            {"text": "s.split() splits; ' '.join(list) joins", "is_correct": true},
+            {"text": "break() and merge()", "is_correct": false},
+            {"text": "partition() and concat()", "is_correct": false},
+            {"text": "Strings cannot be split or joined", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to check if a substring exists?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using find() only", "is_correct": false},
+            {"text": "Using contains() method", "is_correct": false},
+            {"text": "Using the in keyword", "is_correct": true},
+            {"text": "Using search() function", "is_correct": false},
+            {"text": "Using match() method", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a list in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "An immutable collection of items", "is_correct": false},
+            {"text": "A dictionary with numeric keys", "is_correct": false},
+            {"text": "A special type of string", "is_correct": false},
+            {"text": "A function that returns multiple values", "is_correct": false},
+            {"text": "A mutable, ordered collection of items", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to create a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "list = (1, 2, 3)", "is_correct": false},
+            {"text": "list = {1, 2, 3}", "is_correct": false},
+            {"text": "list = '1, 2, 3'", "is_correct": false},
+            {"text": "list = 1, 2, 3", "is_correct": false},
+            {"text": "my_list = [1, 2, 3]", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to access list items?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using dot notation (list.first)", "is_correct": false},
+            {"text": "Using get() method", "is_correct": false},
+            {"text": "Using indexing: list[0]", "is_correct": true},
+            {"text": "Using item() function", "is_correct": false},
+            {"text": "Lists cannot be accessed directly", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to add elements to a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using add() method", "is_correct": false},
+            {"text": "Using push() method", "is_correct": false},
+            {"text": "Using append(), insert(), or extend()", "is_correct": true},
+            {"text": "Using include() function", "is_correct": false},
+            {"text": "Lists cannot be modified after creation", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to remove elements from a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using delete() method", "is_correct": false},
+            {"text": "Using erase() function", "is_correct": false},
+            {"text": "Using remove(), pop(), or del", "is_correct": true},
+            {"text": "Using clear() only", "is_correct": false},
+            {"text": "Elements cannot be removed from lists", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to get the length of a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using count() method", "is_correct": false},
+            {"text": "Using size() attribute", "is_correct": false},
+            {"text": "Using length property", "is_correct": false},
+            {"text": "Using the len() function", "is_correct": true},
+            {"text": "Using list.length()", "is_correct": false}
+        ]
+    },
+    {
+        "content": "Can lists have different data types?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "No, all elements must be same type", "is_correct": false},
+            {"text": "Only numbers and strings", "is_correct": false},
+            {"text": "Yes", "is_correct": true},
+            {"text": "Only if declared with mixed=True", "is_correct": false},
+            {"text": "Only in Python 2", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to sort a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using order() method", "is_correct": false},
+            {"text": "Using arrange() function", "is_correct": false},
+            {"text": "Using sort() or sorted()", "is_correct": true},
+            {"text": "Lists cannot be sorted", "is_correct": false},
+            {"text": "Using the list.sort attribute", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is list comprehension?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A way to document lists", "is_correct": false},
+            {"text": "A method to concatenate lists", "is_correct": false},
+            {"text": "A concise way to create lists: [x for x in range(5)]", "is_correct": true},
+            {"text": "A special type of list", "is_correct": false},
+            {"text": "A function that explains lists", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to copy a list?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using duplicate() method", "is_correct": false},
+            {"text": "Using list.copy() or slicing list[:]", "is_correct": true},
+            {"text": "Using clone() function", "is_correct": false},
+            {"text": "Using the copy keyword", "is_correct": false},
+            {"text": "Lists cannot be copied", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a tuple?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A mutable version of a list", "is_correct": false},
+            {"text": "A special kind of dictionary", "is_correct": false},
+            {"text": "A function that returns multiple values", "is_correct": false},
+            {"text": "A string with comma-separated values", "is_correct": false},
+            {"text": "An immutable, ordered collection", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to create a tuple?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "t = [1, 2, 3]", "is_correct": false},
+            {"text": "t = {1, 2, 3}", "is_correct": false},
+            {"text": "t = '1, 2, 3'", "is_correct": false},
+            {"text": "t = 1, 2, 3 or t = (1, 2, 3)", "is_correct": true},
+            {"text": "Using the tuple() function only", "is_correct": false}
+        ]
+    },
+    {
+        "content": "Can a tuple have different data types?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "No, all elements must be same type", "is_correct": false},
+            {"text": "Only numbers and strings", "is_correct": false},
+            {"text": "Yes", "is_correct": true},
+            {"text": "Only if declared with mixed=True", "is_correct": false},
+            {"text": "Only in Python 2", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to access tuple elements?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using dot notation (tuple.first)", "is_correct": false},
+            {"text": "Using get() method", "is_correct": false},
+            {"text": "Using indexing", "is_correct": true},
+            {"text": "Using item() function", "is_correct": false},
+            {"text": "Tuples cannot be accessed directly", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to unpack tuples?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using the spread operator (*)", "is_correct": false},
+            {"text": "Using the unpack() method", "is_correct": false},
+            {"text": "a, b = (1, 2)", "is_correct": true},
+            {"text": "Using tuple.destructure()", "is_correct": false},
+            {"text": "Tuples cannot be unpacked", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a set?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A sorted collection of items", "is_correct": false},
+            {"text": "A key-value pair collection", "is_correct": false},
+            {"text": "A mutable string", "is_correct": false},
+            {"text": "A type of loop", "is_correct": false},
+            {"text": "An unordered collection of unique items", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to create a set?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "s = [1, 2, 3]", "is_correct": false},
+            {"text": "s = (1, 2, 3)", "is_correct": false},
+            {"text": "s = {1, 2, 3}", "is_correct": true},
+            {"text": "s = '1, 2, 3'", "is_correct": false},
+            {"text": "Using the set() function only", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to add/remove items in a set?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using append() and remove()", "is_correct": false},
+            {"text": "Using push() and pop()", "is_correct": false},
+            {"text": "Using add(), remove(), discard()", "is_correct": true},
+            {"text": "Using insert() and delete()", "is_correct": false},
+            {"text": "Sets cannot be modified after creation", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between remove() and discard()?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "remove() returns the item; discard() doesn't", "is_correct": false},
+            {"text": "discard() is faster than remove()", "is_correct": false},
+            {"text": "remove() works only on numbers", "is_correct": false},
+            {"text": "remove() raises error if not found; discard() doesn't", "is_correct": true},
+            {"text": "There is no difference", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to perform set operations?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using +, -, *, / operators", "is_correct": false},
+            {"text": "Using and, or, not keywords", "is_correct": false},
+            {"text": "Using union(), intersection(), difference() methods", "is_correct": true},
+            {"text": "Using set.calculate() function", "is_correct": false},
+            {"text": "Sets don't support operations", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a dictionary in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A list with string indices", "is_correct": false},
+            {"text": "A sorted collection of values", "is_correct": false},
+            {"text": "A function that maps inputs to outputs", "is_correct": false},
+            {"text": "A text file containing word definitions", "is_correct": false},
+            {"text": "An unordered collection of key-value pairs", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to create a dictionary?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "d = [1, 2, 3]", "is_correct": false},
+            {"text": "d = (1, 2, 3)", "is_correct": false},
+            {"text": "d = {1, 2, 3}", "is_correct": false},
+            {"text": "d = 'a':1, 'b':2", "is_correct": false},
+            {"text": "d = {'a': 1, 'b': 2}", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to access dictionary values?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using dot notation (d.a)", "is_correct": false},
+            {"text": "d['a'] or d.get('a')", "is_correct": true},
+            {"text": "Using the access() method", "is_correct": false},
+            {"text": "Using index numbers (d[0])", "is_correct": false},
+            {"text": "Dictionaries cannot be accessed directly", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to update a dictionary?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using the update() method only", "is_correct": false},
+            {"text": "Using d[key] = value", "is_correct": true},
+            {"text": "Using the modify() function", "is_correct": false},
+            {"text": "Dictionaries cannot be updated", "is_correct": false},
+            {"text": "Using the change() method", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to remove a key?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using delete() method", "is_correct": false},
+            {"text": "Using erase() function", "is_correct": false},
+            {"text": "Using pop() or del", "is_correct": true},
+            {"text": "Using remove() only", "is_correct": false},
+            {"text": "Keys cannot be removed", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to iterate over a dictionary?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using indexes only", "is_correct": false},
+            {"text": "Using items(), keys(), values()", "is_correct": true},
+            {"text": "Using the iterate() method", "is_correct": false},
+            {"text": "Using for loops only with numbers", "is_correct": false},
+            {"text": "Dictionaries cannot be iterated", "is_correct": false}
+        ]
+    },
+    {
+        "content": "Can dictionary keys be duplicated?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Yes", "is_correct": false},
+            {"text": "No", "is_correct": true},
+            {"text": "Only if they are numbers", "is_correct": false},
+            {"text": "Only in Python 2", "is_correct": false},
+            {"text": "Only if declared with duplicate_keys=True", "is_correct": false}
+        ]
+    },
+    {
+        "content": "Can dictionary values be duplicated?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Yes", "is_correct": true},
+            {"text": "No", "is_correct": false},
+            {"text": "Only if they are numbers", "is_correct": false},
+            {"text": "Only in Python 3", "is_correct": false},
+            {"text": "Only if declared with duplicate_values=True", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is defaultdict?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A dictionary with default keys", "is_correct": false},
+            {"text": "A dict subclass that returns a default value for missing keys", "is_correct": true},
+            {"text": "A special type of dictionary that can't have missing keys", "is_correct": false},
+            {"text": "A function that creates default dictionaries", "is_correct": false},
+            {"text": "A deprecated dictionary type", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is OrderedDict?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A dictionary that sorts keys alphabetically", "is_correct": false},
+            {"text": "A dictionary that only accepts ordered pairs", "is_correct": false},
+            {"text": "A dict that remembers insertion order (not necessary in Python 3.7+)", "is_correct": true},
+            {"text": "A dictionary that can't be modified", "is_correct": false},
+            {"text": "A special dictionary for mathematical operations", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are control flow statements?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Statements that control memory allocation", "is_correct": false},
+            {"text": "Functions that handle errors", "is_correct": false},
+            {"text": "Commands for file operations", "is_correct": false},
+            {"text": "Special comments that affect execution", "is_correct": false},
+            {"text": "if, elif, else, for, while, break, continue", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What is the syntax of an if statement?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "if condition then code", "is_correct": false},
+            {"text": "if (condition) { code }", "is_correct": false},
+            {"text": "if condition: code", "is_correct": true},
+            {"text": "if condition -> code", "is_correct": false},
+            {"text": "if condition => code", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between break and continue?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "break skips to next iteration; continue exits loop", "is_correct": false},
+            {"text": "break pauses execution; continue resumes it", "is_correct": false},
+            {"text": "break is for loops; continue is for functions", "is_correct": false},
+            {"text": "There is no difference", "is_correct": false},
+            {"text": "break exits loop; continue skips to next iteration", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What is a for loop?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A loop that runs indefinitely", "is_correct": false},
+            {"text": "A loop that only works with numbers", "is_correct": false},
+            {"text": "Loop that iterates over sequences", "is_correct": true},
+            {"text": "A special type of function", "is_correct": false},
+            {"text": "A loop that can't be stopped", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a while loop?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A loop that runs a set number of times", "is_correct": false},
+            {"text": "A loop that only works with strings", "is_correct": false},
+            {"text": "Loop that continues while a condition is true", "is_correct": true},
+            {"text": "A special type of for loop", "is_correct": false},
+            {"text": "A loop that can't have a condition", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the range() function?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Creates a list of numbers", "is_correct": false},
+            {"text": "Generates a sequence of numbers", "is_correct": true},
+            {"text": "Returns a random number", "is_correct": false},
+            {"text": "Calculates the range of a dataset", "is_correct": false},
+            {"text": "Measures the length of a string", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to use enumerate()?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "To create enumerated constants", "is_correct": false},
+            {"text": "To generate random numbers", "is_correct": false},
+            {"text": "Gives index and value in loops", "is_correct": true},
+            {"text": "To count elements in a list", "is_correct": false},
+            {"text": "To convert numbers to strings", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What does pass do?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Skips to the next iteration", "is_correct": false},
+            {"text": "Exits the program", "is_correct": false},
+            {"text": "Placeholder for future code", "is_correct": true},
+            {"text": "Passes arguments to functions", "is_correct": false},
+            {"text": "Continues execution after an error", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a nested loop?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A loop inside another loop", "is_correct": true},
+            {"text": "A loop with multiple conditions", "is_correct": false},
+            {"text": "A special type of while loop", "is_correct": false},
+            {"text": "A loop that can't be broken", "is_correct": false},
+            {"text": "A loop that runs backwards", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the else clause in loops?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Executes if loop completes without break", "is_correct": true},
+            {"text": "Required for all loops", "is_correct": false},
+            {"text": "Alternative to break", "is_correct": false},
+            {"text": "Only works with for loops", "is_correct": false},
+            {"text": "Deprecated in Python 3", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a function?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A Python module", "is_correct": false},
+            {"text": "A type of loop", "is_correct": false},
+            {"text": "A built-in command", "is_correct": false},
+            {"text": "A variable that holds code", "is_correct": false},
+            {"text": "A block of reusable code", "is_correct": true}
+        ]
+    },
+    {
+        "content": "How to define a function?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using function keyword", "is_correct": false},
+            {"text": "Using def keyword", "is_correct": true},
+            {"text": "Using func keyword", "is_correct": false},
+            {"text": "Using define keyword", "is_correct": false},
+            {"text": "Using fn keyword", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between return and print?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "return displays output; print gives value back", "is_correct": false},
+            {"text": "print is for numbers; return is for strings", "is_correct": false},
+            {"text": "return stops function execution; print doesn't", "is_correct": false},
+            {"text": "They are identical", "is_correct": false},
+            {"text": "return gives a value back to the caller; print displays it", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What are default arguments?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Arguments that can't be changed", "is_correct": false},
+            {"text": "Parameters with default values", "is_correct": true},
+            {"text": "Special system arguments", "is_correct": false},
+            {"text": "Arguments passed automatically", "is_correct": false},
+            {"text": "Deprecated feature in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is *args and **kwargs?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Special math operators", "is_correct": false},
+            {"text": "Argument unpacking operators", "is_correct": false},
+            {"text": "*args for variable positional arguments, **kwargs for variable keyword arguments", "is_correct": true},
+            {"text": "Deprecated syntax in Python 3", "is_correct": false},
+            {"text": "Only used in class definitions", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is recursion?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A special loop construct", "is_correct": false},
+            {"text": "When a function calls itself", "is_correct": true},
+            {"text": "A way to optimize functions", "is_correct": false},
+            {"text": "A method to handle errors", "is_correct": false},
+            {"text": "A deprecated feature in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the scope of a variable?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Its memory address", "is_correct": false},
+            {"text": "Its data type", "is_correct": false},
+            {"text": "The area where it is accessible (local/global)", "is_correct": true},
+            {"text": "Its value range", "is_correct": false},
+            {"text": "Its visibility in other modules", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a lambda function?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A function with complex logic", "is_correct": false},
+            {"text": "A function that takes multiple arguments", "is_correct": false},
+            {"text": "An anonymous, one-line function", "is_correct": true},
+            {"text": "A function that never returns", "is_correct": false},
+            {"text": "A deprecated function type", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a docstring?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A string with documentation", "is_correct": false},
+            {"text": "Documentation string for functions/classes", "is_correct": true},
+            {"text": "A special type of comment", "is_correct": false},
+            {"text": "A string that can't be modified", "is_correct": false},
+            {"text": "A deprecated feature in Python 3", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to make a function return multiple values?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using multiple return statements", "is_correct": false},
+            {"text": "Using global variables", "is_correct": false},
+            {"text": "Return them as a tuple", "is_correct": true},
+            {"text": "Functions can't return multiple values", "is_correct": false},
+            {"text": "Using the yield keyword", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is OOP?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A Python package manager", "is_correct": false},
+            {"text": "A type of loop construct", "is_correct": false},
+            {"text": "A way to organize Python modules", "is_correct": false},
+            {"text": "A special syntax for strings", "is_correct": false},
+            {"text": "Programming based on objects and classes", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What is a class?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A collection of functions", "is_correct": false},
+            {"text": "A Python module", "is_correct": false},
+            {"text": "A type of variable", "is_correct": false},
+            {"text": "A built-in data structure", "is_correct": false},
+            {"text": "A blueprint for creating objects", "is_correct": true}
+        ]
+    },
+    {
+        "content": "What is an object in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "An instance of a class", "is_correct": true},
+            {"text": "A type of function", "is_correct": false},
+            {"text": "A special variable", "is_correct": false},
+            {"text": "A Python module", "is_correct": false},
+            {"text": "A reserved keyword", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is __init__ in Python classes?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Constructor method", "is_correct": true},
+            {"text": "Destructor method", "is_correct": false},
+            {"text": "A static method", "is_correct": false},
+            {"text": "A reserved keyword", "is_correct": false},
+            {"text": "A loop construct", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is self in Python classes?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Refers to the current instance", "is_correct": true},
+            {"text": "A reserved keyword", "is_correct": false},
+            {"text": "The parent class", "is_correct": false},
+            {"text": "A global variable", "is_correct": false},
+            {"text": "A Python module", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is inheritance in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "One class can inherit attributes from another", "is_correct": true},
+            {"text": "A way to loop through classes", "is_correct": false},
+            {"text": "A method to create objects", "is_correct": false},
+            {"text": "A type of exception handling", "is_correct": false},
+            {"text": "A way to import modules", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is method overriding?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Redefining a method in the child class", "is_correct": true},
+            {"text": "Creating a new method in the parent class", "is_correct": false},
+            {"text": "Deleting a method from a class", "is_correct": false},
+            {"text": "Calling a method twice", "is_correct": false},
+            {"text": "A deprecated feature in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is polymorphism in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Many forms—same interface, different implementations", "is_correct": true},
+            {"text": "A way to create multiple classes", "is_correct": false},
+            {"text": "A type of loop construct", "is_correct": false},
+            {"text": "A method to handle errors", "is_correct": false},
+            {"text": "A way to import packages", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is encapsulation in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Hiding internal state and requiring all interaction through methods", "is_correct": true},
+            {"text": "Combining multiple classes into one", "is_correct": false},
+            {"text": "A way to loop through objects", "is_correct": false},
+            {"text": "A type of exception handling", "is_correct": false},
+            {"text": "A method to optimize code", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are class methods and static methods in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "@classmethod uses cls; @staticmethod has no access to instance or class", "is_correct": true},
+            {"text": "Both require self as the first parameter", "is_correct": false},
+            {"text": "They are identical in Python", "is_correct": false},
+            {"text": "Class methods are deprecated", "is_correct": false},
+            {"text": "Static methods require cls parameter", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a module in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A file containing Python code", "is_correct": true},
+            {"text": "A type of loop", "is_correct": false},
+            {"text": "A special class", "is_correct": false},
+            {"text": "A reserved keyword", "is_correct": false},
+            {"text": "A built-in data type", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is a package in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "A directory containing multiple modules", "is_correct": true},
+            {"text": "A single Python file", "is_correct": false},
+            {"text": "A type of exception", "is_correct": false},
+            {"text": "A built-in function", "is_correct": false},
+            {"text": "A deprecated feature", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to import a module in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "import module_name", "is_correct": true},
+            {"text": "include module_name", "is_correct": false},
+            {"text": "require module_name", "is_correct": false},
+            {"text": "load module_name", "is_correct": false},
+            {"text": "use module_name", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to install external packages in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using pip install package_name", "is_correct": true},
+            {"text": "Using install package_name", "is_correct": false},
+            {"text": "Using import package_name", "is_correct": false},
+            {"text": "Using get package_name", "is_correct": false},
+            {"text": "Using add package_name", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is __name__ == \"__main__\" used for?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "To execute code only if the file is run directly", "is_correct": true},
+            {"text": "To define a main function", "is_correct": false},
+            {"text": "To import modules", "is_correct": false},
+            {"text": "To handle exceptions", "is_correct": false},
+            {"text": "To optimize code execution", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is exception handling in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Managing runtime errors using try, except", "is_correct": true},
+            {"text": "A way to optimize code", "is_correct": false},
+            {"text": "A method to create loops", "is_correct": false},
+            {"text": "A type of module import", "is_correct": false},
+            {"text": "A deprecated feature in Python", "is_correct": false}
+        ]
+    },
+    {
+        "content": "How to raise an exception in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Using raise keyword", "is_correct": true},
+            {"text": "Using throw keyword", "is_correct": false},
+            {"text": "Using error keyword", "is_correct": false},
+            {"text": "Using except keyword", "is_correct": false},
+            {"text": "Using try keyword", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the difference between Exception and Error in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Error is more severe (like SystemExit); Exception can be handled", "is_correct": true},
+            {"text": "They are identical in Python", "is_correct": false},
+            {"text": "Exception is more severe than Error", "is_correct": false},
+            {"text": "Errors cannot be caught", "is_correct": false},
+            {"text": "Exceptions are only for syntax issues", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What is the finally block in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "Executes code regardless of whether there was an exception", "is_correct": true},
+            {"text": "Only executes if an exception occurs", "is_correct": false},
+            {"text": "A replacement for try block", "is_correct": false},
+            {"text": "A deprecated feature in Python 3", "is_correct": false},
+            {"text": "Only executes if no exception occurs", "is_correct": false}
+        ]
+    },
+    {
+        "content": "What are some common exceptions in Python?",
+        "question_type": "mcq",
+        "points": 1,
+        "options": [
+            {"text": "ZeroDivisionError, TypeError, ValueError, KeyError", "is_correct": true},
+            {"text": "LoopError, FunctionError, ClassError", "is_correct": false},
+            {"text": "SyntaxError, ImportError, ModuleError", "is_correct": false},
+            {"text": "BreakError, ContinueError, PassError", "is_correct": false},
+            {"text": "StringError, ListError, TupleError", "is_correct": false}
+        ]
+    }
+]
