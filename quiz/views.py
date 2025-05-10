@@ -7,7 +7,7 @@ from users.models import User
 from agphr.utils.decorators import allow_access_to
 
 
-@allow_access_to([User.APPLICANT_USER])
+# @allow_access_to([User.APPLICANT_USER])
 def answer_question_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, is_active=True)
 
