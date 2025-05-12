@@ -23,6 +23,9 @@ from .forms import QuizForm
 from datetime import timedelta
 from django.contrib import messages
 from django.utils.timezone import now
+from datetime import datetime
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_analytics_view(request):
@@ -352,7 +355,6 @@ def super_admin_update_role_view(request, pk):
         form = RoleForm(instance=role)
     return render(request, 'dashboard/super_admin/super_admin_update_role.html', {'form': form, 'role': role})
 
-# AJAX views for dependent dropdowns
 from django.http import JsonResponse
 def get_functional_areas(request):
     industry_id = request.GET.get("industry_id")
@@ -466,7 +468,7 @@ def super_admin_create_question_view(request):
                                 )
 
             messages.success(request, 'Questions added successfully!')
-            return redirect('super_admin:super_admin_question_list')
+            return redirect('super_admin:super_admin_question_list',quiz_id=quiz.id)
 
         except Quiz.DoesNotExist:
             messages.error(request, 'Quiz not found.')
@@ -522,7 +524,7 @@ def super_admin_update_question_view(request, question_id):
                 )
 
         messages.success(request, 'Question updated successfully.')
-        return redirect('super_admin:super_admin_question_list')
+        return redirect('super_admin:super_admin_question_list', quiz_id=question.quiz.id)
 
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_update_question.html', {
         'question': question,
@@ -533,13 +535,14 @@ def super_admin_update_question_view(request, question_id):
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_delete_question_view(request, question_id):
     question = get_object_or_404(Question, id=question_id)
+    quiz_id = question.quiz.id
 
     if request.method == 'POST':
         question.delete()
 
         messages.success(request, 'Question deleted successfully.')
 
-        return redirect('super_admin:super_admin_question_list')
+        return redirect('super_admin:super_admin_question_list', quiz_id=quiz_id)
     
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_delete_question_choice_view(request, choice_id):
@@ -549,13 +552,13 @@ def super_admin_delete_question_choice_view(request, choice_id):
     return redirect(".")
 
 @allow_access_to([User.SUPER_ADMIN])
-def super_admin_question_list_view(request):
-    questions = Question.objects.all().order_by("-id")
-    quizes = Quiz.objects.all().prefetch_related('questions')
+def super_admin_question_list_view(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    questions = quiz.questions.all().order_by("-id")
 
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_question_list.html', {
+        'quiz': quiz,  # Pass the quiz object to the template
         'questions': questions,
-        'quizes': quizes,
     })
 
 @allow_access_to([User.SUPER_ADMIN])
@@ -564,12 +567,7 @@ def super_admin_quiz_result_list_view(request):
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_result_list.html', {
         'quizes': quizes,
     })
-from datetime import datetime
-from django.utils import timezone
-from django.db.models import Count
-from django.db.models.functions import TruncDate
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
+
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_quiz_attended_list_view(request, quiz_id):
@@ -605,7 +603,6 @@ def super_admin_quiz_attended_list_view(request, quiz_id):
         else:
             messages.info(request, "No attempts found for this quiz.")
 
-    # Get all available dates with attempt counts
     attempts_by_date = (
         Attempt.objects.filter(quiz=quiz)
         .annotate(date=TruncDate('completed_at'))
@@ -663,7 +660,7 @@ def super_admin_create_quiz(request):
             duration=duration_obj
         )
         messages.success(request, "Quiz created successfully!")
-        return redirect('super_admin:super_admin_question_list')
+        return redirect('super_admin:super_admin_quiz_list')
 
     else:
         form = QuizForm()  # Show an empty form for GET request
@@ -674,6 +671,7 @@ def super_admin_create_quiz(request):
 @login_required
 def super_admin_edit_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, created_by=request.user)
+    quiz_duration_minutes = int(quiz.duration.total_seconds() // 60) if quiz.duration else ''
 
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -718,9 +716,12 @@ def super_admin_edit_quiz(request, quiz_id):
         quiz.description = description
         quiz.save()
         messages.success(request, "Quiz updated successfully!")
-        return redirect('super_admin:super_admin_question_list')
+        return redirect('super_admin:super_admin_quiz_list')
 
-    return render(request, 'quiz/super_admin_edit_quiz.html', {'quiz': quiz})
+    return render(request, 'quiz/super_admin_edit_quiz.html', {
+        'quiz': quiz,
+        'duration': quiz_duration_minutes,
+    })
 
 @login_required
 def super_admin_delete_quiz(request, quiz_id):
@@ -728,6 +729,6 @@ def super_admin_delete_quiz(request, quiz_id):
     if request.method == 'POST':
         quiz.delete()
         messages.success(request, "Quiz deleted successfully!")
-        return redirect('super_admin:super_admin_question_list')
+        return redirect('super_admin:super_admin_quiz_list') 
     return render(request, 'quiz/super_admin_delete_quiz.html', {'quiz': quiz})
 

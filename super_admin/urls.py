@@ -93,7 +93,7 @@ urlpatterns = [
     path('super_admin-resume-list/', super_admin_resume_list_view, name='resume_list'),
     path('super_admin-applicant-detail/<int:pk>/', super_admin_applicant_detail_view, name='applicant_detail'),
     path('super_admin-create-question/', super_admin_create_question_view, name='super_admin_create_question'),
-    path('super_admin-question-list/', super_admin_question_list_view, name='super_admin_question_list'),
+    path('super_admin-question-list/<int:quiz_id>/', super_admin_question_list_view, name='super_admin_question_list'),
     path('super_admin-update-question/<int:question_id>/', super_admin_update_question_view, name='super_admin_update_question'),
     path('question/<int:question_id>/delete/', super_admin_delete_question_view, name='super_admin_delete_question'),
     path('super_admin-delete-question-choice/<int:choice_id>/', super_admin_delete_question_choice_view, name='super_admin_delete_question_choice'),
@@ -101,7 +101,7 @@ urlpatterns = [
     path('super_admin-quiz-attended-list/<int:quiz_id>/', super_admin_quiz_attended_list_view, name='super_admin_quiz_attended_list'),
     path('quizzes/',super_admin_quiz_list , name='super_admin_quiz_list'),
     path('quizzes/create/',super_admin_create_quiz, name='super_admin_create_quiz'),
-    path('<int:quiz_id>/edit/', super_admin_edit_quiz, name='super_admin_edit_quiz'),
+    path('edit/<int:quiz_id>/', super_admin_edit_quiz, name='super_admin_edit_quiz'),
     path('<int:quiz_id>/delete/',super_admin_delete_quiz, name='super_admin_delete_quiz'),
 
 ]
