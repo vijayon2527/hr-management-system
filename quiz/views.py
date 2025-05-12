@@ -1,10 +1,13 @@
-from django.shortcuts import render,redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseBadRequest
-from quiz.models import Quiz, Question, Attempt, Answer, Option
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseBadRequest
+from quiz.models import Quiz, Attempt, Answer, Option
 from django.utils.timezone import now
 from django.http import Http404
+from users.models import User
+from agphr.utils.decorators import allow_access_to
 
 
+# @allow_access_to([User.APPLICANT_USER])
 def answer_question_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, is_active=True)
 
