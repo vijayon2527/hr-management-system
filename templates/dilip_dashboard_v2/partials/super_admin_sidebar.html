@@ -37,6 +37,17 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item menu-open">
+            <a href="{% url 'users:user_list' %}" 
+                class="nav-link
+                {% is_active 'user_list' %}" 
+            >
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Users
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
             <a href="{% url 'super_admin:super_admin_analytics' %}" 
                 class="nav-link
                 {% is_active 'super_admin_analytics' %}" 

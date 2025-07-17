@@ -1,0 +1,51 @@
+{% extends 'dilip_dashboard_v2/dashboard_base.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Update User</h4>
+            <a href="{% url 'users:user_list' %}" class="btn btn-secondary btn-sm">Back to List</a>
+        </div>
+        <div class="card-body">
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Mobile</label>
+                        {{ form.mobile }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>User Type</label>
+                        {{ form.user_type }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check mt-4">
+                            {{ form.is_active }} <label class="form-check-label">Active</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update User</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

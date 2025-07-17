@@ -1,0 +1,44 @@
+{% extends 'dilip_dashboard_v2/dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Bulk Upload Users</h4>
+      <a href="{% url 'users:user_list' %}" class="btn btn-secondary btn-sm">
+        <i class="fa fa-arrow-left me-1"></i> Back to List
+      </a>
+    </div>
+    <div class="card-body">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <p>
+        Upload a CSV file with the following headers:
+        <code>first_name,last_name,email,user_type</code>
+      </p>
+
+      <form method="POST" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Select CSV File</label>
+          <input type="file" name="csv_file" accept=".csv" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Common Password for All Users</label>
+          <input type="password" name="common_password" class="form-control" required>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa fa-upload me-1"></i> Upload File
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
