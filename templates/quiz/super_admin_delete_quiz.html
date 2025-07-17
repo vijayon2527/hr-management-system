@@ -1,12 +1,15 @@
-{% extends "base.html" %}
+{% extends "dilip_dashboard_v2/dashboard_base.html" %}
+
 {% block content %}
-<div class="container mt-4">
-  <h2>Delete Quiz</h2>
-  <p>Are you sure you want to delete <strong>{{ quiz.title }}</strong>?</p>
-  <form method="post">
-    {% csrf_token %}
-    <a href="{% url 'super_admin:super_admin_quiz_list' %}" class="btn btn-secondary">Cancel</a>
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
+<div class="d-flex justify-content-center align-items-center mt-5" style="min-height: 70vh;">
+  <div class="content-wrapper text-center p-4 border rounded shadow" style="max-width: 500px; width: 100%;">
+    <h2>Delete Quiz</h2>
+    <p>Are you sure you want to delete <strong>{{ quiz.title }}</strong>?</p>
+    <form method="post">
+      {% csrf_token %}
+      <a href="{% url 'super_admin:super_admin_quiz_list' %}" class="btn btn-secondary me-2">Cancel</a>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

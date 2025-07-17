@@ -1,11 +1,11 @@
 import hashlib
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.http import Http404
 from django.contrib.auth import authenticate, login
 from .models import User
-from .forms import UserRegistrationForm, OTPVerificationForm, LoginForm
+from .forms import UserRegistrationForm, OTPVerificationForm, LoginForm,CreateUserForm, UpdateUserForm, BulkUploadForm
 from .functions.otp_utils import (
     generate_otp, 
     send_otp_to_mobile, 
@@ -15,6 +15,10 @@ from .functions.otp_utils import (
 )
 
 from applicant.models import Applicant
+import csv
+from django.contrib.auth.hashers import make_password
+
+
 
 class RegisterView(View):
     template_name = 'users/register.html'
@@ -55,6 +59,7 @@ class RegisterView(View):
             # ==================================================================================
         else:
             return render(request, self.template_name, {'form': form})
+
 # This is currently not using
 def register_view(request):
     if request.method=="POST":
@@ -100,6 +105,7 @@ def register_view(request):
         
         form = UserRegistrationForm()
     return render(request, 'users/register.html', {'form': form})
+
 
 class OTPVerificationView(View):
     template_name = 'users/verify_otp.html'
@@ -151,6 +157,7 @@ class OTPVerificationView(View):
             messages.error(request, "Invalid OTP")
             return redirect('users:otp_verification')
 
+
 def login_view(request):
     if request.user.is_authenticated:
             raise Http404('you are already logged in !!!')
@@ -174,3 +181,114 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'users/login.html', {'form': form})
+
+
+
+
+
+# ✅ User List View
+def user_list(request):
+    users = User.objects.all().order_by('-id')
+    return render(request, 'users/user_list.html', {'users': users})
+
+
+def create_user(request):
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User created successfully!")
+            return redirect('users:user_list')  # <-- change if your namespace differs
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = CreateUserForm()
+
+    return render(request, 'users/create_user.html', {'form': form})
+
+
+def update_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        form = UpdateUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User updated successfully!")
+            return redirect('users:user_list')
+    else:
+        form = UpdateUserForm(instance=user)
+
+    return render(request, 'users/update_user.html', {
+        'form': form,
+        'user': user
+    })
+
+
+# ✅ Delete User
+def delete_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "User deleted successfully!")
+        return redirect('users:user_list')
+    return redirect('users:user_list')
+
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
+import csv
+
+# ✅ Bulk Upload Users
+def bulk_upload_users(request):
+    if request.method == 'POST':
+        form = BulkUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+            common_password = make_password(form.cleaned_data['common_password'])
+
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+
+            created_count = 0
+            error_messages = []
+
+            for index, row in enumerate(reader, start=2):  # start=2 for correct row number (header is row 1)
+                email = row.get('email')
+                first_name = row.get('first_name')
+                last_name = row.get('last_name')
+                mobile = row.get('mobile')
+                user_type = row.get('user_type', 'Applicant User')
+
+                # Check if email or mobile exists
+                if User.objects.filter(email=email).exists():
+                    error_messages.append(f"Row {index}: Email '{email}' already exists.")
+                    continue
+                if User.objects.filter(mobile=mobile).exists():
+                    error_messages.append(f"Row {index}: Mobile '{mobile}' already exists.")
+                    continue
+
+                # Create user if no duplicate found
+                User.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    mobile=mobile,
+                    user_type=user_type,
+                    password=common_password
+                )
+                created_count += 1
+
+            # Show success and error messages
+            if created_count > 0:
+                messages.success(request, f"{created_count} users created successfully.")
+
+            if error_messages:
+                for msg in error_messages:
+                    messages.error(request, msg)
+
+            return redirect('users:user_list')
+        else:
+            messages.error(request, "Invalid form submission.")
+    else:
+        form = BulkUploadForm()
+
+    return render(request, 'users/bulk_upload.html', {'form': form})

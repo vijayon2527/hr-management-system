@@ -113,7 +113,7 @@
               <button type="submit" class="btn btn-success">
                 <i class="fas fa-pencil-alt"></i> Update Question
               </button>
-              <a href="{% url 'super_admin:super_admin_question_list' %}" class="btn btn-secondary">Cancel</a>
+              <a href="{% url 'super_admin:super_admin_question_list'  question.quiz.id%}" class="btn btn-secondary">Cancel</a>
             </div>
 
           </form>

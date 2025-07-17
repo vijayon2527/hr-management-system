@@ -1,0 +1,31 @@
+{% extends 'dilip_dashboard_v2/dashboard_base.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title mb-0" style="font-size: 20px;">Role Details</h4>
+        <a href="{% url 'super_admin:super_admin_role_list' %}" class="btn btn-sm btn-secondary mb-3 float-right">Back to Role List</a>
+    </div>
+
+
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th>Role Name</th>
+                <td>{{ role.name }}</td>
+            </tr>
+            <tr>
+                <th>Functional Area</th>
+                <td>{{ role.functional_area }}</td>
+            </tr>
+            <tr>
+                <th>Industry</th>
+                <td>{{ role.functional_area.industry }}</td>
+            </tr>
+        </table>
+
+        {% comment %} <div class="mt-3">
+            <a href="{% url 'super_admin:super_admin_detail_role' role.id %}" class="btn btn-primary">Edit Role</a>
+        </div> {% endcomment %}
+    </div>
+</div>
+{% endblock %}

@@ -17,8 +17,7 @@
     .quiz-content {
         flex: 1;
         max-width: 70%;
-        position: sticky;
-        top: 80px;
+        position: relative; /* Ensure this is not conflicting with sticky elements */
     }
 
     .stats-panel {
@@ -30,6 +29,7 @@
         position: sticky;
         top: 80px;
         height: fit-content;
+        z-index: 10; /* Added z-index to ensure visibility */
     }
 
     .header {
@@ -43,6 +43,9 @@
         border-radius: 12px;
         margin-bottom: 25px;
         box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        position: sticky; /* Make header sticky */
+        top: 0; /* Stick at the top */
+        z-index: 100; /* Ensure it stays on top of other content */
     }
 
     .card {
@@ -153,6 +156,9 @@
         border-radius: 3px;
         overflow: hidden;
         margin-top: 10px;
+        position: sticky;
+        top: 60px; /* Adjust this value as needed */
+        z-index: 5; /* Ensure timer bar is on top but below header */
     }
 
     .timer-progress {
@@ -169,6 +175,7 @@
     }
 </style>
 {% endblock extra_css %}
+
 
 {% block content %}
 <div>
@@ -330,281 +337,3 @@
     });
 </script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% comment %} 
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
-
-{% block extra_css %}
-<style>
-    .container-quiz {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    .quiz-content {
-        flex: 1;
-        max-width: 70%;
-        border-top: 4px solid #007bff;
-        top: 80px;
-        height: fit-content;
-        position: sticky;
-        border-radius: 15px;
-    }
-
-    .stats-panel {
-        width: 30%;
-        background: linear-gradient(to bottom, #f0f4f8, #ffffff);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        padding: 25px;
-        border-radius: 15px;
-        position: sticky;
-        top: 80px;
-        height: fit-content;
-        border-left: 4px solid #007bff;
-    }
-
-    .question-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px 0;
-    }
-
-    .question-list li {
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-        border-radius: 50%;
-        font-weight: bold;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background-color: white;
-        color: black;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .question-list li.attempted {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .question-list li.not-attempted {
-        background-color: #dc3545;
-        color: white;
-    }
-    /* Timer */
-    #timer {
-        font-size: 1.3rem;
-        padding: 8px 15px;
-        background-color: #fff3cd;
-        border: 1px solid #ffcc00;
-        border-radius: 12px;
-        color: #856404;
-    }
-
-    #timer::before {
-        content: "⏰ ";
-        font-weight: bold;
-        margin-right: 5px;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: rgba(242, 242, 242, 0.9);
-        padding: 15px 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    .card {
-        padding: 25px;
-        border-radius: 10px;
-        background-color: #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-    }
-</style>
-{% endblock extra_css %}
-
-{% block content %}
-<div>
-    <div class="header h4">
-        <div>{{ quiz.title }}</div>
-        <div><span id="timer">{{ quiz.duration }}</span></div>
-    </div>
-
-    <div class="container-quiz">
-        <div class="quiz-content">
-            <form method="post" novalidate id="quiz-form">
-                {% csrf_token %}
-                {% for question in questions %}
-                <div class="card question-card" id="question_{{ forloop.counter0 }}" style="{% if not forloop.first %}display: none;{% endif %}">
-                    <div class="card-header"><strong>Question {{ forloop.counter }}</strong></div>
-                    <div class="card-body">
-                        <div class="mb-3 h5">{{ question.content }}</div>
-                        <div class="option-group">
-                            {% for option in question.options.all %}
-                            <div class="form-check">
-                                <input type="radio"
-                                       name="answers_{{ question.id }}"
-                                       value="{{ option.id }}"
-                                       class="form-check-input"
-                                       id="option_{{ question.id }}_{{ option.id }}">
-                                <label class="form-check-label" for="option_{{ question.id }}_{{ option.id }}">{{ option.text }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="button-wrapper mt-3 d-flex justify-content-between">
-                            {% if not forloop.first %}
-                            <button type="button" class="btn btn-warning prev-btn" data-index="{{ forloop.counter0 }}">Previous</button>
-                            {% else %}
-                            <div></div>
-                            {% endif %}
-                            {% if not forloop.last %}
-                            <button type="button" class="btn btn-primary next-btn" data-index="{{ forloop.counter0 }}">Save & Next</button>
-                            {% else %}
-                            <button type="submit" class="btn btn-success">Submit</button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </form>
-        </div>
-
-        <div class="stats-panel">
-            <h5>Quiz Stats</h5>
-            <div>Total Questions: <strong id="total-questions">{{ questions|length }}</strong></div>
-            <div>Attempted: <strong id="attempted-count">0</strong></div>
-            <div>Not Attempted: <strong id="not-attempted-count">0</strong></div>
-
-            <h5 class="mt-4">Question List</h5>
-            <ul id="question-list" class="question-list">
-                {% for question in questions %}
-                <li data-index="{{ forloop.counter0 }}" id="question-box_{{ forloop.counter0 }}">Q{{ forloop.counter }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const totalQuestions = {{ questions|length }};
-        const questionBoxes = document.querySelectorAll(".question-list li");
-
-        // Handle radio button selection
-        document.querySelectorAll("input[type='radio']").forEach(radio => {
-            radio.addEventListener("change", () => {
-                const name = radio.name;
-                const index = [...document.querySelectorAll("input[name='" + name + "']")].find(input => input.checked).closest(".question-card").id.split("_")[1];
-                const box = document.getElementById(`question-box_${index}`);
-                box.classList.remove("not-attempted");
-                box.classList.add("attempted");
-                updateStats();
-            });
-        });
-
-        // Navigation buttons
-        function showQuestion(index) {
-            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
-            const target = document.getElementById(`question_${index}`);
-            target.style.display = 'block';
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        document.querySelectorAll(".next-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const index = parseInt(btn.dataset.index);
-                markSeen(index);
-                showQuestion(index + 1);
-            });
-        });
-
-        document.querySelectorAll(".prev-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const index = parseInt(btn.dataset.index);
-                markSeen(index);
-                showQuestion(index - 1);
-            });
-        });
-
-        document.querySelectorAll(".question-list li").forEach(box => {
-            box.addEventListener("click", () => {
-                const index = parseInt(box.dataset.index);
-                markSeen(index);
-                showQuestion(index);
-            });
-        });
-
-        // Mark a question as seen but not answered
-        function markSeen(index) {
-            const question = document.getElementById(`question_${index}`);
-            const inputs = question.querySelectorAll("input[type='radio']");
-            const anyChecked = Array.from(inputs).some(input => input.checked);
-            const box = document.getElementById(`question-box_${index}`);
-            if (!anyChecked && !box.classList.contains("attempted")) {
-                box.classList.add("not-attempted");
-            }
-            updateStats();
-        }
-
-        // Stats updater
-        function updateStats() {
-            const attempted = document.querySelectorAll('.question-list li.attempted').length;
-            const notAttempted = document.querySelectorAll('.question-list li.not-attempted').length;
-            document.getElementById('attempted-count').textContent = attempted;
-            document.getElementById('not-attempted-count').textContent = notAttempted;
-        }
-
-        // Timer
-        let timeRemaining = {{ time_remaining }};
-        let autoSubmitted = false;
-        function startTimer() {
-            const timerElement = document.getElementById("timer");
-            function updateTimer() {
-                if (timeRemaining <= 0) {
-                    if (!autoSubmitted) {
-                        autoSubmitted = true;
-                        document.getElementById("quiz-form").submit();
-                    }
-                } else {
-                    const minutes = String(Math.floor(timeRemaining / 60)).padStart(2, '0');
-                    const seconds = String(timeRemaining % 60).padStart(2, '0');
-                    timerElement.textContent = `${minutes}:${seconds}`;
-                    timeRemaining--;
-                }
-            }
-            updateTimer();
-            setInterval(updateTimer, 1000);
-        }
-        startTimer();
-    });
-</script>
-{% endblock %} {% endcomment %}

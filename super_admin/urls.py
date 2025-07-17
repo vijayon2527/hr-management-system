@@ -20,16 +20,22 @@ from .views import (super_admin_analytics_view,
                     super_admin_user_list_view,
 
                     super_admin_create_industry_view,
-                    super_admin_create_functional_area_view,
                     super_admin_create_role_view,
 
                     super_admin_industry_list_view,
-                    super_admin_functional_area_list_view,
                     super_admin_role_list_view,
 
                     super_admin_update_industry_view,
+                    super_admin_detail_industry_view,
+                    super_admin_delete_industry_view,
+                    super_admin_create_functional_area_view,
+                    super_admin_functional_area_list_view,
                     super_admin_update_functional_area_view,
+                    super_admin_detail_functional_area_view,
+                    super_admin_delete_functional_area_view,
                     super_admin_update_role_view,
+                    super_admin_detail_role_view,
+                    super_admin_delete_role_view,
                     get_functional_areas,
                     get_roles,
 
@@ -81,12 +87,18 @@ urlpatterns = [
     path("super_admin-create-role/", super_admin_create_role_view, name='super_admin_create_role'),
 
     path("super_admin-industry-list/", super_admin_industry_list_view, name='super_admin_industry_list'),
+    path("super_admin-detail-industry/<int:pk>/", super_admin_detail_industry_view, name='super_admin_detail_industry'),
+    path("super_admin-delete-industry/<int:pk>/", super_admin_delete_industry_view, name='super_admin_delete_industry'),
     path("super_admin-functional-area-list/", super_admin_functional_area_list_view, name='super_admin_functional_area_list'),
     path("super_admin-role-list/", super_admin_role_list_view, name='super_admin_role_list'),
 
     path("super_admin-update-industry/<int:pk>/", super_admin_update_industry_view, name='super_admin_update_industry'),
+    path("super_admin-detail-functional-area/<int:pk>/", super_admin_detail_functional_area_view, name='super_admin_detail_functional_area'),
     path("super_admin-update-functional-area/<int:pk>/", super_admin_update_functional_area_view, name='super_admin_update_functional_area'),
+    path("super_admin-delete-functional-area/<int:pk>/", super_admin_delete_functional_area_view, name='super_admin_delete_functional_area'),
     path("super_admin-update-role/<int:pk>/", super_admin_update_role_view, name='super_admin_update_role'),
+    path("super_admin-detail-role/<int:pk>/", super_admin_detail_role_view, name='super_admin_detail_role'),
+    path("super_admin-delete-role/<int:pk>/", super_admin_delete_role_view, name='super_admin_delete_role'),
 
     path('get-functional-areas/', get_functional_areas, name='get_functional_areas'),
     path('get-roles/', get_roles, name='get_roles'),
@@ -94,6 +106,7 @@ urlpatterns = [
     path('super_admin-resume-list/', super_admin_resume_list_view, name='resume_list'),
     path('super_admin-applicant-detail/<int:pk>/', super_admin_applicant_detail_view, name='applicant_detail'),
     path('super_admin-create-question/', super_admin_create_question_view, name='super_admin_create_question'),
+    path('super_admin-question-list/<int:quiz_id>/', super_admin_question_list_view, name='super_admin_question_list'),
     path('super_admin-upload_question_csv/', super_admin_upload_question_csv_view, name='super_admin_upload_question_csv'),
     path('super_admin-question-list/', super_admin_question_list_view, name='super_admin_question_list'),
     path('super_admin-update-question/<int:question_id>/', super_admin_update_question_view, name='super_admin_update_question'),
@@ -103,7 +116,7 @@ urlpatterns = [
     path('super_admin-quiz-attended-list/<int:quiz_id>/', super_admin_quiz_attended_list_view, name='super_admin_quiz_attended_list'),
     path('quizzes/',super_admin_quiz_list , name='super_admin_quiz_list'),
     path('quizzes/create/',super_admin_create_quiz, name='super_admin_create_quiz'),
-    path('<int:quiz_id>/edit/', super_admin_edit_quiz, name='super_admin_edit_quiz'),
+    path('edit/<int:quiz_id>/', super_admin_edit_quiz, name='super_admin_edit_quiz'),
     path('<int:quiz_id>/delete/',super_admin_delete_quiz, name='super_admin_delete_quiz'),
 
 ]
