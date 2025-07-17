@@ -1,19 +1,32 @@
 import logging
-from django.shortcuts import render, get_object_or_404, redirect
+from datetime import datetime, timedelta
+
 from django.contrib import messages
+from django.db import transaction, IntegrityError
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
+
 from agphr.utils.decorators import allow_access_to
+
 from users.models import User
-from job.forms import  AddSkill
 from job.models import Skill, Job
-from job.forms import CreateJobForm
-from applicant.models import Applicant
+from job.forms import AddSkill, CreateJobForm
+from applicant.models import Applicant, WorkflowLog
 from employer.models import Employer
-from django.utils import timezone
-from django.db import transaction
-from django.db import transaction, IntegrityError
-from .forms import IndustryForm, FunctionalAreaForm, RoleForm
+from quiz.models import Quiz, Question, Option, Attempt
+
+from .forms import (
+    IndustryForm,
+    FunctionalAreaForm,
+    RoleForm,
+    UserForm,
+    ApplicantForm,
+    QuizForm,
+)
 from .models import Industry, FunctionalArea, Role
 from .forms import UserForm, ApplicantForm
 from applicant.models import WorkflowLog
@@ -229,7 +242,7 @@ def super_admin_delete_skill_view(request, pk):
     messages.success(request, "Skill deleted successfully")
     return redirect('super_admin:super_admin_skill_list')
 
-# @allow_access_to([User.SUPER_ADMIN])
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_employer_list_view(request):
     employers = Employer.objects.all().order_by('-created_at')
     context = {
@@ -425,7 +438,6 @@ def get_roles(request):
     data = [{"id": role.id, "name": role.name} for role in roles]
     return JsonResponse(data, safe=False)
 
-
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_add_resume_view(request):
     if request.method == 'POST':
@@ -539,8 +551,6 @@ def super_admin_create_question_view(request):
     quizzes = Quiz.objects.all()
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quizzes': quizzes})
 
-from django.http import HttpResponse
-
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_question_view(request, question_id):
     question = get_object_or_404(Question, id=question_id)
@@ -632,7 +642,6 @@ def super_admin_quiz_attended_list_view(request, quiz_id):
 
     selected_date_str = request.GET.get('date')
     today = timezone.localdate()
-
     if selected_date_str:
         try:
             selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
@@ -667,7 +676,7 @@ def super_admin_quiz_attended_list_view(request, quiz_id):
         .annotate(count=Count('id'))
         .order_by('-date')
     )
-
+    
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_quiz_attended_list.html', {
         'quiz': quiz,
         'attempts': attempts_qs.select_related('user'),
@@ -676,12 +685,12 @@ def super_admin_quiz_attended_list_view(request, quiz_id):
         'today': today,
     })
 
-@login_required
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_quiz_list(request):
     quizzes = Quiz.objects.filter(created_by=request.user)
     return render(request, 'quiz/super_admin_quiz_list.html', {'quizzes': quizzes})
 
-@login_required
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_create_quiz(request):
     if request.method == 'POST':
         form = QuizForm(request.POST)
@@ -724,8 +733,7 @@ def super_admin_create_quiz(request):
 
     return render(request, 'quiz/super_admin_create_quiz.html', {'form': form})
 
-
-@login_required
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_edit_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, created_by=request.user)
     quiz_duration_minutes = int(quiz.duration.total_seconds() // 60) if quiz.duration else ''
@@ -780,7 +788,7 @@ def super_admin_edit_quiz(request, quiz_id):
         'duration': quiz_duration_minutes,
     })
 
-@login_required
+@allow_access_to([User.SUPER_ADMIN])
 def super_admin_delete_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id, created_by=request.user)
     if request.method == 'POST':
