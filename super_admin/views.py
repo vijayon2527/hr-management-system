@@ -26,6 +26,7 @@ from .forms import (
     UserForm,
     ApplicantForm,
     QuizForm,
+    QuestionCSVUploadForm
 )
 from .models import Industry, FunctionalArea, Role
 from .forms import UserForm, ApplicantForm
@@ -489,12 +490,11 @@ def super_admin_resume_list_view(request):
 
 
 @allow_access_to([User.SUPER_ADMIN])
-def super_admin_create_question_view(request):
+def super_admin_create_question_view(request, quiz_id):
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+
     if request.method == 'POST':
-        quiz_id = request.POST.get('quiz')
         try:
-            quiz = Quiz.objects.get(id=quiz_id)  
-            
             question_types = request.POST.getlist('question_type[]')
             contents = request.POST.getlist('content[]')
             points = request.POST.getlist('points[]')
@@ -518,17 +518,16 @@ def super_admin_create_question_view(request):
                     )
 
                     if question_type == 'mcq':
-                        options = request.POST.getlist(f'options[{idx+1}][]')  # Get all options for the question
-                        correct_flags = request.POST.getlist(f'is_correct[{idx+1}][]')  # Get the correct flags
+                        options = request.POST.getlist(f'options[{idx+1}][]')
+                        correct_flags = request.POST.getlist(f'is_correct[{idx+1}][]')
 
                         if not options:
                             raise ValueError(f"At least one option must be provided for question {idx+1}.")
                         if not correct_flags:
                             raise ValueError(f"At least one option must be marked as correct for question {idx+1}.")
-                        
+
                         for option_idx, option_text in enumerate(options):
-                            if option_text:  # Ensure options aren't empty
-                                # Check if the current option is marked as correct
+                            if option_text:
                                 is_correct = correct_flags[option_idx] == "on" if option_idx < len(correct_flags) else False
                                 Option.objects.create(
                                     question=question,
@@ -537,24 +536,112 @@ def super_admin_create_question_view(request):
                                 )
 
             messages.success(request, 'Questions added successfully!')
-            return redirect('super_admin:super_admin_question_list',quiz_id=quiz.id)
+            return redirect('super_admin:super_admin_question_list', quiz_id=quiz.id)
 
-        except Quiz.DoesNotExist:
-            messages.error(request, 'Quiz not found.')
-        except IntegrityError:
-            messages.error(request, 'An error occurred while saving the questions. Please try again.')
         except ValueError as ve:
             messages.error(request, str(ve))
         except Exception as e:
             messages.error(request, f"An unexpected error occurred: {e}")
 
-    quizzes = Quiz.objects.all()
-    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quizzes': quizzes})
+    return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quiz': quiz})
 
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_upload_question_csv_view(request, quiz_id):
-    pass
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+
+    if request.method == 'POST':
+        form = QuestionCSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+
+            # read into DictReader
+            decoded = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded)
+
+            required_headers = ['content', 'option_A', 'option_B', 'option_C', 'option_D', 'correct_answer']
+            missing = [h for h in required_headers if h not in reader.fieldnames]
+            if missing:
+                messages.error(request, f"Missing column(s): {', '.join(missing)}.")
+                return redirect('super_admin:super_admin_question_list', quiz_id=quiz.id)
+
+            created = 0
+            skipped_dupes = 0
+            errors = []
+
+            for row_num, row in enumerate(reader, start=2):  # header row is 1
+                content = (row.get('content') or '').strip()
+                optA = (row.get('option_A') or '').strip()
+                optB = (row.get('option_B') or '').strip()
+                optC = (row.get('option_C') or '').strip()
+                optD = (row.get('option_D') or '').strip()
+                correct_letter = (row.get('correct_answer') or '').strip().upper()
+
+                # content required
+                if not content:
+                    errors.append(f"Row {row_num}: Missing question content.")
+                    continue
+
+                # must have at least two non-empty options
+                all_opts = {'A': optA, 'B': optB, 'C': optC, 'D': optD}
+                non_empty_opts = {k: v for k, v in all_opts.items() if v}
+                if len(non_empty_opts) < 2:
+                    errors.append(f"Row {row_num}: Need at least 2 options.")
+                    continue
+
+                # valid correct letter?
+                if correct_letter not in ('A', 'B', 'C', 'D'):
+                    errors.append(f"Row {row_num}: correct_answer must be A/B/C/D.")
+                    continue
+
+                # correct option must not be blank
+                correct_text = all_opts.get(correct_letter, '').strip()
+                if not correct_text:
+                    errors.append(f"Row {row_num}: correct_answer is '{correct_letter}' but option_{correct_letter} is empty.")
+                    continue
+
+                # skip duplicates
+                if Question.objects.filter(quiz=quiz, content=content).exists():
+                    skipped_dupes += 1
+                    continue
+
+                # create question (MCQ)
+                question = Question.objects.create(
+                    quiz=quiz,
+                    question_type=Question.MCQ,
+                    content=content,
+                    points=1,  # fixed; change if you want points column
+                )
+
+                # create options
+                Option.objects.create(question=question, text=optA, is_correct=(correct_letter == 'A')) if optA else None
+                Option.objects.create(question=question, text=optB, is_correct=(correct_letter == 'B')) if optB else None
+                Option.objects.create(question=question, text=optC, is_correct=(correct_letter == 'C')) if optC else None
+                Option.objects.create(question=question, text=optD, is_correct=(correct_letter == 'D')) if optD else None
+
+                created += 1
+
+            # messages
+            if created:
+                messages.success(request, f"{created} question(s) uploaded to '{quiz.title}'.")
+            if skipped_dupes:
+                messages.warning(request, f"{skipped_dupes} duplicate question(s) skipped.")
+            for msg in errors[:25]:
+                messages.error(request, msg)
+            if len(errors) > 25:
+                messages.error(request, f"...and {len(errors) - 25} more error(s).")
+
+            return redirect('super_admin:super_admin_question_list', quiz_id=quiz.id)
+    else:
+        form = QuestionCSVUploadForm()
+
+    # fallback page or GET load
+    return render(request, 'super_admin/upload_question_csv.html', {
+        'quiz': quiz,
+        'form': form,
+    })
+
+
 
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_question_view(request, question_id):

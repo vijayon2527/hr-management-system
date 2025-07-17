@@ -82,3 +82,10 @@ class QuizForm(forms.ModelForm):
         if not duration:
             raise forms.ValidationError("This field is required.")
         return duration
+
+
+class QuestionCSVUploadForm(forms.Form):
+    csv_file = forms.FileField(
+        label="CSV File",
+        help_text="Headers: content,Option_A,Option_B,Option_C,Option_D,Correct_answer (A/B/C/D)"
+    )

@@ -1,296 +1,299 @@
 {% extends "dilip_dashboard_v2/dashboard_base.html" %}
-{% load static crispy_forms_tags %}
+{% load static %}
+
 {% block css %}
 <style>
   .question-container {
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background: #f9f9f9;
   }
-
   .option-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: .5rem;
   }
-
-  .option-actions button {
-    margin-left: 10px;
-  }
-
-  .remove-question {
-    display: none;
-  }
+  .remove-question { display: none; }
 </style>
-{% endblock %}
+{% endblock css %}
 
 {% block content %}
 <div class="content-wrapper">
+
+  <!-- Header -->
   <section class="content-header">
     <div class="container-fluid">
-      <div class="row mb-2">
+      <div class="row mb-2 align-items-center">
         <div class="col-sm-6">
-          <h1>Add Questions</h1>
+          <h1>Add Questions – {{ quiz.title }}</h1>
         </div>
-        <div class="col-sm-6">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+        <div class="col-sm-6 text-end">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bulkUploadModal">
             Bulk Upload
           </button>
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Add Questions</li>
-          </ol>
+          <a href="{% url 'super_admin:super_admin_question_list' quiz.id %}" class="btn btn-secondary">
+            Back to Questions
+          </a>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="container-fluid">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Manual Question Create Form -->
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-12">
+
           <div class="card card-primary">
             <div class="card-header">
               <h3 class="card-title">Create Questions</h3>
             </div>
-            <form id="question-form" method="post">
+
+<form id="question-form" method="post" action="{% url 'super_admin:super_admin_create_question' quiz.id %}">
               {% csrf_token %}
               <div class="card-body">
-                <div class="form-group">
-                  <label for="quiz">Quiz:</label>
-                  <select id="quiz" name="quiz" class="form-control" required>
-                    {% for quiz in quizzes %}
-                    <option value="{{ quiz.id }}">{{ quiz.title }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
+
+                <!-- Hidden quiz id -->
+                <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
+
                 <div id="questions-container">
                   <!-- Default Question -->
-                  <div class="question-container">
+                  <div class="question-container" data-q="1">
                     <div class="form-group">
-                      <label for="question_type_1">Question Type:</label>
-                      <select id="question_type_1" name="question_type[]" class="form-control" required>
+                      <label for="question_type_1">Question Type</label>
+                      <select id="question_type_1" name="question_type[]" class="form-control question-type" required>
                         <option value="mcq">MCQ</option>
                         <option value="text">Text</option>
                       </select>
                     </div>
+
                     <div class="form-group">
-                      <label for="content_1">Question Content:</label>
-                      <textarea id="content_1" name="content[]" class="form-control" rows="4" placeholder="Enter your question here" required></textarea>
+                      <label for="content_1">Question Content</label>
+                      <textarea id="content_1" name="content[]" class="form-control" rows="3" required></textarea>
                     </div>
+
                     <div class="form-group">
-                      <label for="points_1">Points:</label>
+                      <label for="points_1">Points</label>
                       <input type="number" id="points_1" name="points[]" class="form-control" value="1" min="1" required>
                     </div>
-                    <div id="options-container-1">
-                      <div class="form-group option-field">
-                        <div class="d-flex justify-content-between">
-                          <div class="w-75">
-                            <label for="option_1_1">Option 1:</label>
-                            <input type="text" id="option_1_1" name="options[1][]" class="form-control" placeholder="Enter option text" required>
+
+                    <div id="options-container-1" class="mcq-options">
+                      <div class="form-group option-field d-flex align-items-start">
+                        <div class="flex-grow-1 me-2">
+                          <label for="option_1_1">Option 1</label>
+                          <input type="text" id="option_1_1" name="options[1][]" class="form-control" required>
+                        </div>
+                        <div class="option-actions">
+                          <div class="form-check">
+                            <input type="checkbox" id="is_correct_1_1" name="is_correct[1][]" class="form-check-input">
+                            <label for="is_correct_1_1" class="form-check-label">Correct</label>
                           </div>
-                          <div class="option-actions d-flex align-items-center">
-                            <div class="form-check mr-2">
-                              <input type="checkbox" id="is_correct_1_1" name="is_correct[1][]" class="form-check-input">
-                              <label for="is_correct_1_1" class="form-check-label">Correct</label>
-                            </div>
-                            <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
-                          </div>
+                          <button type="button" class="btn btn-danger btn-sm remove-option" style="display:none;">Remove</button>
                         </div>
                       </div>
                     </div>
+
                     <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addOption(1)">Add Option</button>
                     <button type="button" class="btn btn-danger btn-sm mt-2 remove-question" onclick="removeQuestion(this)">Remove Question</button>
-                  </div>
-                </div>
-                <button type="button" id="add-question" class="btn btn-info mt-3">Add Question</button>
+                  </div><!-- /.question-container -->
+                </div><!-- /#questions-container -->
+
+                <button type="button" id="add-question" class="btn btn-info mt-3">Add Another Question</button>
                 <button type="submit" class="btn btn-success mt-3">Save Questions</button>
-              </div>
+                <p id="question-count" class="mt-2 small text-muted">Total Questions: 1</p>
+
+              </div><!-- /.card-body -->
             </form>
-          </div>
+          </div><!-- /.card -->
+
         </div>
       </div>
     </div>
   </section>
-</div>
 
-<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+</div><!-- /.content-wrapper -->
+
+<!-- Bulk Upload Modal -->
+<div class="modal fade" id="bulkUploadModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="bulkUploadLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Upload CSV file</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
 
-      <form method="POST" enctype="multipart/form-data" action="{% url 'super_admin:super_admin_upload_question_csv' %}">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'super_admin:super_admin_upload_question_csv' quiz.id %}">
         {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="bulkUploadLabel">Upload CSV file</h5>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        </div>
+
         <div class="modal-body">
-          <div class="form-group">
-            <label for="csvFile">Choose CSV file</label>
-            <input type="file" class="form-control-file" id="csvFile" name="csv_file" accept=".csv" required>
+          <p class="small text-muted mb-2">
+            CSV headers: <code>content,option_A,option_B,option_C,option_D,correct_answer</code> (A/B/C/D).
+          </p>
+          <input type="file" class="form-control" id="csvFile" name="csv_file" accept=".csv" required>
+          <div class="mt-2">
+            <a href="{% static 'sample_quiz_questions.csv' %}" class="btn btn-link p-0">Download Sample CSV</a>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Upload</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary btn-sm">Upload</button>
         </div>
       </form>
 
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock content %}
 
 {% block js %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  let questionCount = 1;
+let questionCount = 1;
 
-  function updateQuestionCount() {
-    questionCount = $('#questions-container .question-container').length;
-    $('#question-count').text(`Total Questions: ${questionCount}`);
-  }
+// Update total
+function updateQuestionCount() {
+  questionCount = $('#questions-container .question-container').length;
+  $('#question-count').text('Total Questions: ' + questionCount);
+}
 
-  // Add a new question
-  $('#add-question').on('click', function () {
-    questionCount++;
-    const questionHtml = `
-      <div class="question-container">
-        <div class="form-group">
-          <label for="question_type_${questionCount}">Question Type:</label>
-          <select id="question_type_${questionCount}" name="question_type[]" class="form-control" required>
-            <option value="mcq">MCQ</option>
-            <option value="text">Text</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="content_${questionCount}">Question Content:</label>
-          <textarea id="content_${questionCount}" name="content[]" class="form-control" rows="4" placeholder="Enter your question here" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="points_${questionCount}">Points:</label>
-          <input type="number" id="points_${questionCount}" name="points[]" class="form-control" value="1" min="1" required>
-        </div>
-        <div id="options-container-${questionCount}">
-          <div class="form-group option-field">
-            <div class="d-flex justify-content-between">
-              <div class="w-75">
-                <label for="option_${questionCount}_1">Option 1:</label>
-                <input type="text" id="option_${questionCount}_1" name="options[${questionCount}][]" class="form-control" placeholder="Enter option text" required>
-              </div>
-              <div class="option-actions d-flex align-items-center">
-                <div class="form-check mr-2">
-                  <input type="checkbox" id="is_correct_${questionCount}_1" name="is_correct[${questionCount}][]" class="form-check-input">
-                  <label for="is_correct_${questionCount}_1" class="form-check-label">Correct</label>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addOption(${questionCount})">Add Option</button>
-        <button type="button" class="btn btn-danger btn-sm mt-2 remove-question" onclick="removeQuestion(this)">Remove Question</button>
+// Add Question
+$('#add-question').on('click', function () {
+  const qNum = ++questionCount;
+  const html = `
+    <div class="question-container" data-q="${qNum}">
+      <div class="form-group">
+        <label for="question_type_${qNum}">Question Type</label>
+        <select id="question_type_${qNum}" name="question_type[]" class="form-control question-type" required>
+          <option value="mcq">MCQ</option>
+          <option value="text">Text</option>
+        </select>
       </div>
-    `;
-    $('#questions-container').append(questionHtml);
-    updateQuestionCount(); // Update the question count after adding a question
-    toggleRemoveQuestionButtons();
-  });
-
-  // Remove question
-  function removeQuestion(button) {
-    $(button).closest('.question-container').remove();
-    updateQuestionCount(); // Update the question count after removing a question
-    toggleRemoveQuestionButtons();
-  }
-
-  // Add option
-  function addOption(questionId) {
-    const optionCount = $(`#options-container-${questionId} .option-field`).length + 1;
-    const optionHtml = `
-      <div class="form-group option-field">
-        <div class="d-flex justify-content-between">
-          <div class="w-75">
-            <label for="option_${questionId}_${optionCount}">Option ${optionCount}:</label>
-            <input type="text" id="option_${questionId}_${optionCount}" name="options[${questionId}][]" class="form-control" placeholder="Enter option text" required>
+      <div class="form-group">
+        <label for="content_${qNum}">Question Content</label>
+        <textarea id="content_${qNum}" name="content[]" class="form-control" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="points_${qNum}">Points</label>
+        <input type="number" id="points_${qNum}" name="points[]" class="form-control" value="1" min="1" required>
+      </div>
+      <div id="options-container-${qNum}" class="mcq-options">
+        <div class="form-group option-field d-flex align-items-start">
+          <div class="flex-grow-1 me-2">
+            <label for="option_${qNum}_1">Option 1</label>
+            <input type="text" id="option_${qNum}_1" name="options[${qNum}][]" class="form-control" required>
           </div>
-          <div class="option-actions d-flex align-items-center">
-            <div class="form-check mr-2">
-              <input type="checkbox" id="is_correct_${questionId}_${optionCount}" name="is_correct[${questionId}][]" class="form-check-input">
-              <label for="is_correct_${questionId}_${optionCount}" class="form-check-label">Correct</label>
+          <div class="option-actions">
+            <div class="form-check">
+              <input type="checkbox" id="is_correct_${qNum}_1" name="is_correct[${qNum}][]" class="form-check-input">
+              <label for="is_correct_${qNum}_1" class="form-check-label">Correct</label>
             </div>
-            <button type="button" class="btn btn-danger btn-sm remove-option" style="display: none;">Remove</button>
+            <button type="button" class="btn btn-danger btn-sm remove-option" style="display:none;">Remove</button>
           </div>
         </div>
       </div>
-    `;
-    $(`#options-container-${questionId}`).append(optionHtml);
-    toggleRemoveOptionButtons(questionId); // Check option visibility logic
-  }
+      <button type="button" class="btn btn-primary btn-sm mt-2" onclick="addOption(${qNum})">Add Option</button>
+      <button type="button" class="btn btn-danger btn-sm mt-2 remove-question" onclick="removeQuestion(this)">Remove Question</button>
+    </div>`;
+  $('#questions-container').append(html);
+  toggleRemoveQuestionButtons();
+  updateQuestionCount();
+});
 
-  // Remove option
-  $(document).on('click', '.remove-option', function () {
-    const questionId = $(this).closest('.question-container').find('textarea').attr('id').split('_')[1];
-    $(this).closest('.option-field').remove();
-    toggleRemoveOptionButtons(questionId); // Adjust the visibility of remove buttons after option removal
-    updateQuestionCount(); // Update the question count after removing an option
-  });
+// Remove Question
+function removeQuestion(btn) {
+  $(btn).closest('.question-container').remove();
+  toggleRemoveQuestionButtons();
+  updateQuestionCount();
+}
 
-  // Toggle remove buttons visibility for options
-  function toggleRemoveOptionButtons(questionId) {
-    const options = $(`#options-container-${questionId} .option-field`);
-    // If there is only one option, hide the "Remove" button for that option
-    options.find('.remove-option').toggle(options.length > 1);
-  }
+// Add Option
+function addOption(qNum) {
+  const cnt = $(`#options-container-${qNum} .option-field`).length + 1;
+  const html = `
+    <div class="form-group option-field d-flex align-items-start">
+      <div class="flex-grow-1 me-2">
+        <label for="option_${qNum}_${cnt}">Option ${cnt}</label>
+        <input type="text" id="option_${qNum}_${cnt}" name="options[${qNum}][]" class="form-control" required>
+      </div>
+      <div class="option-actions">
+        <div class="form-check">
+          <input type="checkbox" id="is_correct_${qNum}_${cnt}" name="is_correct[${qNum}][]" class="form-check-input">
+          <label for="is_correct_${qNum}_${cnt}" class="form-check-label">Correct</label>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm remove-option">Remove</button>
+      </div>
+    </div>`;
+  $(`#options-container-${qNum}`).append(html);
+  toggleRemoveOptionButtons(qNum);
+}
 
-  // Toggle remove buttons visibility for questions
-  function toggleRemoveQuestionButtons() {
-    $('.remove-question').toggle($('.question-container').length > 1);
-  }
+// Remove Option (delegated)
+$(document).on('click', '.remove-option', function () {
+  const container = $(this).closest('.question-container');
+  const qNum = container.data('q');
+  $(this).closest('.option-field').remove();
+  toggleRemoveOptionButtons(qNum);
+});
 
-  // Optional: Display the count of questions
-  $('<p id="question-count">Total Questions: 1</p>').insertBefore('#add-question');
-</script>
+// Show/hide remove buttons for options
+function toggleRemoveOptionButtons(qNum) {
+  const $options = $(`#options-container-${qNum} .option-field`);
+  $options.find('.remove-option').toggle($options.length > 1);
+}
 
-<script>
-  document.getElementById('question-form').addEventListener('submit', function (event) {
-    let isValid = true;
-  
-    // Loop through each question container
-    document.querySelectorAll('.question-container').forEach((container, index) => {
-      const questionType = container.querySelector(`select[name="question_type[]"]`).value;
-  
-      // Only validate MCQ questions
-      if (questionType === 'mcq') {
-        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-        const atLeastOneChecked = Array.from(checkboxes).some(cb => cb.checked);
-  
-        if (!atLeastOneChecked) {
-          isValid = false;
-          container.scrollIntoView({ behavior: "smooth" });
-          alert(`Please mark at least one correct option for question ${index + 1}.`);
-          return false; // Exit early
-        }
+// Show/hide Remove Question buttons
+function toggleRemoveQuestionButtons() {
+  const $qs = $('.question-container');
+  $qs.find('.remove-question').toggle($qs.length > 1);
+}
+
+// Toggle MCQ options visibility when type changes
+$(document).on('change', '.question-type', function () {
+  const container = $(this).closest('.question-container');
+  const qNum = container.data('q');
+  const isMCQ = $(this).val() === 'mcq';
+  container.find('.mcq-options').toggle(isMCQ);
+  container.find('[onclick^="addOption"]').toggle(isMCQ);
+});
+
+// Validate at submit
+$('#question-form').on('submit', function (e) {
+  let ok = true;
+  $('.question-container').each(function (i, el) {
+    const $el = $(el);
+    const type = $el.find('.question-type').val();
+    if (type === 'mcq') {
+      const checks = $el.find('.mcq-options input[type="checkbox"]');
+      const anyChecked = checks.toArray().some(cb => cb.checked);
+      if (!anyChecked) {
+        alert('Please mark at least one correct option for question #' + (i + 1));
+        $el[0].scrollIntoView({behavior: 'smooth'});
+        ok = false;
+        return false; // break loop
       }
-    });
-  
-    // Prevent submission if invalid
-    if (!isValid) {
-      event.preventDefault();
-    } else {
-      // Set all checkbox values
-      document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
-        checkbox.value = checkbox.checked ? 'on' : 'off';
-        checkbox.checked = true; // Ensure it's submitted
-      });
     }
-  }); 
-</script>
+  });
+  if (!ok) {
+    e.preventDefault();
+  }
+});
 
-{% endblock %}
+// initial state Back to Questions
+toggleRemoveQuestionButtons();
+updateQuestionCount();
+</script>
+{% endblock js %}
