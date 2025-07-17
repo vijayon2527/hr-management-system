@@ -484,6 +484,11 @@ def super_admin_create_question_view(request):
     quizzes = Quiz.objects.all()
     return render(request, 'dilip_dashboard_v2/super_admin/quiz/super_admin_create_question.html', {'quizzes': quizzes})
 
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_upload_question_csv_view(request, quiz_id):
+    pass
+
 @allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_question_view(request, question_id):
     question = get_object_or_404(Question, id=question_id)
