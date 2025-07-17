@@ -1,7 +1,7 @@
-{% extends "dashboard/dashboard_base.html" %}
+{% extends 'dilip_dashboard_v2/dashboard_base.html' %}
 {% load static crispy_forms_tags common_tags %}
-{% block dashboard_content %}
-<div class="card mx-auto">
+{% block content %}
+<div class="content-wrapper">
     <div class="card-header card-header-primary">
         <h4 class="card-title" style="font-size: 20px;">Functional Area / Update</h4>
     </div>
@@ -15,7 +15,7 @@
             <a href="{% url 'super_admin:super_admin_create_functional_area' %}" 
                 class="btn btn-outline-primary 
                 {% is_active 'super_admin_create_functional_area' %}">
-                Create Functional Area
+                Update Functional Area
             </a>
         </div>
         <form id="industryForm" method="post" novalidate>
@@ -24,7 +24,7 @@
             <input type="submit" class="btn btn-primary">
         </form>
 
-        <!-- <h2>{% if form.instance.pk %}Update{% else %}Create{% endif %} Functional Area</h2>
+        {% comment %} {% comment %} <h2>{% if form.instance.pk %}Update{% else %}Create{% endif %} Functional Area</h2>
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
@@ -57,38 +57,38 @@
                 </select>
             </div>
             <input type="submit" class="btn btn-primary">
-        </form> -->
+        </form>  {% endcomment %}
     </div>
 </div>
-{% endblock dashboard_content %}
+{% endblock %} 
 
-{% block dashboard_extra_js %}
+{% block js %}
 <script>
     function loadFunctionalAreas() {
         const industryId = document.getElementById("id_industry").value;
-        fetch(`/super_admin/get-functional-areas/?industry_id=${industryId}`)
+        fetch(/super_admin/get-functional-areas/?industry_id=${industryId})
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 const functionalAreaSelect = document.getElementById("id_functional_area");
                 functionalAreaSelect.innerHTML = '<option value="">Select Functional Area</option>';
                 data.forEach(area => {
-                    functionalAreaSelect.innerHTML += `<option value="${area.id}">${area.name}</option>`;
+                    functionalAreaSelect.innerHTML += <option value="${area.id}">${area.name}</option>;
                 });
             });
     }
 
     function loadRoles() {
         const functionalAreaId = document.getElementById("id_functional_area").value;
-        fetch(`/super_admin/get-roles/?functional_area_id=${functionalAreaId}`)
+        fetch(/super_admin/get-roles/?functional_area_id=${functionalAreaId})
             .then(response => response.json())
             .then(data => {
                 const roleSelect = document.getElementById("id_role");
                 roleSelect.innerHTML = '<option value="">Select Role</option>';
                 data.forEach(role => {
-                    roleSelect.innerHTML += `<option value="${role.id}">${role.name}</option>`;
+                    roleSelect.innerHTML += <option value="${role.id}">${role.name}</option>;
                 });
             });
     }
 </script>
-{% endblock dashboard_extra_js %}
+{% endblock js %}

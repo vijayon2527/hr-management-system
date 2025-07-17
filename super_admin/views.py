@@ -186,6 +186,7 @@ def super_admin_create_skill_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Skill added successfully")
+            return redirect('super_admin:super_admin_skill_list')
     form = AddSkill()
     return render(request, 'dashboard/super_admin/super_admin_create_skill.html', {'form':form})
 
@@ -216,7 +217,7 @@ def super_admin_update_skill_view(request, pk):
     form = AddSkill(request.POST, instance=skill)
     if form.is_valid():
         form.save()
-        messages.success(request, "Skill added successfully")
+        messages.success(request, "Skill Updated successfully")
 
     form = AddSkill(instance=skill)
     return render(request, 'dashboard/super_admin/super_admin_update_skill.html', {'form':form})
@@ -252,19 +253,6 @@ def super_admin_user_list_view(request):
     }
     return render(request, 'dashboard/super_admin/super_admin_user_list.html', context)
 
-allow_access_to([User.SUPER_ADMIN])
-def super_admin_create_industry_view(request):
-    if request.method == "POST":
-        form = IndustryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Industry created successfully')
-            return redirect('super_admin:super_admin_create_industry')
-        else:
-            return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
-    else:
-        form = IndustryForm()
-    return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
 
 allow_access_to([User.SUPER_ADMIN])
 def super_admin_create_functional_area_view(request):
@@ -273,7 +261,7 @@ def super_admin_create_functional_area_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Functional area created successfully!')
-            return redirect('super_admin:super_admin_create_functional_area')
+            return redirect('super_admin:super_admin_functional_area_list')
     else:
         form = FunctionalAreaForm()
     return render(request, 'dashboard/super_admin/super_admin_create_functional_area.html', {'form': form})
@@ -285,25 +273,41 @@ def super_admin_create_role_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Role created successfully!')
-            return redirect('super_admin:super_admin_create_role')
+            return redirect('super_admin:super_admin_role_list')
     else:
         form = RoleForm() 
     return render(request, 'dashboard/super_admin/super_admin_create_role.html', {'form': form})
+
+
+
+allow_access_to([User.SUPER_ADMIN])
+def super_admin_create_industry_view(request):
+    if request.method == "POST":
+        form = IndustryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Industry created successfully')
+            return redirect('super_admin:super_admin_industry_list')
+        else:
+            return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
+    else:
+        form = IndustryForm()
+    return render(request, 'dashboard/super_admin/super_admin_create_industry.html', {'form': form})
+
+
 
 allow_access_to([User.SUPER_ADMIN])
 def super_admin_industry_list_view(request):
     industries = Industry.objects.all()
     return render(request, 'dashboard/super_admin/super_admin_industry_list.html', {'industries': industries})
 
-allow_access_to([User.SUPER_ADMIN])
-def super_admin_functional_area_list_view(request):
-    functional_areas = FunctionalArea.objects.all()
-    return render(request, 'dashboard/super_admin/super_admin_functional_area_list.html', {'functional_areas': functional_areas})
 
-allow_access_to([User.SUPER_ADMIN])
-def super_admin_role_list_view(request):
-    roles = Role.objects.all()
-    return render(request, 'dashboard/super_admin/super_admin_role_list.html', {'roles': roles})
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_detail_industry_view(request, pk):
+    industry = get_object_or_404(Industry, pk=pk)
+    return render(request, 'dashboard/super_admin/super_admin_detail_industry.html', {'industry': industry})
+
+
 
 allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_industry_view(request, pk):
@@ -313,10 +317,35 @@ def super_admin_update_industry_view(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Industry updated successfully!')
-            return redirect('super_admin:super_admin_update_industry', pk=pk)  # Redirect to the list view
+            return redirect('super_admin:super_admin_industry_list')  # Redirect to the list view
     else:
         form = IndustryForm(instance=industry)
     return render(request, 'dashboard/super_admin/super_admin_update_industry.html', {'form': form, 'industry': industry})
+
+
+
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_delete_industry_view(request, pk):
+    industry = Industry.objects.get(id=pk)
+    industry.delete()
+    messages.success(request, "industry deleted successfully")
+    return redirect('super_admin:super_admin_industry_list')
+
+allow_access_to([User.SUPER_ADMIN])
+def super_admin_functional_area_list_view(request):
+    functional_areas = FunctionalArea.objects.all()
+    return render(request, 'dashboard/super_admin/super_admin_functional_area_list.html', {'functional_areas': functional_areas})
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_detail_functional_area_view(request, pk):
+    functional_areas = get_object_or_404(FunctionalArea, pk=pk)
+    context = {
+        'functional_areas': functional_areas,
+    }
+    return render(request, 'dashboard/super_admin/super_admin_detail_functional_area.html',context)
+
+
 
 allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_functional_area_view(request, pk):
@@ -330,7 +359,7 @@ def super_admin_update_functional_area_view(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Functional area updated successfully!')
-            return redirect('super_admin:super_admin_update_functional_area', pk=pk)
+            return redirect('super_admin:super_admin_functional_area_list')
     else:
         form = FunctionalAreaForm(instance=functional_area)
         context = {
@@ -342,6 +371,21 @@ def super_admin_update_functional_area_view(request, pk):
             }
     return render(request, 'dashboard/super_admin/super_admin_update_functional_area.html', context)
 
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_delete_functional_area_view(request, pk):
+    functional_areas = FunctionalArea.objects.get(id=pk)
+    functional_areas.delete()
+    messages.success(request, "functional_areas deleted successfully")
+    return redirect('super_admin:super_admin_functional_area_list')
+
+
+allow_access_to([User.SUPER_ADMIN])
+def super_admin_role_list_view(request):
+    roles = Role.objects.all()
+    return render(request, 'dashboard/super_admin/super_admin_role_list.html', {'roles': roles})
+
+
 allow_access_to([User.SUPER_ADMIN])
 def super_admin_update_role_view(request, pk):
     role = get_object_or_404(Role, pk=pk)
@@ -350,10 +394,23 @@ def super_admin_update_role_view(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Role updated successfully!')
-            return redirect('super_admin:super_admin_update_role', pk=pk)
+            return redirect('super_admin:super_admin_role_list')
     else:
         form = RoleForm(instance=role)
     return render(request, 'dashboard/super_admin/super_admin_update_role.html', {'form': form, 'role': role})
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_detail_role_view(request, pk):
+    role = get_object_or_404(Role, pk=pk)
+    return render(request, 'dashboard/super_admin/super_admin_detail_role.html',{'role': role})
+
+@allow_access_to([User.SUPER_ADMIN])
+def super_admin_delete_role_view(request, pk):
+    role = Role.objects.get(id=pk)
+    role.delete()
+    messages.success(request, "Role deleted successfully")
+    return redirect('super_admin:super_admin_role_list')
+
 
 from django.http import JsonResponse
 def get_functional_areas(request):

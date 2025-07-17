@@ -1,0 +1,20 @@
+{% extends 'dilip_dashboard_v2/dashboard_base.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="card-header card-header-primary">
+        <h4 class="card-title" style="font-size: 20px; margin: 0;">Functional Area Details</h4>
+        <a href="{% url 'super_admin:super_admin_functional_area_list' %}" class="btn btn-secondary mb-3 float-right">Back to List</a>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>ID:</strong> {{ functional_areas.id }}
+        </div>
+        <div class="mb-3">
+            <strong>Industry:</strong> {{ functional_areas.name }}
+        </div>
+        <div class="mb-3">
+            <strong>Description:</strong> {{ functional_areas.description }}
+        </div>
+    </div>
+</div>
+{% endblock %}
